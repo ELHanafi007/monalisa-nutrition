@@ -68,7 +68,7 @@ export default function Home() {
           <div className="grid grid-cols-1 lg:grid-cols-2 gap-20 items-center">
             <div className="relative aspect-square">
                <img 
-                 src="https://images.unsplash.com/photo-1574680096145-d05b474e2155?q=80&w=2069&auto=format&fit=crop" 
+                 src="https://images.unsplash.com/photo-1534438327276-14e5300c3a48?q=80&w=2070&auto=format&fit=crop" 
                  alt="The Monalisa Standard" 
                  className="w-full h-full object-cover grayscale opacity-60"
                />

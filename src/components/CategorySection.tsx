@@ -31,7 +31,7 @@ export const CategorySection = () => {
             >
               <div className="absolute inset-0 bg-black/40 group-hover:bg-black/20 transition-all duration-700 z-10" />
               <img 
-                src={`https://images.unsplash.com/photo-${index === 0 ? '1546483875-ad9014c88eba' : index === 1 ? '1622330206316-2da931dc990e' : '1583454110551-21f2fa2adfcd'}?q=80&w=2070&auto=format&fit=crop`}
+                src={`https://images.unsplash.com/photo-${index === 0 ? '1541534741688-6078c64b52d2' : index === 1 ? '1583454110551-21f2fa2adfcd' : '1593079831268-3381b0db4a77'}?q=80&w=2070&auto=format&fit=crop`}
                 alt={category.name}
                 className="w-full h-full object-cover grayscale-0 group-hover:grayscale transition-all duration-1000 group-hover:scale-105"
               />
