@@ -17,8 +17,8 @@ export default function Home() {
       {/* Featured Products */}
       <section className="section-padding bg-[#0f0f0f]">
         <div className="container">
-          <div className="flex flex-col md:flex-row md:items-end justify-between mb-16">
-            <div>
+          <div className="flex flex-col md:flex-row md:items-end justify-between mb-16 text-center md:text-left">
+            <div className="w-full">
               <span className="text-gold uppercase tracking-[0.4em] text-[10px] font-bold mb-4 block">Seasonal Edit</span>
               <h2 className="text-5xl md:text-6xl font-serif">The <span className="italic">Elite</span> Selection.</h2>
             </div>
@@ -74,7 +74,7 @@ export default function Home() {
                />
                <div className="absolute -top-10 -right-10 w-64 h-64 border border-gold/20 hidden lg:block" />
             </div>
-            <div>
+            <div className="text-center lg:text-left">
               <span className="text-gold uppercase tracking-[0.4em] text-[10px] font-bold mb-6 block">Our Ethos</span>
               <h2 className="text-5xl md:text-7xl font-serif mb-10 leading-tight">The <span className="italic">Monalisa</span> Standard.</h2>
               <div className="space-y-8 text-lg text-text-muted font-light leading-relaxed">
@@ -85,7 +85,7 @@ export default function Home() {
                   We source only the purest molecules from the world's leading laboratories, ensuring that every milligram serves a purpose. No compromises. No shortcuts. Just pure, unadulterated performance.
                 </p>
               </div>
-              <div className="mt-12 flex gap-12">
+              <div className="mt-12 flex flex-wrap justify-center lg:justify-start gap-12">
                 <div>
                   <p className="text-4xl font-serif text-gold mb-2">100%</p>
                   <p className="text-[10px] uppercase tracking-widest text-text-muted">Certified Purity</p>
