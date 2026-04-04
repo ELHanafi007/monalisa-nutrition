@@ -3,6 +3,7 @@ import { Hero } from '@/components/Hero';
 import { CategorySection } from '@/components/CategorySection';
 import { products } from '@/data/products';
 import { ShoppingCart, Heart, Plus } from 'lucide-react';
+import Link from 'next/link';
 
 export default function Home() {
   const featuredProducts = products.slice(0, 4);
