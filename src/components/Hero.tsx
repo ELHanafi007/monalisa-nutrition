@@ -44,10 +44,10 @@ export const Hero = () => {
             </p>
             
             <div className="flex flex-col sm:flex-row gap-6">
-              <Link href="/catalog" className="inline-block bg-gold text-black px-12 py-5 uppercase tracking-widest text-sm font-bold hover:bg-white transition-all duration-300">
+              <Link href="/catalog" className="luxury-button">
                 Shop The Collection
               </Link>
-              <Link href="/concierge" className="inline-block border border-gold text-gold px-12 py-5 uppercase tracking-widest text-sm font-bold hover:bg-gold/10 transition-all duration-300">
+              <Link href="/concierge" className="luxury-button-outline">
                 Personalized Protocol
               </Link>
             </div>

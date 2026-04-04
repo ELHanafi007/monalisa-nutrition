@@ -44,7 +44,7 @@ export default function Home() {
                   </div>
 
                   {/* Add to Cart Overlay */}
-                  <button className="absolute bottom-0 left-0 w-full bg-gold text-black py-4 uppercase tracking-[0.2em] text-[10px] font-bold transform translate-y-full group-hover:translate-y-0 transition-transform duration-500 flex items-center justify-center gap-2">
+                  <button className="absolute bottom-0 left-0 w-full bg-gold text-black py-4 uppercase tracking-[0.3em] text-[10px] font-bold transform translate-y-full group-hover:translate-y-0 transition-transform duration-500 flex items-center justify-center gap-2">
                     <Plus size={14} /> Add to Collection
                   </button>
                 </div>
