@@ -25,10 +25,12 @@
   @import url('https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,700;1,400&family=Inter:wght@300;400;500;600&display=swap');
 
   body {
-    background-color: var(--color-background);
-    color: var(--color-foreground);
+    background-color: #0a0a0a;
+    color: #ffffff;
     font-family: var(--font-sans);
     -webkit-font-smoothing: antialiased;
+    margin: 0;
+    padding: 0;
   }
 
   h1, h2, h3, h4, .font-serif {
@@ -38,11 +40,11 @@
 
 @layer components {
   .container {
-    @apply max-width-[1400px] mx-auto px-8;
+    @apply max-w-[1400px] mx-auto px-8 w-full;
   }
   
   .section-padding {
-    @apply py-32;
+    @apply py-24 md:py-32;
   }
 
   .glass {
@@ -55,17 +57,5 @@
   
   .luxury-button-outline {
     @apply inline-block border border-gold text-gold px-12 py-5 uppercase tracking-[0.3em] text-[10px] font-bold hover:bg-gold/10 transition-all duration-500;
-  }
-}
-
-@layer utilities {
-  .text-gold {
-    color: var(--color-gold);
-  }
-  .bg-gold {
-    background-color: var(--color-gold);
-  }
-  .border-gold {
-    border-color: var(--color-gold);
   }
 }
