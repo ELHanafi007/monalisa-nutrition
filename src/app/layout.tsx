@@ -2,6 +2,8 @@ import type { Metadata } from "next";
 import "./globals.css";
 import { CartProvider } from "@/contexts/CartContext";
 import { Toast } from "@/components/Toast";
+import { FloatingConcierge } from "@/components/FloatingConcierge";
+import { NewsletterModal } from "@/components/NewsletterModal";
 
 export const metadata: Metadata = {
   title: "Monalisa Nutrition | The Standard of Excellence",
@@ -19,6 +21,8 @@ export default function RootLayout({
         <CartProvider>
           {children}
           <Toast />
+          <FloatingConcierge />
+          <NewsletterModal />
         </CartProvider>
       </body>
     </html>

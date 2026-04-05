@@ -36,6 +36,7 @@ export const Navbar = () => {
           <Link href="/discovery" className="hover:text-gold transition-colors flex items-center gap-2">
             Discovery <span className="bg-gold/10 text-gold text-[8px] px-2 py-0.5 rounded-full">New</span>
           </Link>
+          <Link href="/journal" className="hover:text-gold transition-colors">Journal</Link>
           <Link href="/about" className="hover:text-gold transition-colors">The House</Link>
           <Link href="/concierge" className="hover:text-gold transition-colors">Concierge</Link>
         </div>
