@@ -4,8 +4,9 @@ import { Navbar } from '@/components/Navbar';
 import { Hero } from '@/components/Hero';
 import { CategorySection } from '@/components/CategorySection';
 import { products } from '@/data/products';
-import { ShoppingCart, Heart, Plus } from 'lucide-react';
+import { ShoppingCart, Heart, Plus, Eye } from 'lucide-react';
 import Link from 'next/link';
+import Image from 'next/image';
 import { useCart } from '@/contexts/CartContext';
 
 export default function Home() {
@@ -32,19 +33,23 @@ export default function Home() {
             {featuredProducts.map((product) => (
               <div key={product.id} className="group relative">
                 <div className="aspect-[4/5] bg-surface overflow-hidden relative border border-border group-hover:border-gold transition-all duration-500">
-                  <div className="absolute top-4 right-4 z-10 opacity-0 group-hover:opacity-100 transition-opacity duration-300">
+                  <div className="absolute top-4 right-4 z-10 opacity-0 group-hover:opacity-100 transition-opacity duration-300 flex flex-col gap-2">
                     <button className="bg-black/50 backdrop-blur-md p-2 hover:text-gold transition-colors">
                       <Heart size={18} />
                     </button>
+                    <Link href={`/catalog/${product.slug}`} className="bg-black/50 backdrop-blur-md p-2 hover:text-gold transition-colors">
+                      <Eye size={18} />
+                    </Link>
                   </div>
                   
-                  {/* Placeholder for product image */}
-                  <div className="w-full h-full flex items-center justify-center p-8 group-hover:scale-105 transition-transform duration-700">
-                    <div className="w-full h-full bg-[#1a1a1a] flex flex-col items-center justify-center text-center p-4">
-                       <span className="text-[10px] text-text-muted uppercase tracking-widest mb-2">{product.brand}</span>
-                       <span className="text-xs font-serif italic text-gold">{product.name}</span>
-                       <div className="mt-4 w-12 h-[1px] bg-border" />
-                    </div>
+                  {/* Product Image */}
+                  <div className="w-full h-full flex items-center justify-center p-8 group-hover:scale-110 transition-transform duration-700 relative">
+                    <Image 
+                      src={product.image} 
+                      alt={product.name} 
+                      fill
+                      className="object-contain mix-blend-lighten opacity-80 group-hover:opacity-100 transition-opacity p-8"
+                    />
                   </div>
 
                   {/* Add to Cart Overlay */}

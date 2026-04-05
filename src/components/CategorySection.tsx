@@ -2,6 +2,7 @@
 
 import { motion } from 'framer-motion';
 import Link from 'next/link';
+import Image from 'next/image';
 import { categories } from '@/data/categories';
 import { ArrowRight } from 'lucide-react';
 
@@ -21,30 +22,38 @@ export const CategorySection = () => {
 
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-10">
           {categories.slice(0, 3).map((category, index) => (
-            <motion.div
+            <Link
               key={category.id}
-              initial={{ opacity: 0, y: 30 }}
-              whileInView={{ opacity: 1, y: 0 }}
-              transition={{ duration: 0.8, delay: index * 0.2 }}
-              viewport={{ once: true }}
-              className="relative aspect-[3/4] group overflow-hidden cursor-pointer"
+              href={`/catalog?cat=${category.slug}`}
+              className="block"
             >
-              <div className="absolute inset-0 bg-black/40 group-hover:bg-black/20 transition-all duration-700 z-10" />
-              <img 
-                src={`https://images.unsplash.com/photo-${index === 0 ? '1541534741688-6078c64b52d2' : index === 1 ? '1583454110551-21f2fa2adfcd' : '1593079831268-3381b0db4a77'}?q=80&w=2070&auto=format&fit=crop`}
-                alt={category.name}
-                className="w-full h-full object-cover grayscale-0 group-hover:grayscale transition-all duration-1000 group-hover:scale-105"
-              />
-              
-              <div className="absolute inset-0 flex flex-col justify-end p-10 z-20">
-                <span className="text-[10px] text-gold uppercase tracking-widest font-bold mb-2">Department {index + 1}</span>
-                <h3 className="text-3xl font-serif mb-4 group-hover:text-gold transition-colors">{category.name}</h3>
-                <p className="text-sm text-text-muted mb-8 line-clamp-2 font-light opacity-0 group-hover:opacity-100 transition-opacity duration-500">
-                  {category.description}
-                </p>
-                <div className="w-10 h-[1px] bg-gold group-hover:w-full transition-all duration-700" />
-              </div>
-            </motion.div>
+              <motion.div
+                initial={{ opacity: 0, y: 30 }}
+                whileInView={{ opacity: 1, y: 0 }}
+                transition={{ duration: 0.8, delay: index * 0.2 }}
+                viewport={{ once: true }}
+                className="relative aspect-[3/4] group overflow-hidden cursor-pointer"
+              >
+                <div className="absolute inset-0 bg-black/40 group-hover:bg-black/20 transition-all duration-700 z-10" />
+                <div className="relative w-full h-full group-hover:scale-110 transition-all duration-1000">
+                  <Image 
+                    src={category.image}
+                    alt={category.name}
+                    fill
+                    className="object-cover grayscale-0 group-hover:grayscale-[0.5]"
+                  />
+                </div>
+                
+                <div className="absolute inset-0 flex flex-col justify-end p-10 z-20">
+                  <span className="text-[10px] text-gold uppercase tracking-widest font-bold mb-2">Department {index + 1}</span>
+                  <h3 className="text-3xl font-serif mb-4 group-hover:text-gold transition-colors">{category.name}</h3>
+                  <p className="text-sm text-text-muted mb-8 line-clamp-2 font-light opacity-0 group-hover:opacity-100 transition-opacity duration-500">
+                    {category.description}
+                  </p>
+                  <div className="w-10 h-[1px] bg-gold group-hover:w-full transition-all duration-700" />
+                </div>
+              </motion.div>
+            </Link>
           ))}
         </div>
       </div>

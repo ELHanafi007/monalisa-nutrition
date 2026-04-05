@@ -22,7 +22,7 @@ export const products: Product[] = [
     brand: "Optimum Nutrition",
     price: 850,
     category: "elite-proteins",
-    image: "/products/on-whey.jpg",
+    image: "https://images.unsplash.com/photo-1593095948071-474c5cc2989d?q=80&w=2070&auto=format&fit=crop",
     description: "The world's most trusted protein, refined for the elite athlete. pure isolate for rapid absorption.",
     benefits: ["24g Protein per serving", "5.5g BCAA", "Zero Sugar"],
     specs: [
@@ -37,7 +37,7 @@ export const products: Product[] = [
     brand: "MuscleTech",
     price: 920,
     category: "elite-proteins",
-    image: "/products/nitro-tech.jpg",
+    image: "https://images.unsplash.com/photo-1546483875-ad9014c88eba?q=80&w=1982&auto=format&fit=crop",
     description: "Advanced muscle-building formula with creatine and amino acids.",
     benefits: ["30g Protein", "3g Creatine", "High Bioavailability"],
     specs: [
@@ -52,7 +52,7 @@ export const products: Product[] = [
     brand: "Cellucor",
     price: 550,
     category: "strength-power",
-    image: "/products/c4-ultimate.jpg",
+    image: "https://images.unsplash.com/photo-1517836357463-d25dfeac3438?q=80&w=2070&auto=format&fit=crop",
     description: "Unleash explosive energy and razor-sharp focus for your most demanding sessions.",
     benefits: ["Extreme Energy", "Intense Focus", "Pump Enhancement"],
     specs: [
@@ -67,7 +67,7 @@ export const products: Product[] = [
     brand: "MuscleTech",
     price: 320,
     category: "vitality-elixirs",
-    image: "/products/multivitamin.jpg",
+    image: "https://images.unsplash.com/photo-1584017945596-fd39a111c5cb?q=80&w=2070&auto=format&fit=crop",
     description: "The essential daily ritual for the high-performance lifestyle.",
     benefits: ["20+ Vitamins", "High Potency", "Amino Acid Support"],
     specs: [
@@ -82,7 +82,7 @@ export const products: Product[] = [
     brand: "Optimum Nutrition",
     price: 1100,
     category: "elite-proteins",
-    image: "/products/hydrowhey.jpg",
+    image: "https://images.unsplash.com/photo-1594882645126-14020914d58d?q=80&w=2085&auto=format&fit=crop",
     description: "The most advanced protein ever developed. Hydrolyzed for instant delivery.",
     benefits: ["Fastest Absorption", "Highest Purity", "Award-Winning Taste"],
     specs: [
@@ -97,7 +97,7 @@ export const products: Product[] = [
     brand: "Scivation",
     price: 480,
     category: "strength-power",
-    image: "/products/xtend.jpg",
+    image: "https://images.unsplash.com/photo-1490645935967-10de6ba17061?q=80&w=2070&auto=format&fit=crop",
     description: "Hydration and recovery in every sip. The industry leader in amino acids.",
     benefits: ["7g BCAA", "Electrolyte Blend", "Zero Carbs"],
     specs: [
@@ -112,7 +112,7 @@ export const products: Product[] = [
     brand: "Universal Nutrition",
     price: 650,
     category: "vitality-elixirs",
-    image: "/products/animal-pak.jpg",
+    image: "https://images.unsplash.com/photo-1471864190281-ad5f9f8162e6?q=80&w=2070&auto=format&fit=crop",
     description: "The complete training pack. Everything your body needs, in one powerful dose.",
     benefits: ["Complete Wellness", "Performance Support", "Digestive Enzymes"],
     specs: [
@@ -127,7 +127,7 @@ export const products: Product[] = [
     brand: "Nutrex",
     price: 450,
     category: "sculpt-define",
-    image: "/products/lipo6.jpg",
+    image: "https://images.unsplash.com/photo-1611073221763-9bc50f61769d?q=80&w=2070&auto=format&fit=crop",
     description: "Intelligent fat burning. Targeted metabolic support to redefine your physique.",
     benefits: ["Extreme Potency", "Metabolic Boost", "Appetite Control"],
     specs: [
@@ -142,7 +142,7 @@ export const products: Product[] = [
     brand: "Monalisa Exclusive",
     price: 1850,
     category: "exclusive-bundles",
-    image: "/products/bundle-1.jpg",
+    image: "https://images.unsplash.com/photo-1626225967045-9c76db7b6ecd?q=80&w=2070&auto=format&fit=crop",
     description: "The definitive selection: Elite Whey, Pre-Workout, and Multivitamins.",
     benefits: ["Complete Cycle", "Expertly Curated", "Priority Support"],
     specs: [
@@ -157,7 +157,7 @@ export const products: Product[] = [
     brand: "Applied Nutrition",
     price: 380,
     category: "strength-power",
-    image: "/products/creatine.jpg",
+    image: "https://images.unsplash.com/photo-1550345332-09e3ac987658?q=80&w=1974&auto=format&fit=crop",
     description: "Pharmaceutical grade creatine for raw power and muscle volume.",
     benefits: ["5g Pure Creatine", "Unflavored", "Micronized"],
     specs: [

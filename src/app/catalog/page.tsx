@@ -1,24 +1,32 @@
 "use client";
 
-import { useState } from 'react';
+import { useState, useMemo } from 'react';
 import { Navbar } from '@/components/Navbar';
 import { products } from '@/data/products';
 import { categories } from '@/data/categories';
-import { Search, Filter, X, Heart, Plus } from 'lucide-react';
+import { Search, Filter, X, Heart, Plus, ChevronDown } from 'lucide-react';
 import Link from 'next/link';
+import Image from 'next/image';
+import { motion, AnimatePresence } from 'framer-motion';
 import { useCart } from '@/contexts/CartContext';
 
 export default function Catalog() {
   const [selectedCategory, setSelectedCategory] = useState<string | null>(null);
+  const [selectedBrand, setSelectedBrand] = useState<string | null>(null);
+  const [priceRange, setPriceRange] = useState<[number, number]>([0, 2000]);
   const [searchQuery, setSearchQuery] = useState('');
   const [isFilterOpen, setIsFilterOpen] = useState(false);
   const { addToCart } = useCart();
 
+  const brands = useMemo(() => Array.from(new Set(products.map(p => p.brand))), []);
+
   const filteredProducts = products.filter(product => {
     const matchesCategory = !selectedCategory || product.category === selectedCategory;
+    const matchesBrand = !selectedBrand || product.brand === selectedBrand;
+    const matchesPrice = product.price >= priceRange[0] && product.price <= priceRange[1];
     const matchesSearch = product.name.toLowerCase().includes(searchQuery.toLowerCase()) || 
                           product.brand.toLowerCase().includes(searchQuery.toLowerCase());
-    return matchesCategory && matchesSearch;
+    return matchesCategory && matchesBrand && matchesPrice && matchesSearch;
   });
 
   return (
@@ -47,9 +55,9 @@ export default function Catalog() {
               </div>
               <button 
                 onClick={() => setIsFilterOpen(!isFilterOpen)}
-                className={`p-4 border border-border hover:border-gold transition-colors ${isFilterOpen ? 'bg-gold text-black border-gold' : ''}`}
+                className={`flex items-center gap-2 px-6 py-4 border border-border hover:border-gold transition-colors text-[10px] uppercase tracking-widest font-bold ${isFilterOpen ? 'bg-gold text-black border-gold' : ''}`}
               >
-                <Filter size={20} />
+                <Filter size={14} /> Filter
               </button>
             </div>
           </div>
@@ -57,6 +65,58 @@ export default function Catalog() {
       </section>
 
       <div className="container py-12">
+        {/* Expanded Filters */}
+        <AnimatePresence>
+          {isFilterOpen && (
+            <motion.div 
+              initial={{ height: 0, opacity: 0 }}
+              animate={{ height: 'auto', opacity: 1 }}
+              exit={{ height: 0, opacity: 0 }}
+              className="overflow-hidden mb-12 border-b border-border/50"
+            >
+              <div className="grid grid-cols-1 md:grid-cols-3 gap-12 pb-12">
+                <div>
+                  <h4 className="text-[10px] uppercase tracking-[0.3em] font-bold text-gold mb-6">By Brand</h4>
+                  <div className="flex flex-wrap gap-2">
+                    {brands.map(brand => (
+                      <button 
+                        key={brand}
+                        onClick={() => setSelectedBrand(selectedBrand === brand ? null : brand)}
+                        className={`px-4 py-2 text-[8px] uppercase tracking-widest border ${selectedBrand === brand ? 'bg-gold text-black border-gold' : 'border-border text-text-muted hover:border-gold'}`}
+                      >
+                        {brand}
+                      </button>
+                    ))}
+                  </div>
+                </div>
+                <div>
+                  <h4 className="text-[10px] uppercase tracking-[0.3em] font-bold text-gold mb-6">Price Range</h4>
+                  <input 
+                    type="range" 
+                    min="0" 
+                    max="2000" 
+                    step="50"
+                    value={priceRange[1]}
+                    onChange={(e) => setPriceRange([0, parseInt(e.target.value)])}
+                    className="w-full accent-gold bg-surface h-1"
+                  />
+                  <div className="flex justify-between mt-4 text-[10px] uppercase tracking-widest text-text-muted">
+                    <span>Up to {priceRange[1]} MAD</span>
+                  </div>
+                </div>
+                <div className="flex items-end">
+                   <button 
+                     onClick={() => {setSelectedCategory(null); setSelectedBrand(null); setPriceRange([0, 2000]); setSearchQuery('');}}
+                     className="text-[10px] uppercase tracking-[0.4em] text-gold border-b border-gold/30 pb-1 font-bold hover:border-gold transition-all"
+                   >
+                     Reset All Artifacts
+                   </button>
+                </div>
+              </div>
+            </motion.div>
+          )}
+        </AnimatePresence>
+
         {/* Category Filter Desktop */}
         <div className="hidden lg:flex flex-wrap gap-4 mb-12">
           <button 
@@ -87,12 +147,13 @@ export default function Catalog() {
                   </button>
                 </div>
                 
-                <Link href={`/catalog/${product.slug}`} className="w-full h-full flex items-center justify-center p-8 group-hover:scale-105 transition-transform duration-700">
-                  <div className="w-full h-full bg-[#1a1a1a] flex flex-col items-center justify-center text-center p-4">
-                     <span className="text-[10px] text-text-muted uppercase tracking-widest mb-2">{product.brand}</span>
-                     <span className="text-sm font-serif italic text-gold">{product.name}</span>
-                     <div className="mt-4 w-12 h-[1px] bg-border" />
-                  </div>
+                <Link href={`/catalog/${product.slug}`} className="w-full h-full flex items-center justify-center p-8 group-hover:scale-110 transition-transform duration-700 relative">
+                  <Image 
+                    src={product.image} 
+                    alt={product.name} 
+                    fill
+                    className="object-contain mix-blend-lighten opacity-80 group-hover:opacity-100 transition-opacity p-8"
+                  />
                 </Link>
 
                 <button 

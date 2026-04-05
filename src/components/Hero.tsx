@@ -2,6 +2,7 @@
 
 import { motion } from 'framer-motion';
 import Link from 'next/link';
+import Image from 'next/image';
 
 export const Hero = () => {
   return (
@@ -13,13 +14,14 @@ export const Hero = () => {
           initial={{ scale: 1.1, opacity: 0 }}
           animate={{ scale: 1, opacity: 0.6 }}
           transition={{ duration: 2.5, ease: "easeOut" }}
-          className="w-full h-full"
+          className="w-full h-full relative"
         >
-          {/* Using a high-end dark nutrition placeholder */}
-          <img 
+          <Image 
             src="https://images.unsplash.com/photo-1593079831268-3381b0db4a77?q=80&w=2069&auto=format&fit=crop" 
             alt="Elite Performance" 
-            className="w-full h-full object-cover grayscale contrast-125"
+            fill
+            priority
+            className="object-cover grayscale contrast-125"
           />
         </motion.div>
       </div>
@@ -36,7 +38,7 @@ export const Hero = () => {
             </span>
             <h1 className="text-6xl md:text-8xl font-serif leading-[1.1] mb-8">
               Refined Nutrition <br /> 
-              <span className="italic">For The Elite.</span>
+              <span className="italic text-gold">For The Elite.</span>
             </h1>
             <p className="text-lg md:text-xl text-text-muted mb-12 max-w-xl font-light leading-relaxed">
               Monalisa is more than nutrition. It is a philosophy of excellence, 
@@ -47,8 +49,8 @@ export const Hero = () => {
               <Link href="/catalog" className="luxury-button">
                 Shop The Collection
               </Link>
-              <Link href="/concierge" className="luxury-button-outline">
-                Personalized Protocol
+              <Link href="/discovery" className="luxury-button-outline">
+                Begin Discovery Protocol
               </Link>
             </div>
           </motion.div>
