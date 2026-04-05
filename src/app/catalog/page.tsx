@@ -6,11 +6,13 @@ import { products } from '@/data/products';
 import { categories } from '@/data/categories';
 import { Search, Filter, X, Heart, Plus } from 'lucide-react';
 import Link from 'next/link';
+import { useCart } from '@/contexts/CartContext';
 
 export default function Catalog() {
   const [selectedCategory, setSelectedCategory] = useState<string | null>(null);
   const [searchQuery, setSearchQuery] = useState('');
   const [isFilterOpen, setIsFilterOpen] = useState(false);
+  const { addToCart } = useCart();
 
   const filteredProducts = products.filter(product => {
     const matchesCategory = !selectedCategory || product.category === selectedCategory;
@@ -93,7 +95,10 @@ export default function Catalog() {
                   </div>
                 </Link>
 
-                <button className="absolute bottom-0 left-0 w-full bg-gold text-black py-4 uppercase tracking-[0.2em] text-[10px] font-bold transform translate-y-full group-hover:translate-y-0 transition-transform duration-500 flex items-center justify-center gap-2">
+                <button 
+                  onClick={() => addToCart(product)}
+                  className="absolute bottom-0 left-0 w-full bg-gold text-black py-4 uppercase tracking-[0.2em] text-[10px] font-bold transform translate-y-full group-hover:translate-y-0 transition-transform duration-500 flex items-center justify-center gap-2"
+                >
                   <Plus size={14} /> Add to Collection
                 </button>
               </div>

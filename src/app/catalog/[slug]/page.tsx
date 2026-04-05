@@ -7,11 +7,13 @@ import { ShoppingCart, Heart, Shield, Truck, RotateCcw, Plus, Minus } from 'luci
 import { useState } from 'react';
 import { motion } from 'framer-motion';
 import Link from 'next/link';
+import { useCart } from '@/contexts/CartContext';
 
 export default function ProductDetail() {
   const params = useParams();
   const slug = params.slug as string;
   const product = products.find(p => p.slug === slug);
+  const { addToCart } = useCart();
   
   const [quantity, setQuantity] = useState(1);
 
@@ -83,7 +85,10 @@ export default function ProductDetail() {
                 <span className="w-12 text-center text-sm font-bold">{quantity}</span>
                 <button onClick={() => setQuantity(quantity + 1)} className="p-2 hover:text-gold transition-colors"><Plus size={16} /></button>
               </div>
-              <button className="flex-1 bg-gold text-black py-5 uppercase tracking-[0.3em] text-xs font-bold hover:bg-white transition-all duration-300">
+              <button 
+                onClick={() => addToCart(product, quantity)}
+                className="flex-1 bg-gold text-black py-5 uppercase tracking-[0.3em] text-xs font-bold hover:bg-white transition-all duration-300"
+              >
                 Add to Collection
               </button>
               <button className="p-5 border border-border hover:border-gold transition-colors">

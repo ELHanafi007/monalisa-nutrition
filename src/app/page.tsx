@@ -1,12 +1,16 @@
+"use client";
+
 import { Navbar } from '@/components/Navbar';
 import { Hero } from '@/components/Hero';
 import { CategorySection } from '@/components/CategorySection';
 import { products } from '@/data/products';
 import { ShoppingCart, Heart, Plus } from 'lucide-react';
 import Link from 'next/link';
+import { useCart } from '@/contexts/CartContext';
 
 export default function Home() {
   const featuredProducts = products.slice(0, 4);
+  const { addToCart } = useCart();
 
   return (
     <main className="min-h-screen">
@@ -44,7 +48,10 @@ export default function Home() {
                   </div>
 
                   {/* Add to Cart Overlay */}
-                  <button className="absolute bottom-0 left-0 w-full bg-gold text-black py-4 uppercase tracking-[0.3em] text-[10px] font-bold transform translate-y-full group-hover:translate-y-0 transition-transform duration-500 flex items-center justify-center gap-2">
+                  <button 
+                    onClick={() => addToCart(product)}
+                    className="absolute bottom-0 left-0 w-full bg-gold text-black py-4 uppercase tracking-[0.3em] text-[10px] font-bold transform translate-y-full group-hover:translate-y-0 transition-transform duration-500 flex items-center justify-center gap-2"
+                  >
                     <Plus size={14} /> Add to Collection
                   </button>
                 </div>

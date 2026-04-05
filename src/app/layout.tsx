@@ -1,5 +1,7 @@
 import type { Metadata } from "next";
 import "./globals.css";
+import { CartProvider } from "@/contexts/CartContext";
+import { Toast } from "@/components/Toast";
 
 export const metadata: Metadata = {
   title: "Monalisa Nutrition | The Standard of Excellence",
@@ -13,7 +15,12 @@ export default function RootLayout({
 }>) {
   return (
     <html lang="en">
-      <body>{children}</body>
+      <body>
+        <CartProvider>
+          {children}
+          <Toast />
+        </CartProvider>
+      </body>
     </html>
   );
 }
