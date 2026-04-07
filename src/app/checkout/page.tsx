@@ -8,6 +8,27 @@ import { CreditCard, Truck, CheckCircle2, ArrowRight, Shield, Lock, ArrowLeft } 
 import Link from 'next/link';
 import Image from 'next/image';
 
+const MOROCCAN_CITIES = [
+  "Agadir", "Ahfir", "Ait Melloul", "Al Hoceima", "Asilah", "Azilal", "Azrou", 
+  "Benguerir", "Beni Mellal", "Benslimane", "Berrechid", "Berkane", "Boujdour", "Boulemane",
+  "Casablanca", "Chefchaouen", "Chichaoua",
+  "Dakhla", "Driouch",
+  "El Jadida", "El Kelaa des Sraghna", "Errachidia", "Essaouira",
+  "Fes", "Figuig", "Fquih Ben Salah",
+  "Guelmim", "Guercif",
+  "Ifrane", "Inezgane",
+  "Jerada",
+  "Kelaat M'Gouna", "Kenitra", "Khemisset", "Khenifra", "Khouribga", "Ksar El Kebir",
+  "Laayoune", "Larache",
+  "Marrakech", "Martil", "Meknes", "Midelt", "Missour", "Mohammedia", "Moulay Idriss Zerhoun",
+  "Nador", "Ouarzazate", "Ouezzane", "Oujda", "Oulad Teima",
+  "Rabat", "Rissani",
+  "Safi", "Saidie", "Sale", "Sefrou", "Settat", "Sidi Bennour", "Sidi Ifni", "Sidi Kacem", "Sidi Slimane", "Skhirat", "Smara", "Souk El Arbaa",
+  "Tan-Tan", "Tangier", "Taounate", "Taourirt", "Taroudant", "Taza", "Temara", "Tetouan", "Tifelt", "Tinghir", "Tiznit",
+  "Youssoufia",
+  "Zagora"
+].sort();
+
 export default function Checkout() {
   const { cart, totalPrice, clearCart } = useCart();
   const [step, setStep] = useState(1);
@@ -127,10 +148,6 @@ export default function Checkout() {
                       <label className="text-[10px] uppercase tracking-[0.4em] text-gold font-bold">Last Name</label>
                       <input type="text" className="w-full bg-surface/50 border border-white/5 focus:border-gold/30 outline-none p-5 text-sm font-light transition-all italic" placeholder="e.g. Bennani" />
                     </div>
-                    <div className="md:col-span-2 space-y-3">
-                      <label className="text-[10px] uppercase tracking-[0.4em] text-gold font-bold">Email Address</label>
-                      <input type="email" className="w-full bg-surface/50 border border-white/5 focus:border-gold/30 outline-none p-5 text-sm font-light transition-all italic" placeholder="IDENTITY@MONALISA.MA" />
-                    </div>
                   </div>
                   <button onClick={handleNext} className="luxury-button group">
                     Validate Identity <ArrowRight size={14} className="ml-4 group-hover:translate-x-2 transition-transform" />
@@ -156,11 +173,9 @@ export default function Checkout() {
                       <div className="space-y-3">
                         <label className="text-[10px] uppercase tracking-[0.4em] text-gold font-bold">City</label>
                         <select className="w-full bg-surface/50 border border-white/5 focus:border-gold/30 outline-none p-5 text-[10px] uppercase tracking-widest font-light transition-all appearance-none italic">
-                          <option>Casablanca</option>
-                          <option>Rabat</option>
-                          <option>Marrakech</option>
-                          <option>Tangier</option>
-                          <option>Fes</option>
+                          {MOROCCAN_CITIES.map(city => (
+                            <option key={city} value={city.toLowerCase()}>{city}</option>
+                          ))}
                         </select>
                       </div>
                       <div className="space-y-3">
