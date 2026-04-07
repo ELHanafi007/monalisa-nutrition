@@ -15,7 +15,8 @@ export default function AdminLogin() {
     e.preventDefault();
     // Simple mock authentication for prototype
     if (username === 'admin' && password === 'monalisa2026') {
-      localStorage.setItem('admin_auth', 'true');
+      // Set a secure cookie for the middleware to check
+      document.cookie = "admin_session=true; path=/; max-age=86400; SameSite=Strict";
       router.push('/admin/dashboard');
     } else {
       setError('Invalid credentials. Access denied.');

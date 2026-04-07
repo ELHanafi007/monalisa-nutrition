@@ -33,14 +33,11 @@ export default function AdminDashboard() {
   const [currentCategories, setCurrentCategories] = useState<Category[]>([]);
 
   useEffect(() => {
-    const auth = localStorage.getItem('admin_auth');
-    if (!auth) {
-      router.push('/admin');
-    } else {
-      setIsLoading(false);
-      refreshData();
-    }
-  }, [router]);
+    // The middleware handles redirecting if not logged in.
+    // We just need to load the data now.
+    setIsLoading(false);
+    refreshData();
+  }, []);
 
   const refreshData = () => {
     setCurrentProducts(getProducts());
@@ -48,7 +45,8 @@ export default function AdminDashboard() {
   };
 
   const handleLogout = () => {
-    localStorage.removeItem('admin_auth');
+    // Clear the admin session cookie
+    document.cookie = "admin_session=; path=/; expires=Thu, 01 Jan 1970 00:00:00 GMT";
     router.push('/admin');
   };
 
