@@ -75,7 +75,7 @@ export default function Catalog() {
       <section className="pt-32 pb-12 border-b border-white/5 bg-[#080808]">
         <div className="container text-center">
           <h1 className="text-4xl md:text-6xl font-serif italic mb-4">Monalisa <span className="text-gold">Nutrition</span></h1>
-          <p className="text-[10px] uppercase tracking-[0.5em] text-text-muted">Distributeur Officiel des Plus Grandes Marques</p>
+          <p className="text-[10px] uppercase tracking-[0.5em] text-text-muted">Official Distributor of the World's Leading Brands</p>
         </div>
       </section>
 
@@ -114,7 +114,7 @@ export default function Catalog() {
                     onClick={() => toggleCategory(category.slug)}
                     className="hidden md:flex items-center gap-2 text-gold text-[10px] uppercase tracking-widest font-bold hover:underline"
                   >
-                    {isExpanded ? 'Réduire' : 'Voir plus'} <ChevronRight size={14} className={isExpanded ? 'rotate-90' : ''} />
+                    {isExpanded ? 'Collapse' : 'Show more'} <ChevronRight size={14} className={isExpanded ? 'rotate-90' : ''} />
                   </button>
                 )}
               </div>
@@ -132,7 +132,7 @@ export default function Catalog() {
                     onClick={() => toggleCategory(category.slug)}
                     className="w-full py-4 border border-white/10 text-[10px] uppercase tracking-widest font-bold text-gold"
                   >
-                    {isExpanded ? 'Réduire la liste' : `Voir plus (${categoryProducts.length - 3} produits)`}
+                    {isExpanded ? 'Collapse list' : `Show more (${categoryProducts.length - 3} products)`}
                   </button>
                 </div>
               )}
@@ -145,10 +145,10 @@ export default function Catalog() {
           <div className="max-w-4xl mx-auto text-center space-y-8">
             <h2 className="text-3xl font-serif italic text-gold">Monalisa Nutrition</h2>
             <p className="text-sm text-text-muted leading-relaxed">
-              Le leader de la nutrition sportive au Maroc. Nous proposons un vaste choix de compléments alimentaires authentiques et accrédités par l’ONSSA : Whey Protein, Creatine, BCAA, Omega 3, Mass Gainer et Multivitamines.
+              The leader in sports nutrition in the Kingdom. We offer a vast selection of authentic supplements accredited by the highest standards: Whey Protein, Creatine, BCAA, Omega 3, Mass Gainer, and Multivitamins.
             </p>
             <div className="flex flex-wrap justify-center gap-8 pt-8 opacity-50 grayscale hover:grayscale-0 transition-all">
-              <span className="text-[10px] font-bold uppercase tracking-widest">Optimum Nutrition</span>
+              <span className="text-[10px] font-bold uppercase tracking-widest">Official Partners</span>
               <span className="text-[10px] font-bold uppercase tracking-widest">MuscleTech</span>
               <span className="text-[10px] font-bold uppercase tracking-widest">Dymatize</span>
               <span className="text-[10px] font-bold uppercase tracking-widest">Biotech USA</span>

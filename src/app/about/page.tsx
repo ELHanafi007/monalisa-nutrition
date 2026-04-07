@@ -10,7 +10,7 @@ export default function About() {
       <section className="relative h-[70vh] flex items-center overflow-hidden">
         <div className="absolute inset-0 z-0">
           <img 
-            src="https://images.unsplash.com/photo-1579722820308-d74e571900a9?q=80&w=2070&auto=format&fit=crop" 
+            src="/images/the-laboratory.jpeg" 
             alt="The Monalisa Laboratory" 
             className="w-full h-full object-cover grayscale opacity-40"
           />
@@ -46,14 +46,14 @@ export default function About() {
             <div className="grid grid-cols-2 gap-4">
               <div className="aspect-[3/4] bg-surface border border-border mt-12">
                 <img 
-                  src="https://images.unsplash.com/photo-1581093588401-fbb62a02f120?q=80&w=2070&auto=format&fit=crop" 
+                  src="/images/nutrition-science.jpeg" 
                   className="w-full h-full object-cover grayscale opacity-50"
                   alt="Precision"
                 />
               </div>
               <div className="aspect-[3/4] bg-surface border border-border">
                 <img 
-                  src="https://images.unsplash.com/photo-1532187875605-2fe358511423?q=80&w=2070&auto=format&fit=crop" 
+                  src="/images/the-heritage.jpeg" 
                   className="w-full h-full object-cover grayscale opacity-50"
                   alt="Laboratory"
                 />

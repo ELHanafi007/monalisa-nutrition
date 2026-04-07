@@ -26,7 +26,7 @@ export const products: Product[] = [
     price: 1199,
     oldPrice: 1300,
     category: "whey-proteine",
-    image: "/images/Gold Standard Whey Isolate.webp",
+    image: "/images/gold-standard-whey.webp",
     description: "The world's most trusted protein, refined for the elite athlete.",
     benefits: ["24g Protein per serving", "5.5g BCAA", "Zero Sugar"],
     specs: [{ label: "Weight", value: "2.27kg" }]
@@ -52,7 +52,7 @@ export const products: Product[] = [
     price: 829,
     oldPrice: 1000,
     category: "whey-proteine",
-    image: "/images/Gold Standard Whey Isolate.webp", // Fallback
+    image: "/images/hydro-whey.webp",
     description: "Fastest absorbing protein.",
     benefits: ["Hydrolyzed Isolate"],
     specs: [{ label: "Weight", value: "800g" }]
@@ -65,7 +65,7 @@ export const products: Product[] = [
     price: 949,
     oldPrice: 1200,
     category: "whey-proteine",
-    image: "/images/dymatizemassgainer.webp", // Fallback
+    image: "/images/iso-100.webp",
     description: "Ultra-pure isolate.",
     benefits: ["Zero Fat", "Low Carb"],
     specs: [{ label: "Weight", value: "1.4kg" }],
@@ -81,7 +81,7 @@ export const products: Product[] = [
     price: 349,
     oldPrice: 400,
     category: "creatine",
-    image: "/images/creatine.webp",
+    image: "/images/appliedcreatinemono.jpg",
     description: "Pharmaceutical grade creatine.",
     benefits: ["5g Pure Creatine"],
     specs: [{ label: "Servings", value: "50" }]
@@ -99,6 +99,19 @@ export const products: Product[] = [
     benefits: ["Pure Monohydrate"],
     specs: [{ label: "Weight", value: "300g" }]
   },
+  {
+    id: "p20",
+    name: "Creatine Gummies",
+    slug: "creatine-gummies",
+    brand: "Monalisa Edition",
+    price: 299,
+    oldPrice: 350,
+    category: "creatine",
+    image: "/images/creatinegummies.webp",
+    description: "Convenient and delicious creatine delivery.",
+    benefits: ["No Water Needed", "Great Taste"],
+    specs: [{ label: "Gummies", value: "60" }]
+  },
 
   // GAINERS
   {
@@ -115,6 +128,32 @@ export const products: Product[] = [
     specs: [{ label: "Weight", value: "5.44kg" }]
   },
   {
+    id: "p21",
+    name: "Big Monster Gainer",
+    slug: "big-monster",
+    brand: "Big Monster",
+    price: 899,
+    oldPrice: 1000,
+    category: "gainers",
+    image: "/images/bigmonster.webp",
+    description: "Heavyweight mass building formula.",
+    benefits: ["Massive Protein", "Complex Carbs"],
+    specs: [{ label: "Weight", value: "5kg" }]
+  },
+  {
+    id: "p22",
+    name: "Super Gainer",
+    slug: "super-gainer",
+    brand: "Nutrition Plus",
+    price: 799,
+    oldPrice: 950,
+    category: "gainers",
+    image: "/images/super-gainer.jpg",
+    description: "Affordable and effective mass gainer.",
+    benefits: ["High Calories", "Easy Mixing"],
+    specs: [{ label: "Weight", value: "4kg" }]
+  },
+  {
     id: "p14",
     name: "Critical Mass Lean Gainer",
     slug: "critical-mass",
@@ -122,10 +161,23 @@ export const products: Product[] = [
     price: 949,
     oldPrice: 1100,
     category: "lean-gainer",
-    image: "/images/dymatizemassgainer.webp",
+    image: "/images/critical-mass.webp",
     description: "Lean mass building formula.",
     benefits: ["High Protein", "Quality Carbs"],
     specs: [{ label: "Weight", value: "6kg" }]
+  },
+  {
+    id: "p15",
+    name: "Mutant Mass Extreme 2500",
+    slug: "mutant-mass-extreme",
+    brand: "Mutant",
+    price: 1149,
+    oldPrice: 1300,
+    category: "hard-gainer",
+    image: "/images/mutantmassextrem2500.webp",
+    description: "The ultimate hard gainer formula.",
+    benefits: ["2500 Calories", "High Protein"],
+    specs: [{ label: "Weight", value: "5.44kg" }]
   },
 
   // PRE-WORKOUT
@@ -142,8 +194,64 @@ export const products: Product[] = [
     benefits: ["Extreme Energy"],
     specs: [{ label: "Caffeine", value: "300mg" }]
   },
+  {
+    id: "p16",
+    name: "Vapor X5 Pre-Workout",
+    slug: "vapor-x5",
+    brand: "MuscleTech",
+    price: 599,
+    oldPrice: 700,
+    category: "pre-workout",
+    image: "/images/vapor-x5.webp",
+    description: "Five-in-one pre-workout formula.",
+    benefits: ["Neurosensory Experience", "Explosive Energy"],
+    specs: [{ label: "Weight", value: "263g" }]
+  },
 
-  // PACKS (New Category needed in categories.ts)
+  // AMINO ACIDS
+  {
+    id: "p17",
+    name: "Amino 1",
+    slug: "amino-1",
+    brand: "MusclePharm",
+    price: 449,
+    oldPrice: 550,
+    category: "acides-amines",
+    image: "/images/amino-1.webp",
+    description: "Hydration and recovery formula.",
+    benefits: ["BCAA 3:1:2 Ratio", "Coconut Water"],
+    specs: [{ label: "Servings", value: "32" }]
+  },
+  {
+    id: "p18",
+    name: "EAA Zero",
+    slug: "eaa-zero",
+    brand: "Biotech USA",
+    price: 399,
+    oldPrice: 450,
+    category: "eaa",
+    image: "/images/eaa-zero.webp",
+    description: "Essential amino acids with no sugar.",
+    benefits: ["Optimal EAA Ratio", "Sugar Free"],
+    specs: [{ label: "Weight", value: "350g" }]
+  },
+
+  // MULTIVITAMINS
+  {
+    id: "p19",
+    name: "Animal Pak",
+    slug: "animal-pak",
+    brand: "Universal Nutrition",
+    price: 649,
+    oldPrice: 750,
+    category: "multivitamines",
+    image: "/images/animal-pak.webp",
+    description: "The ultimate training pack.",
+    benefits: ["Vitamins & Minerals", "Performance Complex"],
+    specs: [{ label: "Packs", value: "44" }]
+  },
+
+  // PACKS
   {
     id: "pack1",
     name: "Pack Creatine Monohydrate Dorian Yates + Essentials",
@@ -152,7 +260,7 @@ export const products: Product[] = [
     price: 899,
     oldPrice: 1100,
     category: "packs",
-    image: "/images/Creatine-30-Ct.webp",
+    image: "/images/DORIANCRAETINE.webp",
     description: "Complete muscle building pack.",
     benefits: ["Monohydrate", "Multivitamins"],
     specs: [{ label: "Includes", value: "Creatine + Vitamins" }]

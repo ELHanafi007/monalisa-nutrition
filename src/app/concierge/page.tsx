@@ -23,8 +23,16 @@ export default function Concierge() {
       <Navbar />
       
       {/* Header */}
-      <section className="pt-40 pb-20 border-b border-border">
-        <div className="container">
+      <section className="relative pt-40 pb-20 border-b border-border overflow-hidden">
+        <div className="absolute inset-0 z-0">
+          <img 
+            src="/images/concierge.jpeg" 
+            alt="Concierge" 
+            className="w-full h-full object-cover grayscale opacity-20"
+          />
+          <div className="absolute inset-0 bg-gradient-to-b from-black via-black/40 to-black z-10" />
+        </div>
+        <div className="container relative z-20">
           <div className="max-w-4xl mx-auto text-center">
             <span className="text-gold uppercase tracking-[0.5em] text-[10px] font-bold mb-6 block">Reserved for the Elite</span>
             <h1 className="text-6xl md:text-8xl font-serif mb-8 italic">Concierge Service.</h1>

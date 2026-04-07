@@ -9,31 +9,31 @@ export interface Category {
 export const categories: Category[] = [
   {
     id: "cat_packs",
-    name: "PACKS EN PROMO",
+    name: "PROMO PACKS",
     slug: "packs",
     description: "Exclusive curated bundles for ultimate results.",
-    image: "/images/Creatine-30-Ct.webp"
+    image: "/images/DORIANCRAETINE.webp"
   },
   {
     id: "cat1",
-    name: "Acides Aminés",
+    name: "Amino Acids",
     slug: "acides-amines",
     description: "Essential and non-essential amino acids for optimal recovery.",
-    image: "https://images.unsplash.com/photo-1541534741688-6078c64b52d2?q=80&w=2070&auto=format&fit=crop"
+    image: "/images/amino-1.webp"
   },
   {
     id: "cat2",
     name: "Creatine",
     slug: "creatine",
     description: "Strength and power with pure monohydrate.",
-    image: "/images/creatine.webp"
+    image: "/images/appliedcreatinemono.jpg"
   },
   {
     id: "cat3",
     name: "EAA",
     slug: "eaa",
     description: "Essential Amino Acids for muscle protection.",
-    image: "https://images.unsplash.com/photo-1490645935967-10de6ba17061?q=80&w=2070&auto=format&fit=crop"
+    image: "/images/eaa-zero.webp"
   },
   {
     id: "cat4",
@@ -54,14 +54,14 @@ export const categories: Category[] = [
     name: "Lean Gainer",
     slug: "lean-gainer",
     description: "Quality weight gain with controlled calories.",
-    image: "/images/dymatizemassgainer.webp"
+    image: "/images/critical-mass.webp"
   },
   {
     id: "cat7",
-    name: "Multivitamines",
+    name: "Multivitamins",
     slug: "multivitamines",
     description: "Daily nutrient support.",
-    image: "/images/multivitamin.webp"
+    image: "/images/animal-pak.webp"
   },
   {
     id: "cat8",
@@ -75,13 +75,13 @@ export const categories: Category[] = [
     name: "Testosterone Booster",
     slug: "testosterone-booster",
     description: "Natural support for vital hormones.",
-    image: "https://images.unsplash.com/photo-1471864190281-ad5f9f8162e6?q=80&w=2070&auto=format&fit=crop"
+    image: "/images/maghreb-extreme.webp"
   },
   {
     id: "cat10",
-    name: "Whey & Protéine",
+    name: "Whey & Protein",
     slug: "whey-proteine",
     description: "Rapid recovery and lean muscle building.",
-    image: "/images/Gold Standard Whey Isolate.webp"
+    image: "/images/gold-standard-whey.webp"
   }
 ];
