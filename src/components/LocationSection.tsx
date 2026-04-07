@@ -23,7 +23,7 @@ export const LocationSection = () => {
             <span className="text-gold uppercase tracking-[0.5em] text-[10px] font-bold">Visit the Sanctuary</span>
             <div className="w-8 h-[1px] bg-gold/50" />
           </span>
-          <h2 className="text-6xl md:text-8xl font-serif leading-tight">Our <span className="italic gold-gradient-text">Headquarters</span>.</h2>
+          <h2 className="text-6xl md:text-8xl font-serif leading-tight">Monaliza<span className="italic gold-gradient-text">House</span>.</h2>
         </motion.div>
 
         <div className="grid grid-cols-1 lg:grid-cols-12 gap-12 items-stretch">
@@ -47,8 +47,8 @@ export const LocationSection = () => {
                     <span className="text-[10px] uppercase tracking-[0.4em] font-bold">Location</span>
                   </div>
                   <p className="text-xl font-serif text-white leading-relaxed">
-                    26 Rue Abou Ishak El Marouni,<br />
-                    Casablanca 20250,<br />
+                    MonalizaHouse,<br />
+                    Fès 30000,<br />
                     Morocco
                   </p>
                 </div>
@@ -86,16 +86,21 @@ export const LocationSection = () => {
                     </a>
                     <a href="mailto:concierge@monalisanutrition.com" className="flex items-center gap-3 text-text-muted hover:text-white transition-colors group/link">
                       <Mail size={14} className="group-hover/link:text-gold transition-colors" />
-                      <span className="text-sm">concierge@monalisa.com</span>
+                      <span className="text-sm">concierge@monaliza.com</span>
                     </a>
                   </div>
                 </div>
               </div>
 
               <div className="mt-12 pt-12 border-t border-gold/10 relative z-10">
-                <button className="w-full luxury-button-outline text-[10px] py-4">
+                <a 
+                  href="https://maps.app.goo.gl/f9G2QVpDVVXDqVPPA" 
+                  target="_blank" 
+                  rel="noopener noreferrer"
+                  className="w-full luxury-button-outline text-[10px] py-4 flex items-center justify-center"
+                >
                   Get Directions
-                </button>
+                </a>
               </div>
             </div>
           </motion.div>
@@ -113,7 +118,7 @@ export const LocationSection = () => {
             
             <div className="relative h-full min-h-[500px] w-full overflow-hidden border border-white/10 grayscale-[0.8] contrast-[1.2] brightness-[0.8] hover:grayscale-0 hover:brightness-100 transition-all duration-1000">
                <iframe 
-                src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d3323.846544973413!2d-7.6328!3d33.5867!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0xda7d29481f44147%3A0x6a0f67c265697c1d!2s26%20Rue%20Abou%20Ishak%20El%20Marouni%2C%20Casablanca%2020250!5e0!3m2!1sen!2sma!4v1712496000000!5m2!1sen!2sma" 
+                src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d3307.2744555661125!2d-4.984183499999999!3d34.011165399999996!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0xd9f9bd08980b6a1%3A0x98e5ef89cacdfce!2sMonalizaHouse!5e0!3m2!1sar!2s!4v1775603177608!5m2!1sar!2s" 
                 width="100%" 
                 height="100%" 
                 style={{ border: 0, filter: 'invert(90%) hue-rotate(180deg) brightness(0.9) contrast(1.1)' }} 
@@ -132,7 +137,7 @@ export const LocationSection = () => {
                   <div className="w-10 h-10 rounded-full border border-gold/50 flex items-center justify-center text-gold">
                     <Compass className="animate-pulse" size={20} />
                   </div>
-                  <span className="text-[8px] uppercase tracking-[0.4em] font-black text-gold">Flagship Store</span>
+                  <span className="text-[8px] uppercase tracking-[0.4em] font-black text-gold">Flagship House</span>
                 </div>
               </div>
             </div>
