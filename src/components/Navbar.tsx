@@ -1,6 +1,7 @@
 "use client";
 
 import Link from 'next/link';
+import Image from 'next/image';
 import { ShoppingCart, Search, Menu, User, X, Trash2, Plus, Minus } from 'lucide-react';
 import { useState, useEffect } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
@@ -25,9 +26,19 @@ export const Navbar = () => {
   return (
     <nav className={`fixed top-0 w-full z-50 transition-all duration-500 ${isScrolled ? 'glass py-4' : 'bg-transparent py-8'}`}>
       <div className="container flex items-center justify-between">
-        <Link href="/" className="text-2xl font-serif tracking-widest uppercase flex items-center gap-2 group">
-          <span className="text-gold group-hover:scale-110 transition-transform duration-300">M</span>
-          <span className="tracking-[0.3em]">onalisa</span>
+        <Link href="/" className="flex items-center gap-4 group">
+          <div className="relative w-12 h-12 overflow-hidden rounded-full border border-gold/20 group-hover:border-gold transition-colors duration-300">
+            <Image 
+              src="/images/logo.jpeg" 
+              alt="Monalisa Nutrition" 
+              fill
+              className="object-cover"
+            />
+          </div>
+          <div className="flex flex-col">
+            <span className="text-xl font-serif tracking-[0.3em] uppercase leading-none">Monalisa</span>
+            <span className="text-[8px] tracking-[0.5em] uppercase text-gold">Nutrition</span>
+          </div>
         </Link>
 
         {/* Desktop Links */}
