@@ -49,7 +49,6 @@ export const Navbar = () => {
           >
             <Search size={20} />
           </button>
-          <button className="hover:text-gold transition-colors"><User size={20} /></button>
           <button 
             onClick={() => setIsCartOpen(true)}
             className="relative hover:text-gold transition-colors"

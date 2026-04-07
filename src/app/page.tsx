@@ -9,10 +9,14 @@ import Link from 'next/link';
 import Image from 'next/image';
 import { motion } from 'framer-motion';
 import { useCart } from '@/contexts/CartContext';
+import { QuickView } from '@/components/QuickView';
+import { useState } from 'react';
+import { Product } from '@/data/products';
 
 export default function Home() {
   const featuredProducts = products.slice(0, 4);
   const { addToCart } = useCart();
+  const [selectedProduct, setSelectedProduct] = useState<Product | null>(null);
 
   return (
     <main className="min-h-screen bg-black overflow-x-hidden">
@@ -20,29 +24,38 @@ export default function Home() {
       <Hero />
       <CategorySection />
       
+      {/* QuickView Component */}
+      <QuickView product={selectedProduct} onClose={() => setSelectedProduct(null)} />
+
       {/* Featured Products */}
       <section className="section-padding bg-black relative">
         <div className="container">
-          <div className="flex flex-col md:flex-row md:items-end justify-between mb-24 text-center md:text-left gap-8">
+          <motion.div 
+            initial={{ opacity: 0, y: 40 }}
+            whileInView={{ opacity: 1, y: 0 }}
+            transition={{ duration: 1, ease: [0.7, 0, 0.3, 1] }}
+            viewport={{ once: true }}
+            className="flex flex-col md:flex-row md:items-end justify-between mb-24 text-center md:text-left gap-8"
+          >
             <div className="max-w-xl">
               <span className="flex items-center justify-center md:justify-start gap-4 mb-6">
                 <div className="w-8 h-[1px] bg-gold/50" />
                 <span className="text-gold uppercase tracking-[0.5em] text-[10px] font-bold">Seasonal Edit</span>
               </span>
-              <h2 className="text-6xl md:text-8xl font-serif">The <span className="italic">Elite</span> <br />Selection.</h2>
+              <h2 className="text-6xl md:text-8xl font-serif leading-tight">The <span className="italic">Elite</span> <br />Selection.</h2>
             </div>
             <p className="text-text-muted max-w-xs font-light text-sm leading-relaxed mb-4">
               A curated archive of the most potent biological artifacts currently in existence.
             </p>
-          </div>
+          </motion.div>
 
-          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-12">
+          <div className="grid grid-cols-2 sm:grid-cols-2 lg:grid-cols-4 gap-6 md:gap-12">
             {featuredProducts.map((product, index) => (
               <motion.div 
                 key={product.id} 
                 initial={{ opacity: 0, y: 30 }}
                 whileInView={{ opacity: 1, y: 0 }}
-                transition={{ duration: 0.8, delay: index * 0.1 }}
+                transition={{ duration: 0.8, delay: index * 0.1, ease: [0.7, 0, 0.3, 1] }}
                 viewport={{ once: true }}
                 className="group relative"
               >
@@ -52,9 +65,12 @@ export default function Home() {
                     <button className="w-10 h-10 rounded-full bg-black/80 backdrop-blur-md flex items-center justify-center hover:text-gold transition-colors border border-white/5">
                       <Heart size={16} />
                     </button>
-                    <Link href={`/catalog/${product.slug}`} className="w-10 h-10 rounded-full bg-black/80 backdrop-blur-md flex items-center justify-center hover:text-gold transition-colors border border-white/5">
+                    <button 
+                      onClick={() => setSelectedProduct(product)}
+                      className="w-10 h-10 rounded-full bg-black/80 backdrop-blur-md flex items-center justify-center hover:text-gold transition-colors border border-white/5"
+                    >
                       <Eye size={16} />
-                    </Link>
+                    </button>
                   </div>
                   
                   {/* Status Badge */}
@@ -63,7 +79,10 @@ export default function Home() {
                   </div>
                   
                   {/* Product Image */}
-                  <Link href={`/catalog/${product.slug}`} className="w-full h-full flex items-center justify-center relative">
+                  <div 
+                    onClick={() => setSelectedProduct(product)}
+                    className="w-full h-full flex items-center justify-center relative cursor-pointer"
+                  >
                     <Image 
                       src={product.image} 
                       alt={product.name} 
@@ -71,20 +90,32 @@ export default function Home() {
                       priority={index < 4}
                       className="object-contain transition-transform duration-1000 group-hover:scale-110 p-12"
                     />
-                  </Link>
+                  </div>
 
                   {/* Add to Cart Overlay */}
-                  <button 
-                    onClick={() => addToCart(product)}
-                    className="absolute bottom-0 left-0 w-full bg-gold text-black py-6 uppercase tracking-[0.4em] text-[10px] font-bold transform translate-y-full group-hover:translate-y-0 transition-transform duration-700 flex items-center justify-center gap-3 z-40"
-                  >
-                    <Plus size={14} /> Add to Collection
-                  </button>
+                  <div className="absolute bottom-0 left-0 w-full translate-y-full group-hover:translate-y-0 transition-transform duration-700 ease-[0.7,0,0.3,1] z-40">
+                    <div className="bg-black/90 backdrop-blur-md p-6 border-t border-gold/20">
+                      <div className="space-y-3 mb-6">
+                        {product.benefits.slice(0, 2).map((benefit, i) => (
+                          <div key={i} className="flex items-center gap-2">
+                            <div className="w-1 h-1 bg-gold rounded-full" />
+                            <span className="text-[8px] uppercase tracking-widest text-text-muted">{benefit}</span>
+                          </div>
+                        ))}
+                      </div>
+                      <button 
+                        onClick={() => addToCart(product)}
+                        className="w-full bg-gold text-black py-4 uppercase tracking-[0.4em] text-[10px] font-bold hover:bg-white transition-colors flex items-center justify-center gap-3"
+                      >
+                        <Plus size={14} /> Add to Collection
+                      </button>
+                    </div>
+                  </div>
                 </div>
 
                 <div className="mt-8 space-y-2 px-2">
                   <div className="flex justify-between items-end">
-                    <div>
+                    <div className="cursor-pointer" onClick={() => setSelectedProduct(product)}>
                       <p className="text-[10px] text-gold uppercase tracking-[0.3em] font-bold mb-2">{product.brand}</p>
                       <h3 className="text-lg font-serif group-hover:text-gold transition-colors duration-500">{product.name}</h3>
                     </div>

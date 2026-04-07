@@ -65,9 +65,9 @@ export default function Journal() {
             {otherPosts.map((post, index) => (
               <motion.div
                 key={post.id}
-                initial={{ opacity: 0, y: 20 }}
+                initial={{ opacity: 0, y: 40 }}
                 whileInView={{ opacity: 1, y: 0 }}
-                transition={{ delay: index * 0.2 }}
+                transition={{ duration: 1, delay: index * 0.2, ease: [0.7, 0, 0.3, 1] }}
                 viewport={{ once: true }}
               >
                 <Link href={`/journal/${post.slug}`} className="group space-y-8">
