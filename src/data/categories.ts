@@ -6,7 +6,7 @@ export interface Category {
   image: string;
 }
 
-export const categories: Category[] = [
+const defaultCategories: Category[] = [
   {
     id: "cat_packs",
     name: "PROMO PACKS",
@@ -71,13 +71,6 @@ export const categories: Category[] = [
     image: "/images/c4ultimatepreworkout.webp"
   },
   {
-    id: "cat9",
-    name: "Testosterone Booster",
-    slug: "testosterone-booster",
-    description: "Natural support for vital hormones.",
-    image: "/images/maghreb-extreme.webp"
-  },
-  {
     id: "cat10",
     name: "Whey & Protein",
     slug: "whey-proteine",
@@ -85,3 +78,19 @@ export const categories: Category[] = [
     image: "/images/gold-standard-whey.webp"
   }
 ];
+
+export const getCategories = (): Category[] => {
+  if (typeof window === 'undefined') return defaultCategories;
+  const saved = localStorage.getItem('monalisa_dynamic_categories');
+  if (saved) {
+    try {
+      const dynamic = JSON.parse(saved);
+      return [...defaultCategories, ...dynamic];
+    } catch (e) {
+      return defaultCategories;
+    }
+  }
+  return defaultCategories;
+};
+
+export const categories = getCategories();

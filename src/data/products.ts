@@ -16,7 +16,7 @@ export interface Product {
   isRupture?: boolean;
 }
 
-export const products: Product[] = [
+const defaultProducts: Product[] = [
   // WHEY & PROTEINE
   {
     id: "p1",
@@ -266,3 +266,20 @@ export const products: Product[] = [
     specs: [{ label: "Includes", value: "Creatine + Vitamins" }]
   }
 ];
+
+// Helper to get products (merging localStorage)
+export const getProducts = (): Product[] => {
+  if (typeof window === 'undefined') return defaultProducts;
+  const saved = localStorage.getItem('monalisa_dynamic_products');
+  if (saved) {
+    try {
+      const dynamic = JSON.parse(saved);
+      return [...defaultProducts, ...dynamic];
+    } catch (e) {
+      return defaultProducts;
+    }
+  }
+  return defaultProducts;
+};
+
+export const products = getProducts();

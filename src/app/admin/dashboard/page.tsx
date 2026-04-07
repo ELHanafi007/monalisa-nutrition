@@ -1,32 +1,36 @@
 "use client";
 
-import { useEffect, useState } from 'react';
+import { useEffect, useState, useRef } from 'react';
 import { useRouter } from 'next/navigation';
 import { 
   LayoutDashboard, 
   Package, 
   ShoppingCart, 
-  Users, 
-  Settings, 
-  LogOut, 
   Plus, 
   Search, 
   Filter, 
   MoreVertical,
-  TrendingUp,
   DollarSign,
   PackageCheck,
-  Clock
+  TrendingUp,
+  Image as ImageIcon,
+  Check,
+  X,
+  Layers,
+  LogOut,
+  Upload
 } from 'lucide-react';
 import { motion, AnimatePresence } from 'framer-motion';
-import { products, Product } from '@/data/products';
-import { categories } from '@/data/categories';
+import { getProducts, Product } from '@/data/products';
+import { getCategories, Category } from '@/data/categories';
 import Image from 'next/image';
 
 export default function AdminDashboard() {
   const router = useRouter();
   const [activeTab, setActiveTab] = useState('orders');
   const [isLoading, setIsLoading] = useState(true);
+  const [currentProducts, setCurrentProducts] = useState<Product[]>([]);
+  const [currentCategories, setCurrentCategories] = useState<Category[]>([]);
 
   useEffect(() => {
     const auth = localStorage.getItem('admin_auth');
@@ -34,8 +38,14 @@ export default function AdminDashboard() {
       router.push('/admin');
     } else {
       setIsLoading(false);
+      refreshData();
     }
   }, [router]);
+
+  const refreshData = () => {
+    setCurrentProducts(getProducts());
+    setCurrentCategories(getCategories());
+  };
 
   const handleLogout = () => {
     localStorage.removeItem('admin_auth');
@@ -60,38 +70,26 @@ export default function AdminDashboard() {
 
         <nav className="flex-1 p-6 space-y-2 mt-8">
           <NavItem 
-            icon={LayoutDashboard} 
-            label="Overview" 
-            active={activeTab === 'overview'} 
-            onClick={() => setActiveTab('overview')} 
-          />
-          <NavItem 
             icon={ShoppingCart} 
             label="Orders" 
             active={activeTab === 'orders'} 
             onClick={() => setActiveTab('orders')} 
             badge="12"
           />
-          <NavItem 
-            icon={Package} 
-            label="Products" 
-            active={activeTab === 'products'} 
-            onClick={() => setActiveTab('products')} 
-          />
-          <NavItem 
-            icon={Users} 
-            label="Customers" 
-            active={activeTab === 'customers'} 
-            onClick={() => setActiveTab('customers')} 
-          />
           <div className="pt-8 pb-4">
-            <p className="text-[8px] uppercase tracking-[0.4em] text-text-muted font-bold ml-4">System Protocols</p>
+            <p className="text-[8px] uppercase tracking-[0.4em] text-text-muted font-bold ml-4">Inventory Protocols</p>
           </div>
           <NavItem 
-            icon={Settings} 
-            label="Settings" 
-            active={activeTab === 'settings'} 
-            onClick={() => setActiveTab('settings')} 
+            icon={Package} 
+            label="Add Product" 
+            active={activeTab === 'add-product'} 
+            onClick={() => setActiveTab('add-product')} 
+          />
+          <NavItem 
+            icon={Layers} 
+            label="Add Category" 
+            active={activeTab === 'add-category'} 
+            onClick={() => setActiveTab('add-category')} 
           />
         </nav>
 
@@ -108,15 +106,11 @@ export default function AdminDashboard() {
 
       {/* Main Content */}
       <main className="flex-1 ml-72">
-        {/* Top Header */}
         <header className="h-24 bg-black/50 backdrop-blur-md border-b border-white/5 flex items-center justify-between px-12 sticky top-0 z-10">
-          <div className="relative w-96">
-            <Search className="absolute left-4 top-1/2 -translate-y-1/2 text-text-muted" size={16} />
-            <input 
-              type="text" 
-              placeholder="Search artifacts, orders, or clients..." 
-              className="w-full bg-white/5 border border-white/5 rounded-full py-3 pl-12 pr-6 text-xs font-light focus:border-gold/30 outline-none transition-all"
-            />
+          <div className="flex items-center gap-4">
+            <h2 className="text-sm font-serif italic text-gold uppercase tracking-[0.2em]">
+              {activeTab.replace('-', ' ')} protocol
+            </h2>
           </div>
           <div className="flex items-center gap-8">
             <div className="text-right">
@@ -130,9 +124,9 @@ export default function AdminDashboard() {
         </header>
 
         <div className="p-12">
-          {activeTab === 'overview' && <OverviewTab />}
           {activeTab === 'orders' && <OrdersTab />}
-          {activeTab === 'products' && <ProductsTab />}
+          {activeTab === 'add-product' && <AddProductTab categories={currentCategories} onComplete={() => {setActiveTab('orders'); refreshData();}} />}
+          {activeTab === 'add-category' && <AddCategoryTab onComplete={() => {setActiveTab('orders'); refreshData();}} />}
         </div>
       </main>
     </div>
@@ -159,106 +153,6 @@ function NavItem({ icon: Icon, label, active, onClick, badge }: any) {
         />
       )}
     </button>
-  );
-}
-
-function OverviewTab() {
-  return (
-    <div className="space-y-12">
-      <div className="flex items-end justify-between">
-        <div>
-          <h2 className="text-4xl font-serif italic mb-2">Performance Dashboard.</h2>
-          <p className="text-text-muted text-[10px] uppercase tracking-[0.4em]">Real-time logistics analytics</p>
-        </div>
-        <div className="flex gap-4">
-          <button className="px-6 py-3 border border-white/5 bg-white/5 text-[10px] uppercase tracking-widest font-bold flex items-center gap-2 hover:border-gold/30 transition-all">
-            <Filter size={14} /> Protocol Filter
-          </button>
-          <button className="luxury-button !py-3 !px-8 flex items-center gap-2">
-            <Plus size={14} /> Export Report
-          </button>
-        </div>
-      </div>
-
-      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8">
-        <StatCard icon={DollarSign} label="Total Revenue" value="124,500 MAD" trend="+12.5%" />
-        <StatCard icon={ShoppingCart} label="Daily Orders" value="18" trend="+4.2%" />
-        <StatCard icon={PackageCheck} label="Fulfillment Rate" value="98.2%" trend="+0.5%" />
-        <StatCard icon={TrendingUp} label="Conversion" value="3.4%" trend="+1.1%" />
-      </div>
-
-      <div className="grid grid-cols-1 lg:grid-cols-3 gap-12">
-        <div className="lg:col-span-2 bg-black border border-white/5 p-10 space-y-8">
-          <div className="flex justify-between items-center">
-            <h3 className="text-lg uppercase tracking-widest font-bold font-serif">Revenue Protocol</h3>
-            <select className="bg-transparent border-none text-[10px] uppercase tracking-widest text-gold font-bold outline-none">
-              <option>Last 30 Cycles</option>
-              <option>Last 7 Cycles</option>
-            </select>
-          </div>
-          <div className="h-[300px] w-full bg-gradient-to-t from-gold/5 to-transparent border-b border-white/10 flex items-end justify-between px-4 pb-4">
-             {[40, 60, 45, 80, 55, 90, 75, 85, 65, 95].map((h, i) => (
-               <motion.div 
-                 key={i}
-                 initial={{ height: 0 }}
-                 animate={{ height: `${h}%` }}
-                 transition={{ duration: 1, delay: i * 0.1 }}
-                 className="w-8 bg-gold/20 hover:bg-gold/40 transition-all cursor-pointer relative group"
-               >
-                  <div className="absolute -top-10 left-1/2 -translate-x-1/2 bg-surface border border-gold/20 p-2 opacity-0 group-hover:opacity-100 transition-opacity whitespace-nowrap z-30">
-                     <p className="text-[8px] font-bold text-gold">{h * 100} MAD</p>
-                  </div>
-               </motion.div>
-             ))}
-          </div>
-          <div className="flex justify-between text-[8px] uppercase tracking-[0.4em] text-text-muted pt-4">
-            <span>Cycle 01</span>
-            <span>Cycle 05</span>
-            <span>Cycle 10</span>
-          </div>
-        </div>
-
-        <div className="bg-black border border-white/5 p-10 space-y-8">
-          <h3 className="text-lg uppercase tracking-widest font-bold font-serif">Recent Operations</h3>
-          <div className="space-y-6">
-            <ActivityItem label="New Acquisition" time="2m ago" detail="Order #M-4022" />
-            <ActivityItem label="Logistics Update" time="15m ago" detail="Dispatch #D-901" />
-            <ActivityItem label="Client Protocol" time="1h ago" detail="Support Ticket #S-11" />
-            <ActivityItem label="Artifact Depleted" time="3h ago" detail="ISO 100 Isolate" />
-          </div>
-          <button className="w-full py-4 border border-white/5 text-[8px] uppercase tracking-widest font-bold text-gold/60 hover:text-gold transition-colors">
-            View Protocol Log
-          </button>
-        </div>
-      </div>
-    </div>
-  );
-}
-
-function StatCard({ icon: Icon, label, value, trend }: any) {
-  return (
-    <div className="bg-black border border-white/5 p-8 group hover:border-gold/20 transition-all duration-500">
-      <div className="flex justify-between items-start mb-6">
-        <div className="w-12 h-12 bg-white/5 border border-white/5 flex items-center justify-center text-gold group-hover:bg-gold group-hover:text-black transition-all duration-500">
-          <Icon size={20} />
-        </div>
-        <span className="text-[10px] font-bold text-green-500 tracking-widest">{trend}</span>
-      </div>
-      <p className="text-text-muted text-[10px] uppercase tracking-[0.3em] font-bold mb-2">{label}</p>
-      <p className="text-3xl font-serif italic text-white">{value}</p>
-    </div>
-  );
-}
-
-function ActivityItem({ label, time, detail }: any) {
-  return (
-    <div className="flex justify-between items-start">
-      <div>
-        <p className="text-[10px] uppercase tracking-widest font-bold text-white mb-1">{label}</p>
-        <p className="text-[8px] text-text-muted uppercase tracking-widest">{detail}</p>
-      </div>
-      <span className="text-[8px] text-text-muted italic">{time}</span>
-    </div>
   );
 }
 
@@ -325,50 +219,317 @@ function OrdersTab() {
   );
 }
 
-function ProductsTab() {
+function AddProductTab({ categories, onComplete }: { categories: Category[], onComplete: () => void }) {
+  const [formData, setFormData] = useState({
+    name: '',
+    brand: '',
+    price: '',
+    category: '',
+    description: '',
+    benefits: ['', ''],
+    specs: [{ label: 'Weight', value: '' }],
+    image: ''
+  });
+  const [preview, setPreview] = useState<string | null>(null);
+  const fileInputRef = useRef<HTMLInputElement>(null);
+
+  const handleImageChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const file = e.target.files?.[0];
+    if (file) {
+      const reader = new FileReader();
+      reader.onloadend = () => {
+        const base64 = reader.result as string;
+        setPreview(base64);
+        setFormData({ ...formData, image: base64 });
+      };
+      reader.readAsDataURL(file);
+    }
+  };
+
+  const handleAddBenefit = () => {
+    setFormData({ ...formData, benefits: [...formData.benefits, ''] });
+  };
+
+  const handleBenefitChange = (index: number, value: string) => {
+    const newBenefits = [...formData.benefits];
+    newBenefits[index] = value;
+    setFormData({ ...formData, benefits: newBenefits });
+  };
+
+  const handleSubmit = (e: React.FormEvent) => {
+    e.preventDefault();
+    if (!formData.category || !formData.image) {
+      alert("Please select a category and upload an image.");
+      return;
+    }
+
+    const newProduct: Product = {
+      id: `dp-${Date.now()}`,
+      name: formData.name,
+      slug: formData.name.toLowerCase().replace(/ /g, '-'),
+      brand: formData.brand,
+      price: parseInt(formData.price),
+      category: formData.category,
+      image: formData.image,
+      description: formData.description,
+      benefits: formData.benefits.filter(b => b.trim() !== ''),
+      specs: formData.specs
+    };
+
+    const saved = localStorage.getItem('monalisa_dynamic_products');
+    const dynamicProducts = saved ? JSON.parse(saved) : [];
+    localStorage.setItem('monalisa_dynamic_products', JSON.stringify([...dynamicProducts, newProduct]));
+
+    alert("Artifact Cataloged Successfully.");
+    onComplete();
+  };
+
   return (
-    <div className="space-y-12">
-      <div className="flex items-end justify-between">
-        <div>
-          <h2 className="text-4xl font-serif italic mb-2">Artifact Archive.</h2>
-          <p className="text-text-muted text-[10px] uppercase tracking-[0.4em]">Supply Chain Integrity</p>
-        </div>
-        <button className="luxury-button flex items-center gap-2">
-           <Plus size={14} /> Catalog New Isolate
-        </button>
+    <div className="max-w-4xl space-y-12">
+      <div>
+        <h2 className="text-4xl font-serif italic mb-2">Catalog New Artifact.</h2>
+        <p className="text-text-muted text-[10px] uppercase tracking-[0.4em]">Inventory expansion protocol</p>
       </div>
 
-      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-8">
-        {products.map((product) => (
-          <div key={product.id} className="bg-black border border-white/5 p-6 group hover:border-gold/30 transition-all">
-            <div className="aspect-square bg-surface border border-white/5 mb-6 relative overflow-hidden p-8 flex items-center justify-center">
-              <Image 
-                src={product.image} 
-                alt={product.name} 
-                fill
-                className={`object-contain mix-blend-lighten p-8 transition-transform duration-700 group-hover:scale-110 ${product.isRupture ? 'grayscale' : ''}`}
+      <form onSubmit={handleSubmit} className="space-y-12">
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-10">
+          <div className="space-y-8">
+            <div className="space-y-3">
+              <label className="text-[10px] uppercase tracking-[0.4em] text-gold font-bold">Artifact Name</label>
+              <input 
+                required
+                type="text" 
+                value={formData.name}
+                onChange={(e) => setFormData({...formData, name: e.target.value})}
+                className="w-full bg-surface/50 border border-white/5 focus:border-gold/30 outline-none p-5 text-sm font-light transition-all italic" 
+                placeholder="e.g. ISO 100 Hydrolyzed" 
               />
-              {product.isRupture && (
-                <div className="absolute top-4 left-4 z-10">
-                   <span className="bg-red-600 text-white text-[8px] px-2 py-1 uppercase font-bold tracking-widest">Rupture</span>
-                </div>
-              )}
             </div>
-            <div className="space-y-4">
-              <div>
-                <p className="text-[10px] text-gold uppercase tracking-[0.3em] font-bold mb-1">{product.brand}</p>
-                <h4 className="text-sm font-serif line-clamp-1">{product.name}</h4>
+            <div className="space-y-3">
+              <label className="text-[10px] uppercase tracking-[0.4em] text-gold font-bold">Brand Entity</label>
+              <input 
+                required
+                type="text" 
+                value={formData.brand}
+                onChange={(e) => setFormData({...formData, brand: e.target.value})}
+                className="w-full bg-surface/50 border border-white/5 focus:border-gold/30 outline-none p-5 text-sm font-light transition-all italic" 
+                placeholder="e.g. Dymatize" 
+              />
+            </div>
+            <div className="grid grid-cols-2 gap-8">
+              <div className="space-y-3">
+                <label className="text-[10px] uppercase tracking-[0.4em] text-gold font-bold">Investment (MAD)</label>
+                <input 
+                  required
+                  type="number" 
+                  value={formData.price}
+                  onChange={(e) => setFormData({...formData, price: e.target.value})}
+                  className="w-full bg-surface/50 border border-white/5 focus:border-gold/30 outline-none p-5 text-sm font-light transition-all italic" 
+                  placeholder="950" 
+                />
               </div>
-              <div className="flex justify-between items-center">
-                <p className="text-sm font-bold">{product.price} MAD</p>
-                <button className="text-[8px] uppercase tracking-widest font-bold border-b border-white/10 hover:border-gold hover:text-gold transition-all">
-                  Edit Artifact
-                </button>
+              <div className="space-y-3">
+                <label className="text-[10px] uppercase tracking-[0.4em] text-gold font-bold">Classification</label>
+                <select 
+                  required
+                  value={formData.category}
+                  onChange={(e) => setFormData({...formData, category: e.target.value})}
+                  className="w-full bg-surface/50 border border-white/5 focus:border-gold/30 outline-none p-5 text-[10px] uppercase tracking-widest font-light transition-all appearance-none italic"
+                >
+                  <option value="">Select Category</option>
+                  {categories.map(cat => (
+                    <option key={cat.id} value={cat.slug}>{cat.name}</option>
+                  ))}
+                </select>
               </div>
             </div>
           </div>
-        ))}
+
+          <div className="space-y-3">
+            <label className="text-[10px] uppercase tracking-[0.4em] text-gold font-bold">Visual Manifestation</label>
+            <div 
+              onClick={() => fileInputRef.current?.click()}
+              className="aspect-square border border-dashed border-white/10 bg-white/[0.02] hover:bg-white/[0.05] hover:border-gold/30 transition-all cursor-pointer flex flex-col items-center justify-center p-8 relative overflow-hidden"
+            >
+              {preview ? (
+                <Image src={preview} alt="Preview" fill className="object-contain p-8" />
+              ) : (
+                <>
+                  <Upload size={32} className="text-text-muted mb-4" />
+                  <p className="text-[8px] uppercase tracking-widest text-text-muted text-center leading-relaxed">
+                    Upload transparent PNG/WebP <br /> Recommended 800x800
+                  </p>
+                </>
+              )}
+              <input type="file" ref={fileInputRef} onChange={handleImageChange} className="hidden" accept="image/*" />
+            </div>
+          </div>
+        </div>
+
+        <div className="space-y-3">
+          <label className="text-[10px] uppercase tracking-[0.4em] text-gold font-bold">Narrative Description</label>
+          <textarea 
+            required
+            rows={4} 
+            value={formData.description}
+            onChange={(e) => setFormData({...formData, description: e.target.value})}
+            className="w-full bg-surface/50 border border-white/5 focus:border-gold/30 outline-none p-5 text-sm font-light transition-all resize-none italic" 
+            placeholder="Technical details of the isolate..." 
+          />
+        </div>
+
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-10">
+          <div className="space-y-4">
+            <label className="text-[10px] uppercase tracking-[0.4em] text-gold font-bold">Key Benefits</label>
+            {formData.benefits.map((benefit, i) => (
+              <input 
+                key={i}
+                type="text" 
+                value={benefit}
+                onChange={(e) => handleBenefitChange(i, e.target.value)}
+                className="w-full bg-surface/50 border border-white/5 focus:border-gold/30 outline-none p-4 text-xs font-light transition-all italic" 
+                placeholder={`Benefit 0${i+1}`} 
+              />
+            ))}
+            <button type="button" onClick={handleAddBenefit} className="text-[8px] uppercase tracking-widest text-gold font-bold flex items-center gap-2 hover:translate-x-2 transition-transform">
+              <Plus size={12} /> Add Property
+            </button>
+          </div>
+          <div className="space-y-4">
+            <label className="text-[10px] uppercase tracking-[0.4em] text-gold font-bold">Technical Specs</label>
+            <div className="flex gap-4">
+               <input 
+                 readOnly 
+                 value="Weight" 
+                 className="w-1/3 bg-white/5 border border-white/5 p-4 text-[10px] uppercase tracking-widest font-bold" 
+               />
+               <input 
+                 required
+                 value={formData.specs[0].value}
+                 onChange={(e) => setFormData({...formData, specs: [{ label: 'Weight', value: e.target.value }]})}
+                 className="flex-1 bg-surface/50 border border-white/5 focus:border-gold/30 outline-none p-4 text-xs font-light italic" 
+                 placeholder="e.g. 2.27kg" 
+               />
+            </div>
+          </div>
+        </div>
+
+        <div className="pt-8 flex justify-end">
+          <button type="submit" className="luxury-button !px-20">
+            Catalog Artifact
+          </button>
+        </div>
+      </form>
+    </div>
+  );
+}
+
+function AddCategoryTab({ onComplete }: { onComplete: () => void }) {
+  const [formData, setFormData] = useState({
+    name: '',
+    description: '',
+    image: ''
+  });
+  const [preview, setPreview] = useState<string | null>(null);
+  const fileInputRef = useRef<HTMLInputElement>(null);
+
+  const handleImageChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const file = e.target.files?.[0];
+    if (file) {
+      const reader = new FileReader();
+      reader.onloadend = () => {
+        const base64 = reader.result as string;
+        setPreview(base64);
+        setFormData({ ...formData, image: base64 });
+      };
+      reader.readAsDataURL(file);
+    }
+  };
+
+  const handleSubmit = (e: React.FormEvent) => {
+    e.preventDefault();
+    if (!formData.image) {
+      alert("Please upload a category cover image.");
+      return;
+    }
+
+    const newCategory: Category = {
+      id: `dc-${Date.now()}`,
+      name: formData.name,
+      slug: formData.name.toLowerCase().replace(/ /g, '-'),
+      description: formData.description,
+      image: formData.image
+    };
+
+    const saved = localStorage.getItem('monalisa_dynamic_categories');
+    const dynamicCats = saved ? JSON.parse(saved) : [];
+    localStorage.setItem('monalisa_dynamic_categories', JSON.stringify([...dynamicCats, newCategory]));
+
+    alert("Category Established Successfully.");
+    onComplete();
+  };
+
+  return (
+    <div className="max-w-4xl space-y-12">
+      <div>
+        <h2 className="text-4xl font-serif italic mb-2">Establish New Pillar.</h2>
+        <p className="text-text-muted text-[10px] uppercase tracking-[0.4em]">Structural expansion protocol</p>
       </div>
+
+      <form onSubmit={handleSubmit} className="space-y-12">
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-10">
+          <div className="space-y-8">
+            <div className="space-y-3">
+              <label className="text-[10px] uppercase tracking-[0.4em] text-gold font-bold">Category Name</label>
+              <input 
+                required
+                type="text" 
+                value={formData.name}
+                onChange={(e) => setFormData({...formData, name: e.target.value})}
+                className="w-full bg-surface/50 border border-white/5 focus:border-gold/30 outline-none p-5 text-sm font-light transition-all italic" 
+                placeholder="e.g. Vitamins & Essentials" 
+              />
+            </div>
+            <div className="space-y-3">
+              <label className="text-[10px] uppercase tracking-[0.4em] text-gold font-bold">Strategic Description</label>
+              <textarea 
+                required
+                rows={4} 
+                value={formData.description}
+                onChange={(e) => setFormData({...formData, description: e.target.value})}
+                className="w-full bg-surface/50 border border-white/5 focus:border-gold/30 outline-none p-5 text-sm font-light transition-all resize-none italic" 
+                placeholder="Definition of this product line..." 
+              />
+            </div>
+          </div>
+
+          <div className="space-y-3">
+            <label className="text-[10px] uppercase tracking-[0.4em] text-gold font-bold">Cover Imagery</label>
+            <div 
+              onClick={() => fileInputRef.current?.click()}
+              className="aspect-[4/3] border border-dashed border-white/10 bg-white/[0.02] hover:bg-white/[0.05] hover:border-gold/30 transition-all cursor-pointer flex flex-col items-center justify-center relative overflow-hidden"
+            >
+              {preview ? (
+                <Image src={preview} alt="Preview" fill className="object-cover opacity-60" />
+              ) : (
+                <>
+                  <Upload size={32} className="text-text-muted mb-4" />
+                  <p className="text-[8px] uppercase tracking-widest text-text-muted text-center leading-relaxed">
+                    Upload Cinematic Background <br /> Recommended 1200x800
+                  </p>
+                </>
+              )}
+              <input type="file" ref={fileInputRef} onChange={handleImageChange} className="hidden" accept="image/*" />
+            </div>
+          </div>
+        </div>
+
+        <div className="pt-8 flex justify-end">
+          <button type="submit" className="luxury-button !px-20">
+            Establish Category
+          </button>
+        </div>
+      </form>
     </div>
   );
 }
