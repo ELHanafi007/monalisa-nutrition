@@ -15,7 +15,6 @@ export const MobileNav = () => {
     { icon: ShoppingBag, label: 'Archive', path: '/catalog' },
     { icon: Crown, label: 'Elite', path: '/concierge', special: true },
     { icon: Compass, label: 'Sanctuary', path: '/about' },
-    { icon: User, label: 'Profile', path: '/admin' },
   ];
 
   return (
