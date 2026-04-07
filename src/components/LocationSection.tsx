@@ -1,23 +1,40 @@
-"use client";
-
-import { motion } from 'framer-motion';
+import { motion, useScroll, useTransform } from 'framer-motion';
 import { MapPin, Phone, Mail, Clock, Compass } from 'lucide-react';
+import { useRef } from 'react';
 
 export const LocationSection = () => {
+  const containerRef = useRef(null);
+  const { scrollYProgress } = useScroll({
+    target: containerRef,
+    offset: ["start end", "end start"]
+  });
+
+  const bgY = useTransform(scrollYProgress, [0, 1], ["-10%", "10%"]);
+  const mapY = useTransform(scrollYProgress, [0, 1], ["5%", "-5%"]);
+
   return (
-    <section className="section-padding bg-black relative overflow-hidden">
-      {/* Decorative Background Elements */}
-      <div className="absolute top-0 right-0 w-[500px] h-[500px] bg-gold/5 rounded-full blur-[120px] -translate-y-1/2 translate-x-1/2 pointer-events-none" />
-      <div className="absolute bottom-0 left-0 w-[500px] h-[500px] bg-gold/5 rounded-full blur-[120px] translate-y-1/2 -translate-x-1/2 pointer-events-none" />
+    <section ref={containerRef} className="section-padding bg-black relative overflow-hidden">
+      {/* Decorative Background Elements with Parallax */}
+      <motion.div 
+        style={{ y: bgY }}
+        className="absolute top-0 right-0 w-[500px] h-[500px] bg-gold/5 rounded-full blur-[120px] -translate-y-1/2 translate-x-1/2 pointer-events-none" 
+      />
+      <motion.div 
+        style={{ y: bgY }}
+        className="absolute bottom-0 left-0 w-[500px] h-[500px] bg-gold/5 rounded-full blur-[120px] translate-y-1/2 -translate-x-1/2 pointer-events-none" 
+      />
 
       <div className="container relative z-10">
-        <motion.div 
-          initial={{ opacity: 0, y: 40 }}
-          whileInView={{ opacity: 1, y: 0 }}
-          transition={{ duration: 1, ease: [0.7, 0, 0.3, 1] }}
-          viewport={{ once: true }}
-          className="text-center mb-20"
-        >
+...
+          {/* Map Section - The "Gold Plate" container */}
+          <motion.div 
+            initial={{ opacity: 0, x: 30 }}
+            whileInView={{ opacity: 1, x: 0 }}
+            style={{ y: mapY }}
+            transition={{ duration: 1, delay: 0.4, ease: [0.7, 0, 0.3, 1] }}
+            viewport={{ once: true }}
+            className="lg:col-span-8 relative group"
+          >
           <span className="flex items-center justify-center gap-4 mb-6">
             <div className="w-8 h-[1px] bg-gold/50" />
             <span className="text-gold uppercase tracking-[0.5em] text-[10px] font-bold">Visit the Sanctuary</span>

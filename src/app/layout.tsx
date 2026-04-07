@@ -5,6 +5,7 @@ import { Preloader } from "@/components/Preloader";
 import { MobileNav } from "@/components/MobileNav";
 import { Toast } from "@/components/Toast";
 import { NewsletterModal } from "@/components/NewsletterModal";
+import { PageTransition } from "@/components/PageTransition";
 
 export const metadata: Metadata = {
   title: "Monalisa Nutrition | The Standard of Excellence",
@@ -21,7 +22,9 @@ export default function RootLayout({
       <body>
         <CartProvider>
           <Preloader />
-          {children}
+          <PageTransition>
+            {children}
+          </PageTransition>
           <Toast />
           <NewsletterModal />
           <MobileNav />

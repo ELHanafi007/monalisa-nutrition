@@ -11,13 +11,23 @@ import { motion } from 'framer-motion';
 import { useCart } from '@/contexts/CartContext';
 import { QuickView } from '@/components/QuickView';
 import { LocationSection } from '@/components/LocationSection';
-import { useState } from 'react';
+import { useState, useRef } from 'react';
 import { Product } from '@/data/products';
+import { useScroll, useTransform } from 'framer-motion';
 
 export default function Home() {
   const featuredProducts = products.slice(0, 4);
   const { addToCart } = useCart();
   const [selectedProduct, setSelectedProduct] = useState<Product | null>(null);
+  
+  const philosophyRef = useRef(null);
+  const { scrollYProgress } = useScroll({
+    target: philosophyRef,
+    offset: ["start end", "end start"]
+  });
+
+  const philosophyY = useTransform(scrollYProgress, [0, 1], ["0%", "-10%"]);
+  const imageScale = useTransform(scrollYProgress, [0, 1], [1, 1.15]);
 
   return (
     <main className="min-h-screen bg-black overflow-x-hidden">
@@ -131,7 +141,7 @@ export default function Home() {
       </section>
 
       {/* Philosophy Section */}
-      <section className="section-padding bg-black border-t border-white/5 relative overflow-hidden">
+      <section ref={philosophyRef} className="section-padding bg-black border-t border-white/5 relative overflow-hidden">
         <div className="absolute top-0 left-0 w-full h-full pointer-events-none opacity-20">
            <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[800px] h-[800px] bg-gold/5 rounded-full blur-[120px]" />
         </div>
@@ -139,24 +149,25 @@ export default function Home() {
         <div className="container relative z-10">
           <div className="grid grid-cols-1 lg:grid-cols-2 gap-32 items-center">
             <motion.div 
-              initial={{ opacity: 0, x: -50 }}
-              whileInView={{ opacity: 1, x: 0 }}
-              transition={{ duration: 1.2, ease: [0.7, 0, 0.3, 1] }}
-              viewport={{ once: true }}
+              style={{ y: philosophyY }}
               className="relative aspect-[4/5] lg:aspect-[3/4]"
             >
                <div className="absolute inset-0 border border-gold/20 translate-x-8 translate-y-8 pointer-events-none" />
                <div className="relative w-full h-full overflow-hidden">
-                 <img 
+                 <motion.img 
+                   style={{ scale: imageScale }}
                    src="/images/the-community.jpeg" 
                    alt="The Monalisa Standard" 
-                   className="w-full h-full object-cover  brightness-75 hover:scale-105 transition-transform duration-[2s]"
+                   className="w-full h-full object-cover brightness-75 transition-transform duration-[2s]"
                  />
                  <div className="absolute inset-0 bg-gradient-to-t from-black via-transparent to-transparent opacity-60" />
                </div>
                
                {/* Floating Luxury Label requested by user */}
-               <div className="absolute -bottom-16 -right-16 bg-surface border border-white/5 p-12 hidden md:block group">
+               <motion.div 
+                style={{ y: useTransform(scrollYProgress, [0, 1], ["0%", "20%"]) }}
+                className="absolute -bottom-16 -right-16 bg-surface border border-white/5 p-12 hidden md:block group"
+               >
                   <div className="relative">
                     <motion.div 
                       initial={{ scaleX: 0 }}
@@ -175,7 +186,7 @@ export default function Home() {
                     {/* Decorative Corner */}
                     <div className="absolute -bottom-4 -right-4 w-8 h-8 border-b border-r border-gold/20 group-hover:border-gold/50 transition-colors duration-700" />
                   </div>
-               </div>
+               </motion.div>
             </motion.div>
 
             <motion.div
