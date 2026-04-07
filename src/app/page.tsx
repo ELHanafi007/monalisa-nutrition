@@ -10,6 +10,7 @@ import Image from 'next/image';
 import { motion } from 'framer-motion';
 import { useCart } from '@/contexts/CartContext';
 import { QuickView } from '@/components/QuickView';
+import { LocationSection } from '@/components/LocationSection';
 import { useState } from 'react';
 import { Product } from '@/data/products';
 
@@ -225,6 +226,8 @@ export default function Home() {
           </div>
         </div>
       </section>
+
+      <LocationSection />
 
       {/* Footer (Simplified for home) */}
       <footer className="py-20 bg-[#050505] border-t border-white/5 text-center">
