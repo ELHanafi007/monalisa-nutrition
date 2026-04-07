@@ -8,38 +8,73 @@ export interface Category {
 
 export const categories: Category[] = [
   {
-    id: "1",
-    name: "Elite Proteins",
-    slug: "elite-proteins",
-    description: "The gold standard of muscle synthesis and recovery. Sourced from the finest isolates.",
-    image: "/images/Gold Standard Whey Isolate.webp"
+    id: "cat1",
+    name: "Acides Aminés",
+    slug: "acides-amines",
+    description: "Essential and non-essential amino acids for optimal recovery and muscle growth.",
+    image: "https://images.unsplash.com/photo-1541534741688-6078c64b52d2?q=80&w=2070&auto=format&fit=crop"
   },
   {
-    id: "2",
-    name: "Sculpt & Define",
-    slug: "sculpt-define",
-    description: "Advanced fat burners and metabolic enhancers to reveal your true form.",
-    image: "https://images.unsplash.com/photo-1517836357463-d25dfeac3438?q=80&w=2070&auto=format&fit=crop"
+    id: "cat2",
+    name: "Creatine",
+    slug: "creatine",
+    description: "The most researched supplement for strength, power, and muscle volume.",
+    image: "/images/creatine.webp"
   },
   {
-    id: "3",
-    name: "Vitality Elixirs",
-    slug: "vitality-elixirs",
-    description: "Holistic wellness through essential vitamins, minerals, and restorative supplements.",
+    id: "cat3",
+    name: "EAA",
+    slug: "eaa",
+    description: "Essential Amino Acids to fuel your performance and protect your gains.",
+    image: "https://images.unsplash.com/photo-1490645935967-10de6ba17061?q=80&w=2070&auto=format&fit=crop"
+  },
+  {
+    id: "cat4",
+    name: "Gainers",
+    slug: "gainers",
+    description: "High-calorie formulas designed to help you pack on serious mass.",
+    image: "/images/seriousmass.webp"
+  },
+  {
+    id: "cat5",
+    name: "Hard Gainer",
+    slug: "hard-gainer",
+    description: "Extremely high-calorie blends for those with ultra-fast metabolisms.",
+    image: "/images/mutantmassextrem2500.webp"
+  },
+  {
+    id: "cat6",
+    name: "Lean Gainer",
+    slug: "lean-gainer",
+    description: "Controlled-calorie mass gainers for adding size without excessive fat.",
+    image: "/images/dymatizemassgainer.webp"
+  },
+  {
+    id: "cat7",
+    name: "Multivitamines",
+    slug: "multivitamines",
+    description: "Complete daily nutrient support for the elite performer.",
     image: "/images/multivitamin.webp"
   },
   {
-    id: "4",
-    name: "Strength & Power",
-    slug: "strength-power",
-    description: "Explosive energy and unmatched endurance with our premium creatines and pre-workouts.",
+    id: "cat8",
+    name: "Pre-Workout",
+    slug: "pre-workout",
+    description: "Explosive energy and laser-sharp focus for your most intense sessions.",
     image: "/images/c4ultimatepreworkout.webp"
   },
   {
-    id: "5",
-    name: "Exclusive Bundles",
-    slug: "exclusive-bundles",
-    description: "Curated collections for total transformation, designed by experts.",
-    image: "https://images.unsplash.com/photo-1626225967045-9c76db7b6ecd?q=80&w=2070&auto=format&fit=crop"
+    id: "cat9",
+    name: "Testosterone Booster",
+    slug: "testosterone-booster",
+    description: "Natural support for your body's most vital performance hormone.",
+    image: "https://images.unsplash.com/photo-1471864190281-ad5f9f8162e6?q=80&w=2070&auto=format&fit=crop"
+  },
+  {
+    id: "cat10",
+    name: "Whey & Protéine",
+    slug: "whey-proteine",
+    description: "Premium protein sources for rapid recovery and lean muscle synthesis.",
+    image: "/images/Gold Standard Whey Isolate.webp"
   }
 ];

@@ -151,25 +151,25 @@ export default function Catalog() {
         </AnimatePresence>
 
         {/* Quick Category Pills - Always Visible */}
-        {!isFilterOpen && (
-          <div className="flex items-center gap-4 overflow-x-auto pb-8 mb-8 no-scrollbar">
+        <div className="sticky top-[80px] z-30 bg-black/80 backdrop-blur-md -mx-4 px-4 py-6 mb-8 border-b border-white/5 overflow-x-auto no-scrollbar">
+          <div className="container flex items-center gap-3">
             <button 
               onClick={() => setSelectedCategory(null)}
-              className={`whitespace-nowrap px-8 py-3 text-[8px] uppercase tracking-[0.3em] font-bold transition-all border ${!selectedCategory ? 'bg-gold text-black border-gold' : 'border-white/10 text-text-muted hover:border-gold/30'}`}
+              className={`whitespace-nowrap px-6 py-2 text-[10px] uppercase tracking-[0.2em] font-bold transition-all border rounded-full ${!selectedCategory ? 'bg-gold text-black border-gold' : 'border-white/10 text-text-muted hover:border-gold/30'}`}
             >
-              All
+              All Artifacts
             </button>
             {categories.map(cat => (
               <button 
                 key={cat.id}
                 onClick={() => setSelectedCategory(cat.slug)}
-                className={`whitespace-nowrap px-8 py-3 text-[8px] uppercase tracking-[0.3em] font-bold transition-all border ${selectedCategory === cat.slug ? 'bg-gold text-black border-gold' : 'border-white/10 text-text-muted hover:border-gold/30'}`}
+                className={`whitespace-nowrap px-6 py-2 text-[10px] uppercase tracking-[0.2em] font-bold transition-all border rounded-full ${selectedCategory === cat.slug ? 'bg-gold text-black border-gold' : 'border-white/10 text-text-muted hover:border-gold/30'}`}
               >
                 {cat.name}
               </button>
             ))}
           </div>
-        )}
+        </div>
 
         {/* Product Grid - 2 columns on mobile */}
         <div className="grid grid-cols-2 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6 md:gap-12">
