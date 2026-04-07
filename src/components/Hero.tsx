@@ -51,7 +51,7 @@ export const Hero = () => {
               </motion.span>
             </span>
 
-            <h1 className="text-7xl md:text-[120px] font-serif leading-[0.9] mb-12">
+            <h1 className="text-6xl sm:text-7xl md:text-[120px] font-serif leading-[0.9] mb-12">
               <span className="block overflow-hidden">
                 <motion.span
                   initial={{ y: '100%' }}
@@ -68,7 +68,7 @@ export const Hero = () => {
               initial={{ opacity: 0, y: 20 }}
               animate={{ opacity: 1, y: 0 }}
               transition={{ duration: 1, delay: 1 }}
-              className="text-lg md:text-xl text-text-muted mb-16 max-w-xl font-light leading-relaxed tracking-wide"
+              className="text-base md:text-xl text-text-muted mb-16 max-w-xl font-light leading-relaxed tracking-wide px-1 md:px-0"
             >
               Monalisa is more than nutrition. It is a philosophy of excellence, 
               curating only the world's most potent isolates for the Moroccan athlete.
@@ -78,9 +78,9 @@ export const Hero = () => {
               initial={{ opacity: 0, y: 20 }}
               animate={{ opacity: 1, y: 0 }}
               transition={{ duration: 1, delay: 1.2 }}
-              className="flex flex-col sm:flex-row gap-8"
+              className="flex flex-col sm:flex-row gap-6 md:gap-8"
             >
-              <Link href="/catalog" className="luxury-button group">
+              <Link href="/catalog" className="luxury-button group text-center">
                 Enter The Archive
               </Link>
             </motion.div>
