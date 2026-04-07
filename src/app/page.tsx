@@ -147,7 +147,7 @@ export default function Home() {
                <div className="absolute inset-0 border border-gold/20 translate-x-8 translate-y-8 pointer-events-none" />
                <div className="relative w-full h-full overflow-hidden">
                  <img 
-                   src="https://images.unsplash.com/photo-1534438327276-14e5300c3a48?q=80&w=2070&auto=format&fit=crop" 
+                   src="/images/the-community.jpeg" 
                    alt="The Monalisa Standard" 
                    className="w-full h-full object-cover grayscale brightness-75 hover:scale-105 transition-transform duration-[2s]"
                  />

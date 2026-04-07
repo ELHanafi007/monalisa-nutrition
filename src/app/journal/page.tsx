@@ -1,15 +1,15 @@
 "use client";
 
 import { Navbar } from '@/components/Navbar';
-import { journalPosts } from '@/data/journal';
+import { journalEntries } from '@/data/journal';
 import { motion } from 'framer-motion';
 import Link from 'next/link';
 import Image from 'next/image';
 import { ArrowRight } from 'lucide-react';
 
 export default function Journal() {
-  const featuredPost = journalPosts[0];
-  const otherPosts = journalPosts.slice(1);
+  const featuredPost = journalEntries[0];
+  const otherPosts = journalEntries.slice(1);
 
   return (
     <main className="min-h-screen bg-black">

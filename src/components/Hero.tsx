@@ -18,7 +18,7 @@ export const Hero = () => {
           className="w-full h-full relative"
         >
           <Image 
-            src="https://images.unsplash.com/photo-1593079831268-3381b0db4a77?q=80&w=2069&auto=format&fit=crop" 
+            src="/images/the-ritual.jpeg" 
             alt="Elite Performance" 
             fill
             priority
