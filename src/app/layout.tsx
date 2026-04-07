@@ -4,7 +4,6 @@ import { CartProvider } from "@/contexts/CartContext";
 import { Preloader } from "@/components/Preloader";
 import { MobileNav } from "@/components/MobileNav";
 import { Toast } from "@/components/Toast";
-import { FloatingConcierge } from "@/components/FloatingConcierge";
 import { NewsletterModal } from "@/components/NewsletterModal";
 
 export const metadata: Metadata = {
@@ -24,7 +23,6 @@ export default function RootLayout({
           <Preloader />
           {children}
           <Toast />
-          <FloatingConcierge />
           <NewsletterModal />
           <MobileNav />
         </CartProvider>

@@ -83,9 +83,6 @@ export const Hero = () => {
               <Link href="/catalog" className="luxury-button group">
                 Enter The Archive
               </Link>
-              <Link href="/discovery" className="luxury-button-outline group">
-                Begin Discovery Protocol
-              </Link>
             </motion.div>
           </motion.div>
         </div>

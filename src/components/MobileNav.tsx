@@ -2,7 +2,7 @@
 
 import Link from 'next/link';
 import { usePathname } from 'next/navigation';
-import { Home, ShoppingBag, User, Compass, Newspaper } from 'lucide-react';
+import { Home, ShoppingBag, User, Crown } from 'lucide-react';
 import { motion } from 'framer-motion';
 import { useCart } from '@/contexts/CartContext';
 
@@ -13,8 +13,7 @@ export const MobileNav = () => {
   const navItems = [
     { icon: Home, label: 'Home', path: '/' },
     { icon: ShoppingBag, label: 'Catalog', path: '/catalog' },
-    { icon: Compass, label: 'Discover', path: '/discovery' },
-    { icon: Newspaper, label: 'Journal', path: '/journal' },
+    { icon: Crown, label: 'Concierge', path: '/concierge' },
     { icon: User, label: 'House', path: '/about' },
   ];
 
