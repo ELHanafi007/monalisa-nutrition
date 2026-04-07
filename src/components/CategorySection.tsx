@@ -48,7 +48,7 @@ export const CategorySection = () => {
                     src={category.image}
                     alt={category.name}
                     fill
-                    className="object-cover grayscale group-hover:grayscale-0 group-hover:scale-110 transition-all duration-[1.5s] ease-[0.7, 0, 0.3, 1]"
+                    className="object-cover  group-hover:-0 group-hover:scale-110 transition-all duration-[1.5s] ease-[0.7, 0, 0.3, 1]"
                   />
                   <div className="absolute inset-0 bg-gradient-to-t from-black via-black/20 to-transparent opacity-80 group-hover:opacity-60 transition-opacity duration-700" />
                 </div>

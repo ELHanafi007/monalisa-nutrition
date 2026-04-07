@@ -28,7 +28,7 @@ export default function Concierge() {
           <img 
             src="/images/concierge.jpeg" 
             alt="Concierge" 
-            className="w-full h-full object-cover grayscale opacity-20"
+            className="w-full h-full object-cover  opacity-20"
           />
           <div className="absolute inset-0 bg-gradient-to-b from-black via-black/40 to-black z-10" />
         </div>

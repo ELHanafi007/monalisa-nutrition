@@ -88,7 +88,7 @@ export default function Home() {
                       alt={product.name} 
                       fill
                       priority={index < 4}
-                      className="object-contain transition-transform duration-1000 group-hover:scale-110 p-12"
+                      className={`object-contain transition-transform duration-1000 group-hover:scale-110 p-12 ${product.isRupture ? 'grayscale' : ''}`}
                     />
                   </div>
 
@@ -149,7 +149,7 @@ export default function Home() {
                  <img 
                    src="/images/the-community.jpeg" 
                    alt="The Monalisa Standard" 
-                   className="w-full h-full object-cover grayscale brightness-75 hover:scale-105 transition-transform duration-[2s]"
+                   className="w-full h-full object-cover  brightness-75 hover:scale-105 transition-transform duration-[2s]"
                  />
                  <div className="absolute inset-0 bg-gradient-to-t from-black via-transparent to-transparent opacity-60" />
                </div>

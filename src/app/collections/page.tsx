@@ -29,7 +29,7 @@ export default function Collections() {
                    <img 
                      src={category.image} 
                      alt={category.name} 
-                     className="w-full h-full object-cover grayscale group-hover:grayscale-0 group-hover:scale-110 transition-all duration-1000"
+                     className="w-full h-full object-cover  group-hover:-0 group-hover:scale-110 transition-all duration-1000"
                    />
                    <div className="absolute inset-0 flex items-center justify-center z-20 pointer-events-none">
                       <div className="text-center">

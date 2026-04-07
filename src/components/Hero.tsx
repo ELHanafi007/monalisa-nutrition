@@ -22,7 +22,7 @@ export const Hero = () => {
             alt="Elite Performance" 
             fill
             priority
-            className="object-cover grayscale contrast-125 brightness-75"
+            className="object-cover  contrast-125 brightness-75"
           />
         </motion.div>
       </div>

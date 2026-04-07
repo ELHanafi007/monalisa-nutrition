@@ -41,7 +41,7 @@ export default function Catalog() {
           src={product.image} 
           alt={product.name} 
           fill
-          className="object-contain p-4 transition-transform duration-700 group-hover:scale-110"
+          className={`object-contain p-4 transition-transform duration-700 group-hover:scale-110 ${product.isRupture ? 'grayscale' : ''}`}
         />
         <div className="absolute inset-0 bg-black/60 opacity-0 group-hover:opacity-100 transition-opacity flex items-center justify-center gap-2">
           <button onClick={() => setSelectedProduct(product)} className="w-10 h-10 bg-white text-black rounded-full flex items-center justify-center hover:bg-gold transition-colors">
@@ -147,7 +147,7 @@ export default function Catalog() {
             <p className="text-sm text-text-muted leading-relaxed">
               The leader in sports nutrition in the Kingdom. We offer a vast selection of authentic supplements accredited by the highest standards: Whey Protein, Creatine, BCAA, Omega 3, Mass Gainer, and Multivitamins.
             </p>
-            <div className="flex flex-wrap justify-center gap-8 pt-8 opacity-50 grayscale hover:grayscale-0 transition-all">
+            <div className="flex flex-wrap justify-center gap-8 pt-8 opacity-50 transition-all">
               <span className="text-[10px] font-bold uppercase tracking-widest">Official Partners</span>
               <span className="text-[10px] font-bold uppercase tracking-widest">MuscleTech</span>
               <span className="text-[10px] font-bold uppercase tracking-widest">Dymatize</span>

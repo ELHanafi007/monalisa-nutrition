@@ -136,10 +136,18 @@ export const Navbar = () => {
                   </div>
                 ) : (
                   cart.map((item) => (
-                    <div key={item.id} className="flex gap-6">
-                      <div className="w-24 h-24 bg-black border border-border flex flex-col items-center justify-center p-2">
-                        <span className="text-[8px] text-text-muted uppercase text-center mb-1">{item.brand}</span>
-                        <span className="text-[8px] font-serif italic text-gold text-center">{item.name}</span>
+                    <div className="flex gap-6">
+                      <div className="w-24 h-24 bg-black border border-border flex flex-col items-center justify-center p-2 relative">
+                        <Image 
+                          src={item.image} 
+                          alt={item.name} 
+                          fill
+                          className={`object-contain p-2 opacity-50 ${item.isRupture ? 'grayscale' : ''}`}
+                        />
+                        <div className="relative z-10 flex flex-col items-center justify-center h-full">
+                          <span className="text-[8px] text-white uppercase text-center mb-1 bg-black/60 px-1">{item.brand}</span>
+                          <span className="text-[8px] font-serif italic text-gold text-center bg-black/60 px-1">{item.name}</span>
+                        </div>
                       </div>
                       <div className="flex-1">
                         <div className="flex justify-between items-start mb-2">

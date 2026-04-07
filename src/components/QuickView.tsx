@@ -47,7 +47,7 @@ export const QuickView = ({ product, onClose }: QuickViewProps) => {
                     src={product.image} 
                     alt={product.name} 
                     fill
-                    className="object-contain p-8"
+                    className={`object-contain p-8 ${product.isRupture ? 'grayscale' : ''}`}
                   />
                 </div>
               </div>

@@ -193,10 +193,10 @@ export default function Checkout() {
                     <div className="p-8 border border-gold/30 bg-gold/[0.03] flex items-center justify-between group cursor-pointer relative overflow-hidden">
                        <div className="absolute top-0 right-0 w-16 h-16 bg-gold/10 -mr-8 -mt-8 rotate-45" />
                        <div className="flex items-center gap-6 relative z-10">
-                          <CreditCard className="text-gold" size={20} />
+                          <Truck className="text-gold" size={20} />
                           <div>
-                            <p className="text-[10px] uppercase tracking-[0.3em] font-bold text-white">Credit / Debit Card</p>
-                            <p className="text-[8px] text-text-muted uppercase tracking-[0.2em] mt-1">Encrypted Terminal</p>
+                            <p className="text-[10px] uppercase tracking-[0.3em] font-bold text-white">Cash on Delivery</p>
+                            <p className="text-[8px] text-text-muted uppercase tracking-[0.2em] mt-1">Pay when you receive</p>
                           </div>
                        </div>
                        <div className="w-5 h-5 rounded-full border border-gold flex items-center justify-center p-1 relative z-10">
@@ -205,10 +205,10 @@ export default function Checkout() {
                     </div>
                     <div className="p-8 border border-white/5 bg-white/[0.01] flex items-center justify-between cursor-not-allowed opacity-40 grayscale">
                        <div className="flex items-center gap-6">
-                          <Truck className="text-text-muted" size={20} />
+                          <CreditCard className="text-text-muted" size={20} />
                           <div>
-                            <p className="text-[10px] uppercase tracking-[0.3em] font-bold">Cash on Delivery</p>
-                            <p className="text-[8px] text-text-muted uppercase tracking-[0.2em] mt-1">Kingdom Elite Only</p>
+                            <p className="text-[10px] uppercase tracking-[0.3em] font-bold">Credit Card</p>
+                            <p className="text-[8px] text-text-muted uppercase tracking-[0.2em] mt-1">Terminal Offline</p>
                           </div>
                        </div>
                     </div>
@@ -216,17 +216,13 @@ export default function Checkout() {
 
                   <div className="bg-surface/50 border border-white/5 p-10 space-y-10 relative overflow-hidden">
                     <div className="absolute top-0 right-0 p-4">
-                       <Lock size={12} className="text-gold/30" />
+                       <Shield size={12} className="text-gold/30" />
                     </div>
-                    <div className="grid grid-cols-1 md:grid-cols-2 gap-10">
-                      <div className="space-y-3">
-                        <label className="text-[10px] uppercase tracking-[0.4em] text-gold font-bold">Cardholder Name</label>
-                        <input type="text" className="w-full bg-black/50 border border-white/5 focus:border-gold/30 outline-none p-5 text-sm font-light transition-all italic" placeholder="AS APPEARS ON ARTIFACT" />
-                      </div>
-                      <div className="space-y-3">
-                        <label className="text-[10px] uppercase tracking-[0.4em] text-gold font-bold">Secure Card Number</label>
-                        <input type="text" placeholder="**** **** **** ****" className="w-full bg-black/50 border border-white/5 focus:border-gold/30 outline-none p-5 text-sm font-light transition-all italic" />
-                      </div>
+                    <div className="space-y-4">
+                      <h4 className="text-gold uppercase tracking-[0.4em] text-[10px] font-bold">COD Protocol</h4>
+                      <p className="text-sm text-text-muted font-light leading-relaxed italic">
+                        By confirming this order, you agree to pay the total amount of <span className="text-white font-bold">{totalPrice} MAD</span> in cash upon delivery. Our elite courier will contact you to coordinate the final dispatch.
+                      </p>
                     </div>
                   </div>
 
@@ -250,14 +246,14 @@ export default function Checkout() {
                               transition={{ repeat: Infinity, duration: 1, ease: "linear" }}
                               className="w-4 h-4 border-2 border-black border-t-transparent rounded-full"
                             />
-                            <span>Authenticating Investment...</span>
+                            <span>Processing Order...</span>
                           </motion.div>
                         ) : (
                           <motion.span 
                             key="default"
                             className="flex items-center gap-4"
                           >
-                            Finalize Acquisition <Shield size={14} className="group-hover:scale-110 transition-transform" />
+                            Confirm COD Order <Truck size={14} className="group-hover:scale-110 transition-transform" />
                           </motion.span>
                         )}
                       </AnimatePresence>

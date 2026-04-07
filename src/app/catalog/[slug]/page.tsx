@@ -52,7 +52,7 @@ export default function ProductDetail() {
                 src={product.image} 
                 alt={product.name} 
                 fill
-                className="object-contain mix-blend-lighten p-12"
+                className={`object-contain mix-blend-lighten p-12 ${product.isRupture ? 'grayscale' : ''}`}
               />
             </div>
             <div className="absolute top-8 left-8">
@@ -242,7 +242,7 @@ export default function ProductDetail() {
                     src={p.image} 
                     alt={p.name} 
                     fill
-                    className="object-contain mix-blend-lighten opacity-80 group-hover:opacity-100 group-hover:scale-110 transition-all duration-700 p-4"
+                    className={`object-contain mix-blend-lighten opacity-80 group-hover:opacity-100 group-hover:scale-110 transition-all duration-700 p-4 ${p.isRupture ? 'grayscale' : ''}`}
                   />
                 </div>
                 <p className="text-[10px] uppercase tracking-widest font-bold group-hover:text-gold transition-colors">{p.name}</p>

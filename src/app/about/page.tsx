@@ -12,7 +12,7 @@ export default function About() {
           <img 
             src="/images/the-laboratory.jpeg" 
             alt="The Monalisa Laboratory" 
-            className="w-full h-full object-cover grayscale opacity-40"
+            className="w-full h-full object-cover  opacity-40"
           />
           <div className="absolute inset-0 bg-gradient-to-b from-black/60 via-black/20 to-black z-10" />
         </div>
@@ -47,14 +47,14 @@ export default function About() {
               <div className="aspect-[3/4] bg-surface border border-border mt-12">
                 <img 
                   src="/images/nutrition-science.jpeg" 
-                  className="w-full h-full object-cover grayscale opacity-50"
+                  className="w-full h-full object-cover  opacity-50"
                   alt="Precision"
                 />
               </div>
               <div className="aspect-[3/4] bg-surface border border-border">
                 <img 
                   src="/images/the-heritage.jpeg" 
-                  className="w-full h-full object-cover grayscale opacity-50"
+                  className="w-full h-full object-cover  opacity-50"
                   alt="Laboratory"
                 />
               </div>

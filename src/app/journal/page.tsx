@@ -37,7 +37,7 @@ export default function Journal() {
                   src={featuredPost.image} 
                   alt={featuredPost.title} 
                   fill
-                  className="object-cover grayscale group-hover:grayscale-0 group-hover:scale-110 transition-all duration-1000"
+                  className="object-cover  group-hover:-0 group-hover:scale-110 transition-all duration-1000"
                 />
              </div>
              <div className="flex-1 space-y-8">
@@ -76,7 +76,7 @@ export default function Journal() {
                       src={post.image} 
                       alt={post.title} 
                       fill
-                      className="object-cover grayscale group-hover:grayscale-0 group-hover:scale-110 transition-all duration-1000"
+                      className="object-cover  group-hover:-0 group-hover:scale-110 transition-all duration-1000"
                     />
                   </div>
                   <div className="space-y-4">
