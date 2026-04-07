@@ -80,13 +80,13 @@ export const LocationSection = () => {
                     <span className="text-[10px] uppercase tracking-[0.4em] font-bold">Contact</span>
                   </div>
                   <div className="space-y-3">
-                    <a href="tel:+212522255555" className="flex items-center gap-3 text-text-muted hover:text-white transition-colors group/link">
+                    <a href="tel:+212661000000" className="flex items-center gap-3 text-text-muted hover:text-white transition-colors group/link">
                       <Phone size={14} className="group-hover/link:text-gold transition-colors" />
-                      <span className="text-sm">+212 522 255 555</span>
+                      <span className="text-sm">+212 661 000 000</span>
                     </a>
-                    <a href="mailto:concierge@monalisanutrition.com" className="flex items-center gap-3 text-text-muted hover:text-white transition-colors group/link">
+                    <a href="mailto:monalizahouse598@gmail.com" className="flex items-center gap-3 text-text-muted hover:text-white transition-colors group/link">
                       <Mail size={14} className="group-hover/link:text-gold transition-colors" />
-                      <span className="text-sm">concierge@monaliza.com</span>
+                      <span className="text-sm">monalizahouse598@gmail.com</span>
                     </a>
                   </div>
                 </div>
