@@ -1,164 +1,167 @@
 "use client";
 
-import { Navbar } from '@/components/Navbar';
-import { useState } from 'react';
-import { Send, Crown, Zap, ShieldCheck } from 'lucide-react';
+import { motion } from 'framer-motion';
+import { Header } from '@/components/landing/Header';
+import { Footer } from '@/components/landing/Footer';
+import Image from 'next/image';
+import { Crown, Zap, Shield, Heart, Star, Users, MessageCircle } from 'lucide-react';
 
 export default function Concierge() {
-  const [formData, setFormData] = useState({
-    name: '',
-    email: '',
-    goal: '',
-    experience: '',
-    message: ''
-  });
-
-  const handleSubmit = (e: React.FormEvent) => {
-    e.preventDefault();
-    alert("Request received. Our elite protocol experts will contact you within 24 hours.");
-  };
+  const benefits = [
+    {
+      icon: Zap,
+      title: "Accès Prioritaire",
+      desc: "Soyez le premier informé des nouveaux arrivages et des éditions limitées."
+    },
+    {
+      icon: Shield,
+      title: "Conseils Experts",
+      desc: "Un accompagnement personnalisé par nos experts en nutrition certifiés."
+    },
+    {
+      icon: Crown,
+      title: "Service VIP",
+      desc: "Une ligne directe WhatsApp pour vos commandes et questions urgentes."
+    },
+    {
+      icon: Heart,
+      title: "Offres Exclusives",
+      desc: "Des tarifs préférentiels réservés uniquement aux membres du cercle Monaliza."
+    }
+  ];
 
   return (
-    <main className="min-h-screen bg-black">
-      <Navbar />
-      
-      {/* Header */}
-      <section className="relative pt-40 pb-20 border-b border-border overflow-hidden">
-        <div className="absolute inset-0 z-0">
-          <img 
-            src="/images/concierge.jpeg" 
-            alt="Concierge" 
-            className="w-full h-full object-cover  opacity-20"
-          />
-          <div className="absolute inset-0 bg-gradient-to-b from-black via-black/40 to-black z-10" />
-        </div>
-        <div className="container relative z-20">
-          <div className="max-w-4xl mx-auto text-center">
-            <span className="text-gold uppercase tracking-[0.5em] text-[10px] font-bold mb-6 block">Reserved for the Elite</span>
-            <h1 className="text-6xl md:text-8xl font-serif mb-8 italic">Concierge Service.</h1>
-            <p className="text-lg text-text-muted font-light leading-relaxed mb-12">
-              Beyond standard supplementation lies the path of the professional. 
-              Our Concierge Service provides bespoke performance protocols tailored to your unique physiology and ambitions.
-            </p>
+    <main className="min-h-screen bg-white text-black">
+      <Header />
+
+      {/* Hero Section */}
+      <section className="relative pt-32 pb-24 overflow-hidden bg-gray-50 rounded-b-[4rem]">
+        <div className="container relative z-10">
+          <div className="grid grid-cols-1 lg:grid-cols-2 gap-16 items-center">
+            <motion.div
+              initial={{ opacity: 0, x: -30 }}
+              animate={{ opacity: 1, x: 0 }}
+              className="space-y-8"
+            >
+              <span className="inline-block px-4 py-1.5 bg-luxury-red text-white text-[10px] font-black uppercase tracking-[0.3em] rounded-full shadow-lg">
+                Service Conciergerie
+              </span>
+              <h1 className="text-5xl md:text-8xl font-black uppercase tracking-tighter leading-[0.9]">
+                L'Expérience <br />
+                <span className="red-gradient-text italic">Elite.</span>
+              </h1>
+              <p className="text-lg md:text-xl text-gray-600 font-medium leading-relaxed max-w-xl">
+                Rejoignez le cercle exclusif Monaliza House et bénéficiez d'un accompagnement sur-mesure pour atteindre vos objectifs physiques les plus ambitieux.
+              </p>
+              <div className="flex flex-col sm:flex-row gap-4 pt-4">
+                <a 
+                  href="https://wa.me/212600000000" 
+                  target="_blank" 
+                  className="luxury-button flex items-center gap-3"
+                >
+                  <MessageCircle size={18} fill="currentColor" />
+                  Contacter un expert
+                </a>
+              </div>
+            </motion.div>
+
+            <motion.div
+              initial={{ opacity: 0, scale: 0.9 }}
+              animate={{ opacity: 1, scale: 1 }}
+              className="relative aspect-[4/5] rounded-[3rem] overflow-hidden shadow-2xl border-8 border-white"
+            >
+              <Image 
+                src="/images/concierge.jpeg" 
+                alt="Service Concierge" 
+                fill 
+                className="object-cover"
+              />
+              <div className="absolute inset-0 bg-gradient-to-t from-luxury-red/40 to-transparent" />
+            </motion.div>
           </div>
         </div>
       </section>
 
-      <section className="section-padding">
+      {/* Benefits Grid */}
+      <section className="py-32">
         <div className="container">
-          <div className="grid grid-cols-1 lg:grid-cols-2 gap-20">
-            {/* Left side: Information */}
-            <div className="space-y-12">
-              <div>
-                <h2 className="text-3xl font-serif mb-8 underline underline-offset-[12px] decoration-gold/30">The Protocol Advantage</h2>
-                <div className="space-y-8">
-                  <div className="flex gap-6">
-                    <div className="w-12 h-12 bg-surface border border-gold/20 flex items-center justify-center shrink-0">
-                       <Crown size={20} className="text-gold" />
-                    </div>
-                    <div>
-                      <h4 className="text-xs uppercase tracking-widest font-bold mb-2">Bespoke Curation</h4>
-                      <p className="text-sm text-text-muted font-light leading-relaxed">We don't just sell products; we design results. Receive a curated selection of isolates perfectly timed for your metabolic window.</p>
-                    </div>
-                  </div>
-                  <div className="flex gap-6">
-                    <div className="w-12 h-12 bg-surface border border-gold/20 flex items-center justify-center shrink-0">
-                       <Zap size={20} className="text-gold" />
-                    </div>
-                    <div>
-                      <h4 className="text-xs uppercase tracking-widest font-bold mb-2">Priority Access</h4>
-                      <p className="text-sm text-text-muted font-light leading-relaxed">Be the first to receive new limited-run formulas and international imports before they hit the main archive.</p>
-                    </div>
-                  </div>
-                  <div className="flex gap-6">
-                    <div className="w-12 h-12 bg-surface border border-gold/20 flex items-center justify-center shrink-0">
-                       <ShieldCheck size={20} className="text-gold" />
-                    </div>
-                    <div>
-                      <h4 className="text-xs uppercase tracking-widest font-bold mb-2">Expert Consultation</h4>
-                      <p className="text-sm text-text-muted font-light leading-relaxed">Direct communication with our team of nutritional scientists to fine-tune your stack as your physique evolves.</p>
-                    </div>
-                  </div>
-                </div>
-              </div>
+          <div className="text-center max-w-2xl mx-auto mb-20">
+            <h2 className="text-4xl md:text-5xl font-black uppercase tracking-tighter mb-6">Vos <span className="red-gradient-text italic">Privilèges</span></h2>
+            <p className="text-gray-600 font-medium">Bien plus qu'un service, une immersion totale dans l'univers de la haute performance.</p>
+          </div>
 
-              <div className="p-12 bg-[#050505] border border-border">
-                <p className="text-sm font-light italic text-text-muted leading-relaxed">
-                  "Monalisa's concierge service changed the game for my competition prep. The precision of their isolate recommendations was the missing link."
-                </p>
-                <div className="mt-6 flex items-center gap-4">
-                  <div className="w-8 h-[1px] bg-gold" />
-                  <span className="text-[10px] uppercase tracking-widest font-bold">Elite Athlete #402</span>
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8">
+            {benefits.map((item, i) => (
+              <motion.div 
+                key={i}
+                initial={{ opacity: 0, y: 20 }}
+                whileInView={{ opacity: 1, y: 0 }}
+                viewport={{ once: true }}
+                transition={{ delay: i * 0.1 }}
+                className="p-10 bg-white border border-gray-100 rounded-3xl shadow-sm hover:shadow-xl hover:border-luxury-red/20 transition-all group"
+              >
+                <div className="w-16 h-16 bg-red-50 rounded-2xl flex items-center justify-center mb-8 group-hover:scale-110 transition-transform">
+                  <item.icon className="text-luxury-red" size={32} />
                 </div>
-              </div>
+                <h3 className="text-xl font-black uppercase tracking-tighter mb-4">{item.title}</h3>
+                <p className="text-gray-500 text-sm font-medium leading-relaxed">{item.desc}</p>
+              </motion.div>
+            ))}
+          </div>
+        </div>
+      </section>
+
+      {/* Testimonial / Trust Section */}
+      <section className="py-24 bg-gray-50 border-y border-gray-100">
+        <div className="container">
+          <div className="max-w-4xl mx-auto text-center space-y-12">
+            <div className="flex justify-center gap-1">
+              {[...Array(5)].map((_, i) => <Star key={i} size={20} className="fill-luxury-red text-luxury-red" />)}
             </div>
-
-            {/* Right side: Form */}
-            <div className="bg-surface p-12 border border-border shadow-2xl">
-              <h3 className="text-2xl font-serif mb-10">Request a <span className="italic text-gold">Protocol</span></h3>
-              <form onSubmit={handleSubmit} className="space-y-8">
-                <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
-                  <div className="space-y-2">
-                    <label className="text-[10px] uppercase tracking-widest text-text-muted">Full Name</label>
-                    <input 
-                      required
-                      type="text" 
-                      className="w-full bg-black/50 border-b border-border focus:border-gold outline-none py-3 text-sm font-light transition-colors" 
-                      onChange={(e) => setFormData({...formData, name: e.target.value})}
-                    />
-                  </div>
-                  <div className="space-y-2">
-                    <label className="text-[10px] uppercase tracking-widest text-text-muted">Email Address</label>
-                    <input 
-                      required
-                      type="email" 
-                      className="w-full bg-black/50 border-b border-border focus:border-gold outline-none py-3 text-sm font-light transition-colors" 
-                      onChange={(e) => setFormData({...formData, email: e.target.value})}
-                    />
-                  </div>
-                </div>
-                
-                <div className="space-y-2">
-                  <label className="text-[10px] uppercase tracking-widest text-text-muted">Primary Goal</label>
-                  <select 
-                    className="w-full bg-black/50 border-b border-border focus:border-gold outline-none py-3 text-sm font-light transition-colors appearance-none"
-                    onChange={(e) => setFormData({...formData, goal: e.target.value})}
-                  >
-                    <option value="">Select a goal...</option>
-                    <option value="lean-muscle">Hypertrophy & Lean Muscle</option>
-                    <option value="sculpt">Sculpt & Define</option>
-                    <option value="endurance">Peak Endurance</option>
-                    <option value="recovery">Elite Recovery</option>
-                  </select>
-                </div>
-
-                <div className="space-y-2">
-                  <label className="text-[10px] uppercase tracking-widest text-text-muted">Brief Introduction</label>
-                  <textarea 
-                    rows={4}
-                    placeholder="Tell us about your current training regime..."
-                    className="w-full bg-black/50 border border-border focus:border-gold outline-none p-4 text-sm font-light transition-colors resize-none" 
-                    onChange={(e) => setFormData({...formData, message: e.target.value})}
-                  ></textarea>
-                </div>
-
-                <button type="submit" className="w-full luxury-button flex items-center justify-center gap-3">
-                  <Send size={14} /> Submit Application
-                </button>
-                <p className="text-[8px] text-center text-text-muted uppercase tracking-[0.2em]">
-                  Your data is handled with the utmost discretion.
-                </p>
-              </form>
+            <h2 className="text-3xl md:text-4xl font-black italic text-black leading-tight">
+              "Le service conciergerie a transformé ma façon de m'entraîner. Les conseils sont précis et la livraison est d'une rapidité incroyable."
+            </h2>
+            <div className="flex flex-col items-center">
+              <div className="w-16 h-16 rounded-full overflow-hidden mb-4 border-2 border-luxury-red p-1">
+                <div className="w-full h-full rounded-full bg-gray-200" />
+              </div>
+              <p className="font-black uppercase tracking-widest text-xs">Yassine El-M.</p>
+              <p className="text-[10px] uppercase tracking-widest text-luxury-red font-black">Athlète Pro & Membre Elite</p>
             </div>
           </div>
         </div>
       </section>
 
-      <footer className="py-20 border-t border-border mt-40">
-        <div className="container text-center">
-          <p className="text-[10px] uppercase tracking-[0.5em] text-text-muted">Monalisa Nutrition — Concierge</p>
+      {/* CTA Section */}
+      <section className="py-32">
+        <div className="container">
+          <div className="bg-black rounded-[3rem] p-12 md:p-24 text-center relative overflow-hidden">
+            {/* Background elements */}
+            <div className="absolute top-0 left-0 w-full h-full bg-[url('/images/the-ritual.jpeg')] opacity-20 bg-cover bg-center grayscale" />
+            <div className="absolute inset-0 bg-gradient-to-b from-luxury-red/20 to-black" />
+            
+            <div className="relative z-10 space-y-10">
+              <h2 className="text-4xl md:text-7xl font-black text-white uppercase tracking-tighter">
+                Prêt pour votre <br />
+                <span className="red-gradient-text italic">Transformation ?</span>
+              </h2>
+              <p className="text-gray-400 text-lg md:text-xl font-medium max-w-2xl mx-auto">
+                Contactez notre conciergerie dès maintenant et commencez votre voyage vers l'excellence absolue.
+              </p>
+              <div className="flex justify-center">
+                <a 
+                  href="https://wa.me/212600000000" 
+                  className="luxury-button scale-125"
+                >
+                  Démarrer sur WhatsApp
+                </a>
+              </div>
+            </div>
+          </div>
         </div>
-      </footer>
+      </section>
+
+      <Footer />
     </main>
   );
 }

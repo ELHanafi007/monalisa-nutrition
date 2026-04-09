@@ -1,117 +1,161 @@
-import { Navbar } from '@/components/Navbar';
-import Link from 'next/link';
+"use client";
+
+import { motion } from 'framer-motion';
+import { Header } from '@/components/landing/Header';
+import { Footer } from '@/components/landing/Footer';
+import Image from 'next/image';
+import { Shield, Award, Users, MapPin } from 'lucide-react';
 
 export default function About() {
+  const stats = [
+    { label: "Clients Satisfaits", value: "10k+" },
+    { label: "Produits Premium", value: "500+" },
+    { label: "Années d'Excellence", value: "10+" },
+    { label: "Points de Vente", value: "5" }
+  ];
+
   return (
-    <main className="min-h-screen bg-black">
-      <Navbar />
-      
+    <main className="min-h-screen bg-white text-black">
+      <Header />
+
       {/* Hero Section */}
-      <section className="relative h-[70vh] flex items-center overflow-hidden">
-        <div className="absolute inset-0 z-0">
-          <img 
-            src="/images/the-laboratory.jpeg" 
-            alt="The Monalisa Laboratory" 
-            className="w-full h-full object-cover  opacity-40"
-          />
-          <div className="absolute inset-0 bg-gradient-to-b from-black/60 via-black/20 to-black z-10" />
-        </div>
-        
-        <div className="container relative z-20 text-center">
-          <span className="text-gold uppercase tracking-[0.5em] text-xs font-bold mb-6 block">Our Legacy</span>
-          <h1 className="text-6xl md:text-8xl font-serif mb-8">The <span className="italic">House</span> of Monalisa.</h1>
-          <p className="text-lg md:text-xl text-text-muted max-w-2xl mx-auto font-light leading-relaxed">
-            Founded on the principles of pharmaceutical purity and elite performance, 
-            Monalisa is the definitive standard for the modern athlete.
-          </p>
+      <section className="relative pt-32 pb-20 overflow-hidden">
+        <div className="container relative z-10">
+          <div className="max-w-4xl mx-auto text-center">
+            <motion.span 
+              initial={{ opacity: 0, y: 20 }}
+              animate={{ opacity: 1, y: 0 }}
+              className="inline-block px-4 py-1.5 bg-luxury-red text-white text-[10px] font-black uppercase tracking-[0.3em] mb-8 rounded-full shadow-lg"
+            >
+              Notre Histoire
+            </motion.span>
+            <motion.h1 
+              initial={{ opacity: 0, y: 20 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ delay: 0.1 }}
+              className="text-5xl md:text-8xl font-black uppercase tracking-tighter mb-8 leading-[0.9]"
+            >
+              L'Élite de la <br />
+              <span className="red-gradient-text italic">Nutrition.</span>
+            </h1 >
+            <motion.p 
+              initial={{ opacity: 0, y: 20 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ delay: 0.2 }}
+              className="text-lg md:text-xl text-gray-600 font-medium leading-relaxed"
+            >
+              Monaliza House n'est pas seulement une boutique de suppléments. C'est un standard d'excellence, une quête de pureté et un partenaire pour chaque athlète marocain.
+            </motion.p>
+          </div>
         </div>
       </section>
 
-      {/* Philosophy */}
-      <section className="section-padding border-t border-border">
+      {/* Stats Section */}
+      <section className="py-20 bg-gray-50 border-y border-gray-100">
+        <div className="container">
+          <div className="grid grid-cols-2 lg:grid-cols-4 gap-8 md:gap-12">
+            {stats.map((stat, i) => (
+              <motion.div 
+                key={i}
+                initial={{ opacity: 0, scale: 0.9 }}
+                whileInView={{ opacity: 1, scale: 1 }}
+                viewport={{ once: true }}
+                transition={{ delay: i * 0.1 }}
+                className="text-center p-8 bg-white rounded-3xl shadow-sm border border-gray-100"
+              >
+                <p className="text-4xl md:text-5xl font-black text-black tracking-tighter mb-2">{stat.value}</p>
+                <p className="text-[10px] uppercase tracking-widest font-black text-luxury-red">{stat.label}</p>
+              </motion.div>
+            ))}
+          </div>
+        </div>
+      </section>
+
+      {/* Content Section */}
+      <section className="py-32">
         <div className="container">
           <div className="grid grid-cols-1 lg:grid-cols-2 gap-20 items-center">
-            <div>
-              <span className="text-gold uppercase tracking-[0.4em] text-[10px] font-bold mb-6 block">The Origin</span>
-              <h2 className="text-5xl font-serif mb-10 leading-tight">Beyond <br /><span className="italic">Supplements.</span></h2>
-              <div className="space-y-6 text-text-muted font-light leading-relaxed">
+            <motion.div 
+              initial={{ opacity: 0, x: -30 }}
+              whileInView={{ opacity: 1, x: 0 }}
+              viewport={{ once: true }}
+              className="relative aspect-square rounded-3xl overflow-hidden shadow-2xl"
+            >
+              <Image 
+                src="/images/the-founder.jpeg" 
+                alt="Notre Vision" 
+                fill 
+                className="object-cover"
+              />
+              <div className="absolute inset-0 bg-gradient-to-t from-luxury-red/40 to-transparent" />
+            </motion.div>
+            
+            <motion.div 
+              initial={{ opacity: 0, x: 30 }}
+              whileInView={{ opacity: 1, x: 0 }}
+              viewport={{ once: true }}
+              className="space-y-8"
+            >
+              <h2 className="text-4xl md:text-5xl font-black uppercase tracking-tighter">Notre <span className="red-gradient-text italic">Engagement</span></h2>
+              <div className="space-y-6 text-gray-600 font-medium text-lg leading-relaxed">
                 <p>
-                  In a world of mass-produced fillers and questionable sourcing, Monalisa was established as a sanctuary for the discerning athlete. We believed that nutrition should be treated with the same precision as fine medicine.
+                  Depuis notre création, nous nous sommes donné pour mission de sourcer uniquement les molécules les plus pures des laboratoires mondiaux les plus prestigieux.
                 </p>
                 <p>
-                  Our journey began in the pursuit of the "Perfect Molecule" — the exact isolate that provides maximum bioavailability without compromise. We spent years vetting the world's most advanced laboratories to curate a collection that we are proud to call our own.
+                  Chaque produit sur nos étagères est rigoureusement sélectionné et certifié, garantissant que chaque milligramme que vous consommez sert un but précis dans votre progression.
                 </p>
               </div>
-            </div>
-            <div className="grid grid-cols-2 gap-4">
-              <div className="aspect-[3/4] bg-surface border border-border mt-12">
-                <img 
-                  src="/images/nutrition-science.jpeg" 
-                  className="w-full h-full object-cover  opacity-50"
-                  alt="Precision"
-                />
+              <div className="grid grid-cols-1 sm:grid-cols-2 gap-6 pt-8">
+                <div className="flex gap-4">
+                  <div className="w-12 h-12 bg-red-50 rounded-2xl flex items-center justify-center shrink-0">
+                    <Shield className="text-luxury-red" />
+                  </div>
+                  <div>
+                    <h4 className="font-black text-black uppercase tracking-widest text-xs mb-1">Authenticité</h4>
+                    <p className="text-sm text-gray-500">Produits 100% certifiés</p>
+                  </div>
+                </div>
+                <div className="flex gap-4">
+                  <div className="w-12 h-12 bg-red-50 rounded-2xl flex items-center justify-center shrink-0">
+                    <Award className="text-luxury-red" />
+                  </div>
+                  <div>
+                    <h4 className="font-black text-black uppercase tracking-widest text-xs mb-1">Qualité</h4>
+                    <p className="text-sm text-gray-500">Standard International</p>
+                  </div>
+                </div>
               </div>
-              <div className="aspect-[3/4] bg-surface border border-border">
-                <img 
-                  src="/images/the-heritage.jpeg" 
-                  className="w-full h-full object-cover  opacity-50"
-                  alt="Laboratory"
-                />
-              </div>
-            </div>
+            </motion.div>
           </div>
         </div>
       </section>
 
-      {/* Core Values */}
-      <section className="section-padding bg-[#050505]">
+      {/* Locations Section */}
+      <section id="localisation" className="py-32 bg-gray-50 rounded-t-[4rem]">
         <div className="container">
-          <div className="text-center mb-20">
-            <span className="text-gold uppercase tracking-[0.4em] text-[10px] font-bold mb-4 block">The Pillars</span>
-            <h2 className="text-5xl font-serif italic">Our Commitments.</h2>
+          <div className="text-center max-w-2xl mx-auto mb-20">
+            <h2 className="text-4xl md:text-5xl font-black uppercase tracking-tighter mb-6">Nos <span className="red-gradient-text italic">Points de Vente</span></h2>
+            <p className="text-gray-600 font-medium">Retrouvez l'excellence Monaliza à travers le Royaume.</p>
           </div>
           
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-12">
-            <div className="p-12 border border-border hover:border-gold transition-colors duration-500">
-              <span className="text-3xl font-serif text-gold mb-6 block">01</span>
-              <h3 className="text-lg uppercase tracking-widest font-bold mb-6">Purity First</h3>
-              <p className="text-sm text-text-muted font-light leading-relaxed">
-                Every batch is triple-tested for heavy metals, banned substances, and ingredient accuracy. If it doesn't meet the Monalisa Standard, it never leaves the lab.
-              </p>
-            </div>
-            <div className="p-12 border border-border hover:border-gold transition-colors duration-500">
-              <span className="text-3xl font-serif text-gold mb-6 block">02</span>
-              <h3 className="text-lg uppercase tracking-widest font-bold mb-6">Global Sourcing</h3>
-              <p className="text-sm text-text-muted font-light leading-relaxed">
-                We don't settle for local convenience. We source our Whey from Ireland, our Creatine from Germany, and our Amino Acids from Japan to ensure the highest quality.
-              </p>
-            </div>
-            <div className="p-12 border border-border hover:border-gold transition-colors duration-500">
-              <span className="text-3xl font-serif text-gold mb-6 block">03</span>
-              <h3 className="text-lg uppercase tracking-widest font-bold mb-6">Concierge Support</h3>
-              <p className="text-sm text-text-muted font-light leading-relaxed">
-                Our relationship doesn't end at checkout. Every client has access to our elite protocols and concierge support for personalized performance optimization.
-              </p>
-            </div>
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
+            {[
+              { city: "Casablanca", area: "Maarif", address: "123 Rue de l'Excellence" },
+              { city: "Marrakech", area: "Gueliz", address: "45 Avenue de la Performance" },
+              { city: "Rabat", area: "Agdal", address: "89 Boulevard de la Pureté" }
+            ].map((loc, i) => (
+              <div key={i} className="p-10 bg-white border border-gray-100 rounded-3xl shadow-sm hover:shadow-xl transition-all group">
+                <MapPin className="text-luxury-red mb-6 group-hover:scale-110 transition-transform" size={32} />
+                <h3 className="text-2xl font-black uppercase tracking-tighter mb-2">{loc.city}</h3>
+                <p className="text-luxury-red font-black uppercase tracking-widest text-[10px] mb-4">{loc.area}</p>
+                <p className="text-gray-500 text-sm">{loc.address}</p>
+              </div>
+            ))}
           </div>
         </div>
       </section>
 
-      {/* CTA */}
-      <section className="py-40 text-center border-t border-border">
-        <div className="container">
-          <h2 className="text-5xl md:text-7xl font-serif mb-12">Ready to <span className="italic text-gold">Ascend?</span></h2>
-          <Link href="/catalog" className="luxury-button">
-            Enter The Archive
-          </Link>
-        </div>
-      </section>
-
-      <footer className="py-20 border-t border-border mt-40">
-        <div className="container text-center">
-          <p className="text-[10px] uppercase tracking-[0.5em] text-text-muted">Monalisa Nutrition — The Standard</p>
-        </div>
-      </footer>
+      <Footer />
     </main>
   );
 }

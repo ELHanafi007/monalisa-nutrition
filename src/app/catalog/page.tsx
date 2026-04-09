@@ -1,7 +1,8 @@
 "use client";
 
 import { useState, useMemo } from 'react';
-import { Navbar } from '@/components/Navbar';
+import { Header } from '@/components/landing/Header';
+import { Footer } from '@/components/landing/Footer';
 import { products, Product } from '@/data/products';
 import { categories, Category } from '@/data/categories';
 import { Search, Plus, Eye, ShoppingCart, ChevronRight, Filter, X } from 'lucide-react';
@@ -40,16 +41,16 @@ export default function Catalog() {
       initial={{ opacity: 0, y: 20 }}
       whileInView={{ opacity: 1, y: 0 }}
       viewport={{ once: true }}
-      className="group bg-surface/30 border border-white/5 p-3 md:p-6 transition-all hover:border-gold/30"
+      className="group bg-white border border-gray-100 p-3 md:p-6 transition-all hover:border-luxury-red/30 hover:shadow-xl rounded-2xl"
     >
-      <div className="aspect-square relative mb-4 bg-black/40 overflow-hidden cursor-pointer" onClick={() => setSelectedProduct(product)}>
+      <div className="aspect-square relative mb-4 bg-gray-50 rounded-xl overflow-hidden cursor-pointer" onClick={() => setSelectedProduct(product)}>
         {product.isRupture && (
-          <div className="absolute top-2 left-2 z-20 bg-red-600 text-white text-[8px] px-2 py-1 font-bold uppercase tracking-widest">
+          <div className="absolute top-2 left-2 z-20 bg-gray-400 text-white text-[8px] px-2 py-1 font-bold uppercase tracking-widest rounded">
             Rupture
           </div>
         )}
         {product.oldPrice && (
-          <div className="absolute top-2 right-2 z-20 bg-gold text-black text-[8px] px-2 py-1 font-bold uppercase tracking-widest">
+          <div className="absolute top-2 right-2 z-20 bg-luxury-red text-white text-[8px] px-2 py-1 font-bold uppercase tracking-widest rounded">
             Promo
           </div>
         )}
@@ -59,22 +60,22 @@ export default function Catalog() {
           fill
           className={`object-contain p-4 transition-transform duration-700 group-hover:scale-110 ${product.isRupture ? 'grayscale' : ''}`}
         />
-        <div className="absolute inset-0 bg-black/60 opacity-0 group-hover:opacity-100 transition-opacity flex items-center justify-center gap-2">
-          <button onClick={() => setSelectedProduct(product)} className="w-10 h-10 bg-white text-black rounded-full flex items-center justify-center hover:bg-gold transition-colors">
+        <div className="absolute inset-0 bg-black/5 opacity-0 group-hover:opacity-100 transition-opacity flex items-center justify-center gap-2">
+          <button onClick={() => setSelectedProduct(product)} className="w-10 h-10 bg-white text-black rounded-full shadow-lg flex items-center justify-center hover:bg-luxury-red hover:text-white transition-colors">
             <Eye size={16} />
           </button>
-          <button onClick={() => addToCart(product)} className="w-10 h-10 bg-gold text-black rounded-full flex items-center justify-center hover:bg-white transition-colors">
+          <button onClick={() => addToCart(product)} className="w-10 h-10 bg-luxury-red text-white rounded-full shadow-lg flex items-center justify-center hover:bg-black transition-colors">
             <ShoppingCart size={16} />
           </button>
         </div>
       </div>
       <div className="space-y-1">
-        <p className="text-[8px] text-gold uppercase tracking-widest font-bold">{product.brand}</p>
-        <h3 className="text-[10px] md:text-sm font-serif line-clamp-2 h-8 group-hover:text-gold transition-colors">{product.name}</h3>
+        <p className="text-[8px] text-luxury-red uppercase tracking-widest font-black">{product.brand}</p>
+        <h3 className="text-[10px] md:text-sm font-bold line-clamp-2 h-8 group-hover:text-luxury-red transition-colors">{product.name}</h3>
         <div className="flex items-center gap-2 pt-2">
-          <span className="text-xs md:text-sm font-bold">{product.price} Dhs</span>
+          <span className="text-xs md:text-sm font-black text-black">{product.price} MAD</span>
           {product.oldPrice && (
-            <span className="text-[8px] md:text-[10px] text-text-muted line-through">{product.oldPrice} Dhs</span>
+            <span className="text-[8px] md:text-[10px] text-gray-400 line-through">{product.oldPrice} MAD</span>
           )}
         </div>
       </div>
@@ -82,36 +83,36 @@ export default function Catalog() {
   );
 
   return (
-    <main className="min-h-screen bg-black">
-      <Navbar />
+    <main className="min-h-screen bg-white text-black">
+      <Header />
       
       <QuickView product={selectedProduct} onClose={() => setSelectedProduct(null)} />
 
       {/* Header Banner */}
-      <section className="pt-32 pb-12 border-b border-white/5 bg-[#080808]">
+      <section className="pt-20 pb-12 border-b border-gray-100 bg-gray-50">
         <div className="container text-center">
-          <h1 className="text-4xl md:text-6xl font-serif italic mb-4">Monalisa <span className="text-gold">Nutrition</span></h1>
-          <p className="text-[10px] uppercase tracking-[0.5em] text-text-muted">Official Distributor of the World's Leading Brands</p>
+          <h1 className="text-4xl md:text-6xl font-black uppercase tracking-tighter mb-4">Monaliza <span className="red-gradient-text italic">Catalogue</span></h1>
+          <p className="text-[10px] uppercase tracking-[0.5em] text-gray-500 font-bold">Distributeur Officiel des Plus Grandes Marques Mondiales</p>
         </div>
       </section>
 
       {/* Search & Filters */}
-      <div className="sticky top-[72px] z-30 bg-black/90 backdrop-blur-md border-b border-white/5 py-6">
+      <div className="sticky top-[72px] z-30 bg-white/90 backdrop-blur-md border-b border-gray-100 py-6">
         <div className="container">
           <div className="flex flex-col lg:flex-row gap-8 items-center justify-between">
             {/* Brand Filter */}
             <div className="flex items-center gap-4 overflow-x-auto no-scrollbar w-full lg:w-auto pb-2 lg:pb-0">
               <button 
                 onClick={() => setSelectedBrand(null)}
-                className={`whitespace-nowrap px-6 py-2 text-[10px] uppercase tracking-widest font-bold border rounded-full transition-all ${!selectedBrand ? 'bg-gold border-gold text-black' : 'border-white/10 hover:border-gold/50'}`}
+                className={`whitespace-nowrap px-6 py-2 text-[10px] uppercase tracking-widest font-black border rounded-full transition-all ${!selectedBrand ? 'bg-luxury-red border-luxury-red text-white' : 'border-gray-200 hover:border-luxury-red/50 text-gray-500'}`}
               >
-                All Brands
+                Toutes les Marques
               </button>
               {brands.map(brand => (
                 <button 
                   key={brand}
                   onClick={() => setSelectedBrand(brand)}
-                  className={`whitespace-nowrap px-6 py-2 text-[10px] uppercase tracking-widest font-bold border rounded-full transition-all ${selectedBrand === brand ? 'bg-gold border-gold text-black' : 'border-white/10 hover:border-gold/50'}`}
+                  className={`whitespace-nowrap px-6 py-2 text-[10px] uppercase tracking-widest font-black border rounded-full transition-all ${selectedBrand === brand ? 'bg-luxury-red border-luxury-red text-white' : 'border-gray-200 hover:border-luxury-red/50 text-gray-500'}`}
                 >
                   {brand}
                 </button>
@@ -120,18 +121,18 @@ export default function Catalog() {
 
             {/* Search Bar */}
             <div className="relative w-full lg:w-96">
-              <Search className="absolute left-4 top-1/2 -translate-y-1/2 text-text-muted" size={16} />
+              <Search className="absolute left-4 top-1/2 -translate-y-1/2 text-gray-400" size={16} />
               <input 
                 type="text" 
-                placeholder="Search artifact..." 
+                placeholder="Rechercher un produit..." 
                 value={searchQuery}
                 onChange={(e) => setSearchQuery(e.target.value)}
-                className="w-full bg-white/5 border border-white/5 rounded-full py-3 pl-12 pr-6 text-xs font-light focus:border-gold/30 outline-none transition-all"
+                className="w-full bg-gray-50 border border-gray-100 rounded-full py-3 pl-12 pr-6 text-xs font-bold focus:border-luxury-red/30 outline-none transition-all"
               />
               {searchQuery && (
                 <button 
                   onClick={() => setSearchQuery('')}
-                  className="absolute right-4 top-1/2 -translate-y-1/2 text-text-muted hover:text-white"
+                  className="absolute right-4 top-1/2 -translate-y-1/2 text-gray-400 hover:text-black"
                 >
                   <X size={14} />
                 </button>
@@ -144,12 +145,12 @@ export default function Catalog() {
       <div className="container py-12 space-y-24">
         {(searchQuery || selectedBrand) ? (
           <section className="scroll-mt-32">
-            <div className="mb-8 border-l-4 border-gold pl-6">
-              <h2 className="text-2xl md:text-4xl font-serif uppercase tracking-wider">
-                {searchQuery ? `Search Results for "${searchQuery}"` : selectedBrand}
+            <div className="mb-8 border-l-4 border-luxury-red pl-6">
+              <h2 className="text-2xl md:text-4xl font-black uppercase tracking-tighter">
+                {searchQuery ? `Résultats pour "${searchQuery}"` : selectedBrand}
               </h2>
-              <p className="text-[10px] text-text-muted uppercase tracking-[0.3em] mt-2">
-                Showing {filteredProducts.length} artifacts found
+              <p className="text-[10px] text-gray-500 uppercase tracking-[0.3em] mt-2 font-bold">
+                Affichage de {filteredProducts.length} produits trouvés
               </p>
             </div>
             
@@ -161,8 +162,8 @@ export default function Catalog() {
               </div>
             ) : (
               <div className="py-40 text-center">
-                <p className="text-text-muted font-serif italic text-2xl">No artifacts found matching your criteria.</p>
-                <button onClick={() => {setSearchQuery(''); setSelectedBrand(null);}} className="text-gold uppercase tracking-[0.5em] text-[10px] font-bold mt-8 border-b border-gold pb-1">Reset Filters</button>
+                <p className="text-gray-400 font-bold text-2xl uppercase tracking-tighter">Aucun produit ne correspond à vos critères.</p>
+                <button onClick={() => {setSearchQuery(''); setSelectedBrand(null);}} className="text-luxury-red uppercase tracking-[0.5em] text-[10px] font-black mt-8 border-b-2 border-luxury-red pb-1">Réinitialiser les filtres</button>
               </div>
             )}
           </section>
@@ -172,21 +173,21 @@ export default function Catalog() {
             if (categoryProducts.length === 0) return null;
 
             const isExpanded = expandedCategories[category.slug];
-            const displayedProducts = isExpanded ? categoryProducts : categoryProducts.slice(0, 3);
+            const displayedProducts = isExpanded ? categoryProducts : categoryProducts.slice(0, 4);
 
             return (
               <section key={category.id} id={category.slug} className="scroll-mt-32">
-                <div className="flex items-end justify-between mb-8 border-l-4 border-gold pl-6">
+                <div className="flex items-end justify-between mb-8 border-l-4 border-luxury-red pl-6">
                   <div>
-                    <h2 className="text-2xl md:text-4xl font-serif uppercase tracking-wider">{category.name}</h2>
-                    <p className="text-[10px] text-text-muted uppercase tracking-[0.3em] mt-2">{category.description}</p>
+                    <h2 className="text-2xl md:text-4xl font-black uppercase tracking-tighter">{category.name}</h2>
+                    <p className="text-[10px] text-gray-500 uppercase tracking-[0.3em] mt-2 font-bold">{category.description}</p>
                   </div>
-                  {categoryProducts.length > 3 && (
+                  {categoryProducts.length > 4 && (
                     <button 
                       onClick={() => toggleCategory(category.slug)}
-                      className="hidden md:flex items-center gap-2 text-gold text-[10px] uppercase tracking-widest font-bold hover:underline"
+                      className="hidden md:flex items-center gap-2 text-luxury-red text-[10px] uppercase tracking-widest font-black hover:underline"
                     >
-                      {isExpanded ? 'Collapse' : 'Show more'} <ChevronRight size={14} className={isExpanded ? 'rotate-90' : ''} />
+                      {isExpanded ? 'Réduire' : 'Voir plus'} <ChevronRight size={14} className={isExpanded ? 'rotate-90' : ''} />
                     </button>
                   )}
                 </div>
@@ -197,13 +198,13 @@ export default function Catalog() {
                   ))}
                 </div>
 
-                {categoryProducts.length > 3 && (
+                {categoryProducts.length > 4 && (
                   <div className="mt-8 flex justify-center md:hidden">
                     <button 
                       onClick={() => toggleCategory(category.slug)}
-                      className="w-full py-4 border border-white/10 text-[10px] uppercase tracking-widest font-bold text-gold"
+                      className="w-full py-4 border border-gray-100 rounded-xl text-[10px] uppercase tracking-widest font-black text-luxury-red bg-gray-50"
                     >
-                      {isExpanded ? 'Collapse list' : `Show more (${categoryProducts.length - 3} products)`}
+                      {isExpanded ? 'Réduire la liste' : `Voir plus (${categoryProducts.length - 4} produits)`}
                     </button>
                   </div>
                 )}
@@ -213,26 +214,24 @@ export default function Catalog() {
         )}
 
         {/* Branding Info Section */}
-        <section className="py-20 border-t border-white/5 bg-[#050505]">
-          <div className="max-w-4xl mx-auto text-center space-y-8">
-            <h2 className="text-3xl font-serif italic text-gold">Monalisa Nutrition</h2>
-            <p className="text-sm text-text-muted leading-relaxed">
-              The leader in sports nutrition in the Kingdom. We offer a vast selection of authentic supplements accredited by the highest standards: Whey Protein, Creatine, BCAA, Omega 3, Mass Gainer, and Multivitamins.
+        <section className="py-20 border-t border-gray-100 bg-gray-50 rounded-3xl overflow-hidden">
+          <div className="max-w-4xl mx-auto text-center space-y-8 px-6">
+            <h2 className="text-3xl font-black uppercase tracking-tighter">Monaliza <span className="red-gradient-text italic">Nutrition</span></h2>
+            <p className="text-sm text-gray-600 font-medium leading-relaxed">
+              Le leader de la nutrition sportive au Royaume. Nous proposons une vaste sélection de compléments authentiques accrédités par les normes les plus élevées : Protéine Whey, Créatine, BCAA, Oméga 3, Mass Gainer et Multivitamines.
             </p>
-            <div className="flex flex-wrap justify-center gap-8 pt-8 opacity-50 transition-all">
-              <span className="text-[10px] font-bold uppercase tracking-widest">Official Partners</span>
-              <span className="text-[10px] font-bold uppercase tracking-widest">MuscleTech</span>
-              <span className="text-[10px] font-bold uppercase tracking-widest">Dymatize</span>
-              <span className="text-[10px] font-bold uppercase tracking-widest">Biotech USA</span>
-              <span className="text-[10px] font-bold uppercase tracking-widest">Applied Nutrition</span>
+            <div className="flex flex-wrap justify-center gap-8 pt-8 opacity-30 grayscale hover:grayscale-0 transition-all duration-700">
+              <span className="text-[10px] font-black uppercase tracking-widest text-black">Partenaires Officiels</span>
+              <span className="text-[10px] font-black uppercase tracking-widest text-black">MuscleTech</span>
+              <span className="text-[10px] font-black uppercase tracking-widest text-black">Dymatize</span>
+              <span className="text-[10px] font-black uppercase tracking-widest text-black">Biotech USA</span>
+              <span className="text-[10px] font-black uppercase tracking-widest text-black">Applied Nutrition</span>
             </div>
           </div>
         </section>
       </div>
 
-      <footer className="py-12 border-t border-white/5 bg-black text-center">
-        <p className="text-[8px] uppercase tracking-[0.5em] text-text-muted">Monalisa Nutrition — The Standard of Excellence</p>
-      </footer>
+      <Footer />
       
       <div className="h-24 md:hidden" />
     </main>
