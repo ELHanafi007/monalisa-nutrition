@@ -11,19 +11,16 @@ export const MobileNav = () => {
   const { totalItems } = useCart();
 
   const navItems = [
-    { icon: Home, label: 'Ritual', path: '/' },
-    { icon: ShoppingBag, label: 'Archive', path: '/catalog' },
+    { icon: Home, label: 'Accueil', path: '/' },
+    { icon: ShoppingBag, label: 'Boutique', path: '/catalog' },
     { icon: Crown, label: 'Elite', path: '/concierge', special: true },
-    { icon: Compass, label: 'Sanctuary', path: '/about' },
+    { icon: Compass, label: 'Infos', path: '/about' },
   ];
 
   return (
     <div className="md:hidden fixed bottom-6 left-1/2 -translate-x-1/2 w-[90%] max-w-sm z-[100]">
-      {/* Luxury Dock Container */}
-      <div className="bg-black/40 backdrop-blur-3xl border border-white/10 rounded-full px-6 py-4 shadow-[0_20px_50px_rgba(0,0,0,0.8)] relative overflow-hidden group">
-        {/* Subtle Gold Reflection on the Dock */}
-        <div className="absolute inset-0 bg-gradient-to-tr from-gold/5 via-transparent to-white/5 opacity-50 pointer-events-none" />
-        
+      {/* Light Modern Dock Container */}
+      <div className="bg-white/80 backdrop-blur-xl border border-gray-100 rounded-3xl px-6 py-4 shadow-[0_10px_30px_rgba(0,0,0,0.1)] relative overflow-hidden group">
         <div className="flex justify-between items-center relative z-10">
           {navItems.map((item) => {
             const isActive = pathname === item.path;
@@ -33,18 +30,18 @@ export const MobileNav = () => {
                 <Link key={item.path} href={item.path} className="relative -top-2">
                   <motion.div
                     whileTap={{ scale: 0.9, y: 5 }}
-                    className="w-14 h-14 bg-gold rounded-full flex items-center justify-center shadow-[0_0_20px_rgba(212,175,55,0.4)] border-2 border-black group/special"
+                    className="w-14 h-14 bg-black rounded-full flex items-center justify-center shadow-[0_10px_20px_rgba(0,0,0,0.2)] border-4 border-white group/special"
                   >
-                    <Crown size={24} className="text-black" />
+                    <Crown size={24} className="text-white" />
                     
-                    {/* Animated Gold Ring around the special button */}
+                    {/* Animated Pulse around the special button */}
                     <motion.div 
-                      animate={{ scale: [1, 1.2, 1], opacity: [0.5, 0, 0.5] }}
+                      animate={{ scale: [1, 1.2, 1], opacity: [0.3, 0, 0.3] }}
                       transition={{ duration: 3, repeat: Infinity, ease: "easeInOut" }}
-                      className="absolute inset-0 border border-gold rounded-full"
+                      className="absolute inset-0 border-2 border-black rounded-full"
                     />
                   </motion.div>
-                  <span className="absolute -bottom-6 left-1/2 -translate-x-1/2 text-[7px] uppercase tracking-[0.3em] font-black text-gold">
+                  <span className="absolute -bottom-6 left-1/2 -translate-x-1/2 text-[8px] uppercase tracking-widest font-black text-black">
                     {item.label}
                   </span>
                 </Link>
@@ -55,23 +52,23 @@ export const MobileNav = () => {
               <Link key={item.path} href={item.path} className="relative flex flex-col items-center gap-1">
                 <motion.div
                   whileTap={{ scale: 0.8 }}
-                  className={`${isActive ? 'text-gold' : 'text-text-muted'} transition-all duration-500`}
+                  className={`${isActive ? 'text-black' : 'text-gray-400'} transition-all duration-300`}
                 >
-                  <item.icon size={18} strokeWidth={isActive ? 2.5 : 1.5} />
+                  <item.icon size={20} strokeWidth={isActive ? 3 : 2} />
                   
                   {isActive && (
                     <motion.div 
                       layoutId="navIndicator"
-                      className="absolute -top-2 left-1/2 -translate-x-1/2 w-1 h-1 bg-gold rounded-full shadow-[0_0_10px_#d4af37]"
+                      className="absolute -top-2 left-1/2 -translate-x-1/2 w-1.5 h-1.5 bg-black rounded-full"
                     />
                   )}
                 </motion.div>
-                <span className={`text-[7px] uppercase tracking-[0.2em] font-bold ${isActive ? 'text-gold' : 'text-text-muted'} transition-colors duration-500`}>
+                <span className={`text-[8px] uppercase tracking-widest font-black ${isActive ? 'text-black' : 'text-gray-400'} transition-colors duration-300`}>
                   {item.label}
                 </span>
                 
-                {item.label === 'Archive' && totalItems > 0 && (
-                  <span className="absolute -top-2 -right-2 bg-gold text-black text-[7px] w-3.5 h-3.5 rounded-full flex items-center justify-center font-black border border-black">
+                {item.label === 'Boutique' && totalItems > 0 && (
+                  <span className="absolute -top-2 -right-2 bg-black text-white text-[7px] w-4 h-4 rounded-full flex items-center justify-center font-black border-2 border-white">
                     {totalItems}
                   </span>
                 )}
