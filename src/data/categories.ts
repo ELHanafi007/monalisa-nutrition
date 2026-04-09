@@ -76,6 +76,13 @@ const defaultCategories: Category[] = [
     slug: "whey-proteine",
     description: "Rapid recovery and lean muscle building.",
     image: "/images/gold-standard-whey.webp"
+  },
+  {
+    id: "cat11",
+    name: "Accessoires",
+    slug: "accessoires",
+    description: "High-quality gear and essentials for your fitness journey.",
+    image: "/images/products/shaker-high-tech-quality.webp"
   }
 ];
 
