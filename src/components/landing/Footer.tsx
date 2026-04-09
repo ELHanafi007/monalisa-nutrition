@@ -2,7 +2,7 @@
 
 import Link from 'next/link';
 import Image from 'next/image';
-import { Facebook as FacebookIcon, Instagram as InstagramIcon, Music, MessageCircle, Phone, Mail, MapPin, Clock } from 'lucide-react';
+import { Music, MessageCircle, Phone, Mail, MapPin, Clock, User } from 'lucide-react';
 
 export const Footer = () => {
   return (
@@ -64,10 +64,10 @@ export const Footer = () => {
             <h3 className="font-bold text-black uppercase tracking-wider mb-8">Suivez-nous</h3>
             <div className="flex gap-4">
               <a href="#" className="w-10 h-10 bg-gray-100 rounded-full flex items-center justify-center hover:bg-black hover:text-white transition-all">
-                <FacebookIcon size={20} />
+                <Mail size={20} />
               </a>
               <a href="#" className="w-10 h-10 bg-gray-100 rounded-full flex items-center justify-center hover:bg-black hover:text-white transition-all">
-                <InstagramIcon size={20} />
+                <User size={20} />
               </a>
               <a href="#" className="w-10 h-10 bg-gray-100 rounded-full flex items-center justify-center hover:bg-black hover:text-white transition-all">
                 <Music size={20} />
