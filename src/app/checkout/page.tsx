@@ -19,7 +19,7 @@ export default function Checkout() {
 
   if (cart.length === 0) {
     return (
-      <main className="min-h-screen bg-white text-black">
+      <main className="min-h-screen bg-bg-main text-text-main">
         <Header />
         <div className="container py-40 text-center">
           <motion.div
@@ -27,11 +27,11 @@ export default function Checkout() {
             animate={{ opacity: 1, y: 0 }}
             className="max-w-md mx-auto space-y-8"
           >
-            <div className="w-24 h-24 bg-gray-50 rounded-full flex items-center justify-center mx-auto">
-              <Trash2 size={40} className="text-gray-300" />
+            <div className="w-24 h-24 bg-surface-hover rounded-full flex items-center justify-center mx-auto">
+              <Trash2 size={40} className="text-text-muted opacity-50" />
             </div>
             <h1 className="text-3xl font-black uppercase tracking-tighter">Votre Panier est Vide</h1>
-            <p className="text-gray-500 font-medium leading-relaxed">
+            <p className="text-text-muted font-medium leading-relaxed">
               Il semble que vous n'ayez pas encore ajouté de produits à votre collection.
             </p>
             <Link href="/catalog" className="luxury-button w-full">
@@ -45,14 +45,14 @@ export default function Checkout() {
   }
 
   return (
-    <main className="min-h-screen bg-white text-black">
+    <main className="min-h-screen bg-bg-main text-text-main transition-colors duration-300">
       <Header />
 
       <div className="container pt-32 pb-20">
         <div className="flex flex-col lg:flex-row gap-16">
           {/* Order Details */}
           <div className="flex-1 space-y-12">
-            <div className="border-b border-gray-100 pb-8">
+            <div className="border-b border-border pb-8">
               <h1 className="text-4xl md:text-5xl font-black uppercase tracking-tighter">Finaliser <span className="red-gradient-text italic">Commande</span></h1>
               <p className="text-luxury-red font-black uppercase tracking-widest text-[10px] mt-2">Vous avez {totalItems} articles dans votre panier</p>
             </div>
@@ -64,7 +64,7 @@ export default function Checkout() {
                   layout
                   initial={{ opacity: 0 }}
                   animate={{ opacity: 1 }}
-                  className="flex flex-col sm:flex-row items-center gap-6 p-6 bg-gray-50 rounded-3xl border border-gray-100 group transition-all hover:bg-white hover:shadow-xl"
+                  className="flex flex-col sm:flex-row items-center gap-6 p-6 bg-surface rounded-3xl border border-border group transition-all hover:shadow-xl"
                 >
                   <div className="relative w-24 h-24 bg-white rounded-2xl overflow-hidden p-2 shadow-sm shrink-0">
                     <Image src={item.image} alt={item.name} fill className="object-contain p-2" />
@@ -72,19 +72,19 @@ export default function Checkout() {
                   
                   <div className="flex-1 text-center sm:text-left">
                     <p className="text-[10px] text-luxury-red font-black uppercase tracking-widest mb-1">{item.brand}</p>
-                    <h3 className="font-black uppercase tracking-tight text-sm leading-tight mb-2">{item.name}</h3>
-                    <p className="text-lg font-black text-black">{item.price} MAD</p>
+                    <h3 className="font-black uppercase tracking-tight text-sm leading-tight mb-2 text-text-main">{item.name}</h3>
+                    <p className="text-lg font-black text-text-main">{item.price} MAD</p>
                   </div>
 
                   <div className="flex items-center gap-6">
-                    <div className="flex items-center border border-gray-200 rounded-xl bg-white p-1">
-                      <button onClick={() => updateQuantity(item.id, Math.max(1, item.quantity - 1))} className="p-2 hover:text-luxury-red transition-colors"><Minus size={14} /></button>
-                      <span className="w-8 text-center text-sm font-black">{item.quantity}</span>
-                      <button onClick={() => updateQuantity(item.id, item.quantity + 1)} className="p-2 hover:text-luxury-red transition-colors"><Plus size={14} /></button>
+                    <div className="flex items-center border border-border rounded-xl bg-surface-hover p-1">
+                      <button onClick={() => updateQuantity(item.id, Math.max(1, item.quantity - 1))} className="p-2 hover:text-luxury-red transition-colors text-text-main"><Minus size={14} /></button>
+                      <span className="w-8 text-center text-sm font-black text-text-main">{item.quantity}</span>
+                      <button onClick={() => updateQuantity(item.id, item.quantity + 1)} className="p-2 hover:text-luxury-red transition-colors text-text-main"><Plus size={14} /></button>
                     </div>
                     <button 
                       onClick={() => removeFromCart(item.id)}
-                      className="text-gray-300 hover:text-luxury-red transition-colors"
+                      className="text-text-muted hover:text-luxury-red transition-colors"
                     >
                       <Trash2 size={20} />
                     </button>
@@ -94,20 +94,20 @@ export default function Checkout() {
             </div>
 
             {/* Delivery Info Form Placeholder */}
-            <div className="p-10 bg-gray-50 rounded-[2.5rem] border border-gray-100 space-y-8">
+            <div className="p-10 bg-surface rounded-[2.5rem] border border-border space-y-8">
                <h2 className="text-2xl font-black uppercase tracking-tighter">Informations de <span className="red-gradient-text italic">Livraison</span></h2>
                <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                   <div className="space-y-2">
-                    <label className="text-[10px] uppercase tracking-widest font-black text-gray-400 ml-4">Nom Complet</label>
-                    <input type="text" placeholder="Ex: Ahmed El Amrani" className="w-full bg-white border border-gray-100 rounded-2xl py-4 px-6 focus:border-luxury-red outline-none font-bold" />
+                    <label className="text-[10px] uppercase tracking-widest font-black text-text-muted ml-4">Nom Complet</label>
+                    <input type="text" placeholder="Ex: Ahmed El Amrani" className="w-full bg-bg-main border border-border rounded-2xl py-4 px-6 focus:border-luxury-red outline-none font-bold text-text-main placeholder:text-text-muted/50" />
                   </div>
                   <div className="space-y-2">
-                    <label className="text-[10px] uppercase tracking-widest font-black text-gray-400 ml-4">Téléphone</label>
-                    <input type="tel" placeholder="+212 6..." className="w-full bg-white border border-gray-100 rounded-2xl py-4 px-6 focus:border-luxury-red outline-none font-bold" />
+                    <label className="text-[10px] uppercase tracking-widest font-black text-text-muted ml-4">Téléphone</label>
+                    <input type="tel" placeholder="+212 6..." className="w-full bg-bg-main border border-border rounded-2xl py-4 px-6 focus:border-luxury-red outline-none font-bold text-text-main placeholder:text-text-muted/50" />
                   </div>
                   <div className="space-y-2 md:col-span-2">
-                    <label className="text-[10px] uppercase tracking-widest font-black text-gray-400 ml-4">Adresse de Livraison</label>
-                    <textarea placeholder="Votre adresse exacte à Casablanca, Marrakech, etc." className="w-full bg-white border border-gray-100 rounded-2xl py-4 px-6 focus:border-luxury-red outline-none font-bold min-h-[120px]" />
+                    <label className="text-[10px] uppercase tracking-widest font-black text-text-muted ml-4">Adresse de Livraison</label>
+                    <textarea placeholder="Votre adresse exacte à Casablanca, Marrakech, etc." className="w-full bg-bg-main border border-border rounded-2xl py-4 px-6 focus:border-luxury-red outline-none font-bold text-text-main placeholder:text-text-muted/50 min-h-[120px]" />
                   </div>
                </div>
             </div>
@@ -115,36 +115,36 @@ export default function Checkout() {
 
           {/* Summary Sidebar */}
           <div className="lg:w-[400px]">
-            <div className="sticky top-32 p-10 bg-black text-white rounded-[2.5rem] shadow-2xl space-y-10 relative overflow-hidden">
-              <div className="absolute top-0 left-0 w-full h-full bg-gradient-to-br from-luxury-red/20 to-transparent opacity-50" />
+            <div className="sticky top-32 p-10 bg-surface text-text-main rounded-[2.5rem] shadow-2xl space-y-10 relative overflow-hidden border border-border">
+              <div className="absolute top-0 left-0 w-full h-full bg-gradient-to-br from-luxury-red/10 to-transparent opacity-50" />
               
               <h2 className="text-2xl font-black uppercase tracking-tighter relative z-10">Résumé de la <span className="red-gradient-text italic">Commande</span></h2>
               
               <div className="space-y-4 relative z-10">
-                <div className="flex justify-between items-center text-gray-400 text-sm font-bold">
+                <div className="flex justify-between items-center text-text-muted text-sm font-bold">
                   <span className="uppercase tracking-widest">Sous-total</span>
                   <span>{totalPrice} MAD</span>
                 </div>
-                <div className="flex justify-between items-center text-gray-400 text-sm font-bold">
+                <div className="flex justify-between items-center text-text-muted text-sm font-bold">
                   <span className="uppercase tracking-widest">Livraison</span>
                   <span>{deliveryFee} MAD</span>
                 </div>
-                <div className="pt-4 border-t border-white/10 flex justify-between items-center">
+                <div className="pt-4 border-t border-border flex justify-between items-center">
                   <span className="text-lg font-black uppercase tracking-tighter">Total</span>
-                  <span className="text-3xl font-black text-white tracking-tighter">{grandTotal} MAD</span>
+                  <span className="text-3xl font-black text-text-main tracking-tighter">{grandTotal} MAD</span>
                 </div>
               </div>
 
               <div className="space-y-4 pt-6 relative z-10">
-                <div className="flex items-center gap-4 text-[10px] uppercase tracking-widest font-black text-gray-400">
+                <div className="flex items-center gap-4 text-[10px] uppercase tracking-widest font-black text-text-muted">
                   <ShieldCheck size={16} className="text-luxury-red" />
                   Paiement 100% Sécurisé
                 </div>
-                <div className="flex items-center gap-4 text-[10px] uppercase tracking-widest font-black text-gray-400">
+                <div className="flex items-center gap-4 text-[10px] uppercase tracking-widest font-black text-text-muted">
                   <Truck size={16} className="text-luxury-red" />
                   Livraison 24h/48h au Maroc
                 </div>
-                <div className="flex items-center gap-4 text-[10px] uppercase tracking-widest font-black text-gray-400">
+                <div className="flex items-center gap-4 text-[10px] uppercase tracking-widest font-black text-text-muted">
                   <CreditCard size={16} className="text-luxury-red" />
                   Paiement à la Livraison
                 </div>
@@ -153,10 +153,9 @@ export default function Checkout() {
               <button 
                 onClick={() => {
                   setIsOrdering(true);
-                  // WhatsApp ordering logic would go here
                   setTimeout(() => {
                     const message = `Bonjour Monaliza House, je souhaite commander : ${cart.map(i => `${i.quantity}x ${i.name}`).join(', ')}. Total: ${grandTotal} MAD.`;
-                    window.open(`https://wa.me/212600000000?text=${encodeURIComponent(message)}`, '_blank');
+                    window.open(`https://wa.me/212662802351?text=${encodeURIComponent(message)}`, '_blank');
                     setIsOrdering(false);
                   }, 1000);
                 }}
@@ -166,7 +165,7 @@ export default function Checkout() {
                 {isOrdering ? 'Traitement...' : 'Confirmer sur WhatsApp'}
               </button>
               
-              <p className="text-[8px] text-center text-gray-500 uppercase tracking-widest font-black relative z-10">
+              <p className="text-[8px] text-center text-text-muted uppercase tracking-widest font-black relative z-10">
                 En cliquant sur confirmer, vous serez redirigé vers notre conciergerie WhatsApp pour valider les détails.
               </p>
             </div>

@@ -6,19 +6,40 @@
   --color-gold-muted: #b8860b;
   --color-luxury-red: #8B0000;
   --color-luxury-red-bright: #E31837;
-  --color-surface: #ffffff;
-  --color-surface-hover: #f9f9f9;
-  --color-border: #eeeeee;
-  --color-text-muted: #666666;
+  
+  --color-surface: var(--surface);
+  --color-surface-hover: var(--surface-hover);
+  --color-border: var(--border);
+  --color-text-main: var(--text-main);
+  --color-text-muted: var(--text-muted);
+  --color-bg-main: var(--bg-main);
   
   --font-serif: "Playfair Display", serif;
   --font-sans: "Inter", sans-serif;
 }
 
+:root {
+  --bg-main: #ffffff;
+  --surface: #ffffff;
+  --surface-hover: #f9f9f9;
+  --border: #eeeeee;
+  --text-main: #000000;
+  --text-muted: #666666;
+}
+
+.dark {
+  --bg-main: #0a0a0a;
+  --surface: #111111;
+  --surface-hover: #1a1111;
+  --border: #222222;
+  --text-main: #ffffff;
+  --text-muted: #888888;
+}
+
 /* Custom Overrides */
 @layer base {
   body {
-    @apply bg-white text-black font-sans antialiased m-0 p-0 selection:bg-luxury-red selection:text-white;
+    @apply bg-bg-main text-text-main font-sans antialiased m-0 p-0 selection:bg-luxury-red selection:text-white transition-colors duration-300;
     -webkit-font-smoothing: antialiased;
     scroll-behavior: smooth;
   }
@@ -32,7 +53,7 @@
     width: 3px;
   }
   ::-webkit-scrollbar-track {
-    @apply bg-white;
+    @apply bg-bg-main;
   }
   ::-webkit-scrollbar-thumb {
     @apply bg-luxury-red/30 hover:bg-luxury-red transition-colors;

@@ -6,6 +6,7 @@ import { MobileNav } from "@/components/MobileNav";
 import { Toast } from "@/components/Toast";
 import { NewsletterModal } from "@/components/NewsletterModal";
 import { PageTransition } from "@/components/PageTransition";
+import { ThemeProvider } from "@/providers/ThemeProvider";
 
 export const metadata: Metadata = {
   title: "Monalisa Nutrition | The Standard of Excellence",
@@ -18,17 +19,19 @@ export default function RootLayout({
   children: React.ReactNode;
 }>) {
   return (
-    <html lang="en">
+    <html lang="fr" suppressHydrationWarning>
       <body>
-        <CartProvider>
-          <Preloader />
-          <PageTransition>
-            {children}
-          </PageTransition>
-          <Toast />
-          <NewsletterModal />
-          <MobileNav />
-        </CartProvider>
+        <ThemeProvider>
+          <CartProvider>
+            <Preloader />
+            <PageTransition>
+              {children}
+            </PageTransition>
+            <Toast />
+            <NewsletterModal />
+            <MobileNav />
+          </CartProvider>
+        </ThemeProvider>
       </body>
     </html>
   );
