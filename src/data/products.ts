@@ -265,16 +265,7 @@ const defaultProducts: Product[] = [
     benefits: ["Monohydrate", "Multivitamins"],
     specs: [{ label: "Includes", value: "Creatine + Vitamins" }]
   }
-];
-
-// Helper to get products (merging localStorage)
-export const getProducts = (): Product[] => {
-  if (typeof window === 'undefined') return defaultProducts;
-  const saved = localStorage.getItem('monalisa_dynamic_products');
-  if (saved) {
-    try {
-      const dynamic = JSON.parse(saved);
-      return [...defaultProducts, ...dynami,
+  ,
 
   // --- SCRAPED PRODUCTS ---
   {
@@ -1838,6 +1829,15 @@ export const getProducts = (): Product[] => {
     specs: [{"label":"Format","value":"Original"}]
   }
 ];
+
+// Helper to get products (merging localStorage)
+export const getProducts = (): Product[] => {
+  if (typeof window === 'undefined') return defaultProducts;
+  const saved = localStorage.getItem('monalisa_dynamic_products');
+  if (saved) {
+    try {
+      const dynamic = JSON.parse(saved);
+      return [...defaultProducts, ...dynamic];
     } catch (e) {
       return defaultProducts;
     }
