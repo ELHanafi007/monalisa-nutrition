@@ -30,7 +30,7 @@ export const MobileNav = () => {
                 <Link key={item.path} href={item.path} className="relative -top-2">
                   <motion.div
                     whileTap={{ scale: 0.9, y: 5 }}
-                    className="w-14 h-14 bg-black rounded-full flex items-center justify-center shadow-[0_10px_20px_rgba(0,0,0,0.2)] border-4 border-white group/special"
+                    className="w-14 h-14 bg-luxury-red rounded-full flex items-center justify-center shadow-[0_10px_20px_rgba(139,0,0,0.2)] border-4 border-white group/special"
                   >
                     <Crown size={24} className="text-white" />
                     
@@ -38,10 +38,10 @@ export const MobileNav = () => {
                     <motion.div 
                       animate={{ scale: [1, 1.2, 1], opacity: [0.3, 0, 0.3] }}
                       transition={{ duration: 3, repeat: Infinity, ease: "easeInOut" }}
-                      className="absolute inset-0 border-2 border-black rounded-full"
+                      className="absolute inset-0 border-2 border-luxury-red rounded-full"
                     />
                   </motion.div>
-                  <span className="absolute -bottom-6 left-1/2 -translate-x-1/2 text-[8px] uppercase tracking-widest font-black text-black">
+                  <span className="absolute -bottom-6 left-1/2 -translate-x-1/2 text-[8px] uppercase tracking-widest font-black text-luxury-red">
                     {item.label}
                   </span>
                 </Link>
@@ -52,23 +52,23 @@ export const MobileNav = () => {
               <Link key={item.path} href={item.path} className="relative flex flex-col items-center gap-1">
                 <motion.div
                   whileTap={{ scale: 0.8 }}
-                  className={`${isActive ? 'text-black' : 'text-gray-400'} transition-all duration-300`}
+                  className={`${isActive ? 'text-luxury-red' : 'text-gray-400'} transition-all duration-300`}
                 >
                   <item.icon size={20} strokeWidth={isActive ? 3 : 2} />
                   
                   {isActive && (
                     <motion.div 
                       layoutId="navIndicator"
-                      className="absolute -top-2 left-1/2 -translate-x-1/2 w-1.5 h-1.5 bg-black rounded-full"
+                      className="absolute -top-2 left-1/2 -translate-x-1/2 w-1.5 h-1.5 bg-luxury-red rounded-full"
                     />
                   )}
                 </motion.div>
-                <span className={`text-[8px] uppercase tracking-widest font-black ${isActive ? 'text-black' : 'text-gray-400'} transition-colors duration-300`}>
+                <span className={`text-[8px] uppercase tracking-widest font-black ${isActive ? 'text-luxury-red' : 'text-gray-400'} transition-colors duration-300`}>
                   {item.label}
                 </span>
                 
                 {item.label === 'Boutique' && totalItems > 0 && (
-                  <span className="absolute -top-2 -right-2 bg-black text-white text-[7px] w-4 h-4 rounded-full flex items-center justify-center font-black border-2 border-white">
+                  <span className="absolute -top-2 -right-2 bg-luxury-red text-white text-[7px] w-4 h-4 rounded-full flex items-center justify-center font-black border-2 border-white">
                     {totalItems}
                   </span>
                 )}

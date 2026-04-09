@@ -48,13 +48,13 @@ export const Header = () => {
           >
             <Search size={22} />
           </button>
-          <Link href="/account" className="p-2 text-gray-600 hover:bg-gray-100 rounded-full hidden sm:block">
+          <Link href="/account" className="p-2 text-gray-600 hover:bg-red-50 hover:text-luxury-red rounded-full hidden sm:block transition-colors">
             <User size={22} />
           </Link>
-          <Link href="/checkout" className="p-2 text-gray-600 hover:bg-gray-100 rounded-full relative group">
+          <Link href="/checkout" className="p-2 text-gray-600 hover:bg-red-50 hover:text-luxury-red rounded-full relative group transition-colors">
             <ShoppingCart size={22} />
             {totalItems > 0 && (
-              <span className="absolute top-1 right-1 bg-black text-white text-[10px] w-5 h-5 rounded-full flex items-center justify-center font-bold border-2 border-white group-hover:scale-110 transition-transform">
+              <span className="absolute top-1 right-1 bg-luxury-red text-white text-[10px] w-5 h-5 rounded-full flex items-center justify-center font-bold border-2 border-white group-hover:scale-110 transition-transform shadow-sm">
                 {totalItems}
               </span>
             )}

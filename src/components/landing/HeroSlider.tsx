@@ -7,19 +7,19 @@ import { ChevronLeft, ChevronRight } from 'lucide-react';
 
 const slides = [
   {
-    image: "/images/the-ritual.jpeg",
+    image: "/images/hero/pexels-victorfreitas-949128.jpg",
     title: "Performance Elite",
-    subtitle: "Découvrez notre nouvelle collection"
+    subtitle: "Découvrez l'excellence de la nutrition sportive"
   },
   {
-    image: "/images/the-laboratory.jpeg",
-    title: "Pureté Garantie",
-    subtitle: "Sourcing global des meilleurs ingrédients"
+    image: "/images/hero/pexels-tima-miroshnichenko-5327555.jpg",
+    title: "Pureté Absolue",
+    subtitle: "Des formules conçues pour les champions"
   },
   {
-    image: "/images/the-community.jpeg",
-    title: "Communauté Monalisa",
-    subtitle: "Rejoignez l'élite du fitness au Maroc"
+    image: "/images/hero/pexels-sarazhizmailov-13104546.jpg",
+    title: "Votre Rituel",
+    subtitle: "Atteignez vos objectifs avec Monaliza House"
   }
 ];
 
@@ -37,14 +37,14 @@ export const HeroSlider = () => {
   const prevSlide = () => setCurrent((prev) => (prev - 1 + slides.length) % slides.length);
 
   return (
-    <section className="relative h-[400px] md:h-[600px] overflow-hidden bg-black">
+    <section className="relative h-[500px] md:h-[750px] overflow-hidden bg-white">
       <AnimatePresence mode="wait">
         <motion.div
           key={current}
-          initial={{ opacity: 0 }}
-          animate={{ opacity: 1 }}
+          initial={{ opacity: 0, scale: 1.05 }}
+          animate={{ opacity: 1, scale: 1 }}
           exit={{ opacity: 0 }}
-          transition={{ duration: 1 }}
+          transition={{ duration: 1.2, ease: [0.4, 0, 0.2, 1] }}
           className="absolute inset-0"
         >
           <Image
@@ -52,49 +52,64 @@ export const HeroSlider = () => {
             alt={slides[current].title}
             fill
             priority
-            className="object-cover brightness-75"
+            className="object-cover brightness-[0.85]"
           />
-          <div className="absolute inset-0 bg-gradient-to-t from-black/60 to-transparent" />
           
-          <div className="absolute inset-0 flex items-center justify-center text-center px-4">
-            <motion.div
-              initial={{ y: 20, opacity: 0 }}
-              animate={{ y: 0, opacity: 1 }}
-              transition={{ delay: 0.5 }}
-              className="max-w-2xl"
-            >
-              <h2 className="text-4xl md:text-7xl font-bold text-white mb-4 uppercase tracking-tighter">
-                {slides[current].title}
-              </h2>
-              <p className="text-lg md:text-2xl text-white/80 font-medium">
-                {slides[current].subtitle}
-              </p>
-            </motion.div>
+          {/* Luxury Gradient Overlays */}
+          <div className="absolute inset-0 bg-gradient-to-r from-black/60 via-transparent to-transparent" />
+          <div className="absolute inset-0 bg-gradient-to-t from-luxury-red/20 via-transparent to-transparent" />
+          
+          <div className="absolute inset-0 flex items-center justify-start container mx-auto px-6 md:px-12">
+            <div className="max-w-3xl text-left">
+              <motion.div
+                initial={{ x: -30, opacity: 0 }}
+                animate={{ x: 0, opacity: 1 }}
+                transition={{ delay: 0.5, duration: 0.8 }}
+              >
+                <span className="inline-block px-4 py-1.5 bg-luxury-red text-white text-[10px] font-black uppercase tracking-[0.3em] mb-6 rounded-full">
+                  Monaliza Standard
+                </span>
+                <h2 className="text-5xl md:text-8xl font-black text-white mb-6 uppercase tracking-tighter leading-[0.9]">
+                  {slides[current].title.split(' ')[0]} <br />
+                  <span className="red-gradient-text italic">{slides[current].title.split(' ')[1]}</span>
+                </h2>
+                <p className="text-xl md:text-2xl text-white/90 font-medium mb-10 max-w-xl leading-relaxed">
+                  {slides[current].subtitle}
+                </p>
+                <div className="flex gap-4">
+                   <button className="luxury-button">
+                      Découvrir la gamme
+                   </button>
+                </div>
+              </motion.div>
+            </div>
           </div>
         </motion.div>
       </AnimatePresence>
 
       {/* Navigation Arrows */}
-      <button 
-        onClick={prevSlide}
-        className="absolute left-4 top-1/2 -translate-y-1/2 p-2 rounded-full bg-white/10 hover:bg-white/20 text-white backdrop-blur-sm transition-all z-10"
-      >
-        <ChevronLeft size={32} />
-      </button>
-      <button 
-        onClick={nextSlide}
-        className="absolute right-4 top-1/2 -translate-y-1/2 p-2 rounded-full bg-white/10 hover:bg-white/20 text-white backdrop-blur-sm transition-all z-10"
-      >
-        <ChevronRight size={32} />
-      </button>
+      <div className="absolute bottom-12 right-12 flex gap-4 z-10">
+        <button 
+          onClick={prevSlide}
+          className="p-4 rounded-full border border-white/20 text-white hover:bg-white hover:text-black transition-all backdrop-blur-md"
+        >
+          <ChevronLeft size={24} />
+        </button>
+        <button 
+          onClick={nextSlide}
+          className="p-4 rounded-full border border-white/20 text-white hover:bg-white hover:text-black transition-all backdrop-blur-md"
+        >
+          <ChevronRight size={24} />
+        </button>
+      </div>
 
       {/* Indicators */}
-      <div className="absolute bottom-8 left-1/2 -translate-x-1/2 flex gap-3 z-10">
+      <div className="absolute bottom-12 left-12 flex gap-2 z-10">
         {slides.map((_, i) => (
           <button
             key={i}
             onClick={() => setCurrent(i)}
-            className={`w-3 h-3 rounded-full transition-all ${current === i ? 'bg-white scale-125' : 'bg-white/30 hover:bg-white/50'}`}
+            className={`h-1 transition-all duration-500 rounded-full ${current === i ? 'w-12 bg-luxury-red' : 'w-6 bg-white/30 hover:bg-white/50'}`}
           />
         ))}
       </div>

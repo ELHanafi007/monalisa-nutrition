@@ -4,10 +4,12 @@
 @theme {
   --color-gold: #d4af37;
   --color-gold-muted: #b8860b;
-  --color-surface: #0a0a0a;
-  --color-surface-hover: #151515;
-  --color-border: #222222;
-  --color-text-muted: #888888;
+  --color-luxury-red: #8B0000;
+  --color-luxury-red-bright: #E31837;
+  --color-surface: #ffffff;
+  --color-surface-hover: #f9f9f9;
+  --color-border: #eeeeee;
+  --color-text-muted: #666666;
   
   --font-serif: "Playfair Display", serif;
   --font-sans: "Inter", sans-serif;
@@ -16,7 +18,7 @@
 /* Custom Overrides */
 @layer base {
   body {
-    @apply bg-black text-white font-sans antialiased m-0 p-0 selection:bg-gold selection:text-black;
+    @apply bg-white text-black font-sans antialiased m-0 p-0 selection:bg-luxury-red selection:text-white;
     -webkit-font-smoothing: antialiased;
     scroll-behavior: smooth;
   }
@@ -30,10 +32,10 @@
     width: 3px;
   }
   ::-webkit-scrollbar-track {
-    @apply bg-black;
+    @apply bg-white;
   }
   ::-webkit-scrollbar-thumb {
-    @apply bg-gold/30 hover:bg-gold transition-colors;
+    @apply bg-luxury-red/30 hover:bg-luxury-red transition-colors;
   }
 }
 
@@ -43,59 +45,24 @@
   }
   
   .section-padding {
-    @apply py-32 md:py-48;
+    @apply py-20 md:py-32;
   }
 
   .luxury-button {
-    @apply relative inline-flex items-center justify-center bg-gold text-black px-12 py-6 uppercase tracking-[0.4em] text-[10px] font-bold overflow-hidden transition-all duration-700 hover:text-white z-10;
+    @apply relative inline-flex items-center justify-center bg-luxury-red text-white px-12 py-5 uppercase tracking-[0.4em] text-[10px] font-black overflow-hidden transition-all duration-700 z-10 rounded-full shadow-lg;
   }
 
   .luxury-button::before {
     content: '';
-    @apply absolute inset-0 bg-black translate-y-full transition-transform duration-700 ease-[cubic-bezier(0.7,0,0.3,1)] -z-10;
+    @apply absolute inset-0 bg-white translate-y-full transition-transform duration-700 ease-[cubic-bezier(0.7,0,0.3,1)] -z-10 opacity-10;
   }
 
   .luxury-button:hover::before {
     @apply translate-y-0;
   }
   
-  .luxury-button-outline {
-    @apply relative inline-flex items-center justify-center border border-gold/30 text-gold px-12 py-6 uppercase tracking-[0.4em] text-[10px] font-bold overflow-hidden transition-all duration-700 z-10;
-  }
-
-  .luxury-button-outline::before {
-    content: '';
-    @apply absolute inset-0 bg-gold translate-y-full transition-transform duration-700 ease-[cubic-bezier(0.7,0,0.3,1)] -z-10;
-  }
-
-  .luxury-button-outline:hover {
-    @apply text-black border-gold;
-  }
-
-  .luxury-button-outline:hover::before {
-    @apply translate-y-0;
-  }
-
-  .glass-card {
-    @apply bg-surface/40 backdrop-blur-3xl border border-white/5 hover:border-gold/30 transition-all duration-1000 relative overflow-hidden shadow-[0_20px_50px_rgba(0,0,0,0.5)];
-  }
-
-  .glass-card::before {
-    content: '';
-    @apply absolute inset-0 bg-gradient-to-tr from-gold/5 via-transparent to-white/5 opacity-50 pointer-events-none;
-  }
-
-  .glass {
-    @apply bg-black/70 backdrop-blur-2xl border-b border-gold/10 relative overflow-hidden;
-  }
-  
-  .glass::after {
-    content: '';
-    @apply absolute inset-0 bg-gradient-to-br from-gold/5 via-transparent to-transparent pointer-events-none;
-  }
-
-  .gold-gradient-text {
-    @apply bg-clip-text text-transparent bg-gradient-to-r from-gold via-[#f4e4bc] to-[#d4af37];
+  .red-gradient-text {
+    @apply bg-clip-text text-transparent bg-gradient-to-r from-luxury-red via-[#ff4d4d] to-[#8B0000];
     background-size: 200% auto;
     animation: shine 8s ease-in-out infinite;
   }

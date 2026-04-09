@@ -17,21 +17,21 @@ export const Footer = () => {
               </div>
               <span className="font-bold text-xl text-black">Monaliza House</span>
             </Link>
-            <div className="space-y-4 text-sm text-gray-600">
+            <div className="space-y-4 text-sm text-gray-600 font-medium">
               <div className="flex items-start gap-3">
-                <MapPin size={18} className="text-black shrink-0" />
+                <MapPin size={18} className="text-luxury-red shrink-0" />
                 <span>123 Avenue des Forces Armées Royales, Casablanca, Maroc</span>
               </div>
               <div className="flex items-center gap-3">
-                <Phone size={18} className="text-black shrink-0" />
+                <Phone size={18} className="text-luxury-red shrink-0" />
                 <span>+212 600 000 000</span>
               </div>
               <div className="flex items-center gap-3">
-                <Mail size={18} className="text-black shrink-0" />
+                <Mail size={18} className="text-luxury-red shrink-0" />
                 <span>contact@monalizanutrition.ma</span>
               </div>
               <div className="flex items-start gap-3">
-                <Clock size={18} className="text-black shrink-0" />
+                <Clock size={18} className="text-luxury-red shrink-0" />
                 <span>Lun - Dim / 11h - 21h</span>
               </div>
             </div>
@@ -39,41 +39,41 @@ export const Footer = () => {
 
           {/* Column 2: Links */}
           <div>
-            <h3 className="font-bold text-black uppercase tracking-wider mb-8">Navigation</h3>
-            <ul className="space-y-4 text-sm text-gray-600">
-              <li><Link href="/about" className="hover:text-black transition-colors">A propos</Link></li>
-              <li><Link href="/about#localisation" className="hover:text-black transition-colors">Localisation</Link></li>
-              <li><Link href="/catalog" className="hover:text-black transition-colors">Notre Catalogue</Link></li>
-              <li><Link href="/concierge" className="hover:text-black transition-colors">Concierge Service</Link></li>
+            <h3 className="font-black text-black uppercase tracking-[0.2em] text-xs mb-8 border-b-2 border-luxury-red pb-2 w-fit">Navigation</h3>
+            <ul className="space-y-4 text-sm text-gray-500 font-bold">
+              <li><Link href="/about" className="hover:text-luxury-red transition-colors uppercase tracking-widest text-[10px]">A propos</Link></li>
+              <li><Link href="/about#localisation" className="hover:text-luxury-red transition-colors uppercase tracking-widest text-[10px]">Localisation</Link></li>
+              <li><Link href="/catalog" className="hover:text-luxury-red transition-colors uppercase tracking-widest text-[10px]">Notre Catalogue</Link></li>
+              <li><Link href="/concierge" className="hover:text-luxury-red transition-colors uppercase tracking-widest text-[10px]">Concierge Service</Link></li>
             </ul>
           </div>
 
           {/* Column 3: Links */}
           <div>
-            <h3 className="font-bold text-black uppercase tracking-wider mb-8">Aide & Support</h3>
-            <ul className="space-y-4 text-sm text-gray-600">
-              <li><Link href="/how-to-order" className="hover:text-black transition-colors">Comment commander</Link></li>
-              <li><Link href="/faq" className="hover:text-black transition-colors">Questions fréquentes</Link></li>
-              <li><Link href="/products" className="hover:text-black transition-colors">Tous les produits</Link></li>
-              <li><Link href="/privacy" className="hover:text-black transition-colors">Politique de confidentialité</Link></li>
+            <h3 className="font-black text-black uppercase tracking-[0.2em] text-xs mb-8 border-b-2 border-luxury-red pb-2 w-fit">Aide & Support</h3>
+            <ul className="space-y-4 text-sm text-gray-500 font-bold">
+              <li><Link href="/how-to-order" className="hover:text-luxury-red transition-colors uppercase tracking-widest text-[10px]">Comment commander</Link></li>
+              <li><Link href="/faq" className="hover:text-luxury-red transition-colors uppercase tracking-widest text-[10px]">Questions fréquentes</Link></li>
+              <li><Link href="/products" className="hover:text-luxury-red transition-colors uppercase tracking-widest text-[10px]">Tous les produits</Link></li>
+              <li><Link href="/privacy" className="hover:text-luxury-red transition-colors uppercase tracking-widest text-[10px]">Politique de confidentialité</Link></li>
             </ul>
           </div>
 
           {/* Column 4: Social */}
           <div>
-            <h3 className="font-bold text-black uppercase tracking-wider mb-8">Suivez-nous</h3>
+            <h3 className="font-black text-black uppercase tracking-[0.2em] text-xs mb-8 border-b-2 border-luxury-red pb-2 w-fit">Suivez-nous</h3>
             <div className="flex gap-4">
-              <a href="#" className="w-10 h-10 bg-gray-100 rounded-full flex items-center justify-center hover:bg-black hover:text-white transition-all">
-                <Mail size={20} />
+              <a href="#" className="w-12 h-12 bg-white border border-gray-100 rounded-2xl flex items-center justify-center hover:bg-luxury-red hover:text-white transition-all shadow-sm">
+                <Mail size={22} />
               </a>
-              <a href="#" className="w-10 h-10 bg-gray-100 rounded-full flex items-center justify-center hover:bg-black hover:text-white transition-all">
-                <User size={20} />
+              <a href="#" className="w-12 h-12 bg-white border border-gray-100 rounded-2xl flex items-center justify-center hover:bg-luxury-red hover:text-white transition-all shadow-sm">
+                <User size={22} />
               </a>
-              <a href="#" className="w-10 h-10 bg-gray-100 rounded-full flex items-center justify-center hover:bg-black hover:text-white transition-all">
-                <Music size={20} />
+              <a href="#" className="w-12 h-12 bg-white border border-gray-100 rounded-2xl flex items-center justify-center hover:bg-luxury-red hover:text-white transition-all shadow-sm">
+                <Music size={22} />
               </a>
-              <a href="#" className="w-10 h-10 bg-gray-100 rounded-full flex items-center justify-center hover:bg-black hover:text-white transition-all">
-                <MessageCircle size={20} />
+              <a href="#" className="w-12 h-12 bg-white border border-gray-100 rounded-2xl flex items-center justify-center hover:bg-luxury-red hover:text-white transition-all shadow-sm">
+                <MessageCircle size={22} />
               </a>
             </div>
           </div>

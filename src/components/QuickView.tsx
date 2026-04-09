@@ -60,12 +60,12 @@ export const QuickView = ({ product, onClose }: QuickViewProps) => {
 
                 <div className="space-y-8">
                   <div className="space-y-4">
-                    <span className="text-gray-400 uppercase tracking-widest text-[10px] font-bold">{product.brand}</span>
-                    <h2 className="text-3xl md:text-4xl font-black uppercase tracking-tight">{product.name}</h2>
-                    <p className="text-2xl font-black text-black">{product.price} MAD</p>
+                    <span className="text-luxury-red uppercase tracking-widest text-[10px] font-black">{product.brand}</span>
+                    <h2 className="text-3xl md:text-4xl font-black uppercase tracking-tight leading-tight">{product.name}</h2>
+                    <p className="text-3xl font-black text-black">{product.price} <span className="text-sm text-luxury-red">MAD</span></p>
                   </div>
 
-                  <div className="w-12 h-1 bg-black rounded-full" />
+                  <div className="w-16 h-1.5 bg-luxury-red rounded-full" />
 
                   <p className="text-sm text-gray-600 font-medium leading-relaxed">
                     {product.description}
@@ -74,8 +74,8 @@ export const QuickView = ({ product, onClose }: QuickViewProps) => {
                   <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 pt-4">
                     {product.benefits.slice(0, 4).map((benefit, i) => (
                       <div key={i} className="flex items-center gap-3">
-                        <div className="w-1.5 h-1.5 bg-black rounded-full" />
-                        <span className="text-[10px] uppercase tracking-widest text-gray-800 font-bold">{benefit}</span>
+                        <div className="w-2 h-2 bg-luxury-red rounded-full shadow-sm" />
+                        <span className="text-[10px] uppercase tracking-widest text-gray-800 font-black">{benefit}</span>
                       </div>
                     ))}
                   </div>
@@ -83,25 +83,25 @@ export const QuickView = ({ product, onClose }: QuickViewProps) => {
 
                 <div className="pt-12 space-y-8">
                   <div className="flex items-center gap-6">
-                    <div className="flex items-center border border-gray-200 rounded-xl px-4 py-3 bg-gray-50">
-                      <button onClick={() => setQuantity(Math.max(1, quantity - 1))} className="p-2 hover:text-black transition-colors"><Minus size={14} /></button>
+                    <div className="flex items-center border border-gray-100 rounded-2xl px-4 py-3 bg-gray-50 shadow-inner">
+                      <button onClick={() => setQuantity(Math.max(1, quantity - 1))} className="p-2 hover:text-luxury-red transition-colors"><Minus size={14} /></button>
                       <span className="w-10 text-center text-sm font-black">{quantity}</span>
-                      <button onClick={() => setQuantity(quantity + 1)} className="p-2 hover:text-black transition-colors"><Plus size={14} /></button>
+                      <button onClick={() => setQuantity(quantity + 1)} className="p-2 hover:text-luxury-red transition-colors"><Plus size={14} /></button>
                     </div>
                     <button 
                       onClick={() => {
                         addToCart(product, quantity);
                         onClose();
                       }}
-                      className="flex-1 bg-black text-white py-5 rounded-2xl font-black uppercase tracking-widest text-xs hover:bg-gray-900 transition-all flex items-center justify-center gap-3"
+                      className="flex-1 bg-luxury-red text-white py-5 rounded-2xl font-black uppercase tracking-widest text-xs hover:bg-black transition-all flex items-center justify-center gap-3 shadow-lg shadow-red-100"
                     >
                       Ajouter au panier
                     </button>
                   </div>
                   
                   <div className="flex justify-between items-center text-[10px] uppercase tracking-widest text-gray-400 font-bold pt-4 border-t border-gray-100">
-                    <span className="flex items-center gap-2"><Shield size={14} className="text-black" /> Qualité Garantie</span>
-                    <span className="flex items-center gap-2"><Zap size={14} className="text-black" /> Livraison Express</span>
+                    <span className="flex items-center gap-2"><Shield size={14} className="text-luxury-red" /> Qualité Garantie</span>
+                    <span className="flex items-center gap-2"><Zap size={14} className="text-luxury-red" /> Livraison Express</span>
                   </div>
                 </div>
               </div>
