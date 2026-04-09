@@ -2,7 +2,7 @@
 
 import Link from 'next/link';
 import Image from 'next/image';
-import { Facebook, Instagram, Music, MessageCircle, Phone, Mail, MapPin, Clock, User } from 'lucide-react';
+import { Music, MessageCircle, Phone, Mail, MapPin, Clock, User } from 'lucide-react';
 
 export const Footer = () => {
   return (
