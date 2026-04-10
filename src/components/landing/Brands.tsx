@@ -3,11 +3,17 @@
 import Link from 'next/link';
 
 const brands = [
+  "Biotech USA",
+  "Optimum Nutrition",
+  "MuscleTech",
+  "Dymatize",
+  "Applied Nutrition",
+  "Now Foods",
+  "Dorian Yates",
+  "Lazar Angelov",
   "JNX Sports",
-  "Muscletech",
   "Nutrend",
-  "Scitec Nutrition",
-  "Optimum Nutrition"
+  "Universal Nutrition"
 ];
 
 export const Brands = () => {
