@@ -66,7 +66,7 @@ export const SearchModal = ({ isOpen, onClose }: { isOpen: boolean; onClose: () 
                       {results.map(product => (
                         <Link 
                           key={product.id} 
-                          href={`/catalog/${product.slug}`}
+                          href={`/product/${product.slug}`}
                           onClick={onClose}
                           className="flex items-center justify-between group p-4 hover:bg-red-50/30 rounded-2xl transition-all border border-transparent hover:border-red-100"
                         >
@@ -94,10 +94,10 @@ export const SearchModal = ({ isOpen, onClose }: { isOpen: boolean; onClose: () 
                     <div>
                        <span className="text-[10px] uppercase tracking-widest text-luxury-red font-black mb-6 block">Catégories Populaires</span>
                        <div className="space-y-4 text-xl font-black uppercase tracking-tighter">
-                         <Link href="/catalog?category=whey-proteine" onClick={onClose} className="block hover:text-luxury-red hover:translate-x-2 transition-all">Proteines</Link>
-                         <Link href="/catalog?category=gainers" onClick={onClose} className="block hover:text-luxury-red hover:translate-x-2 transition-all">Gainers</Link>
-                         <Link href="/catalog?category=creatine" onClick={onClose} className="block hover:text-luxury-red hover:translate-x-2 transition-all">Creatine</Link>
-                         <Link href="/catalog?category=pre-workout" onClick={onClose} className="block hover:text-luxury-red hover:translate-x-2 transition-all">Pre-workout</Link>
+                         <Link href="/catalog/whey-proteine" onClick={onClose} className="block hover:text-luxury-red hover:translate-x-2 transition-all">Proteines</Link>
+                         <Link href="/catalog/gainers" onClick={onClose} className="block hover:text-luxury-red hover:translate-x-2 transition-all">Gainers</Link>
+                         <Link href="/catalog/creatine" onClick={onClose} className="block hover:text-luxury-red hover:translate-x-2 transition-all">Creatine</Link>
+                         <Link href="/catalog/pre-workout" onClick={onClose} className="block hover:text-luxury-red hover:translate-x-2 transition-all">Pre-workout</Link>
                        </div>
                     </div>
                     <div>

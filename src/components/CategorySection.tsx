@@ -60,7 +60,7 @@ export const CategorySection = () => {
           {categories.map((category, index) => (
             <Link
               key={category.id}
-              href={`/catalog?cat=${category.slug}`}
+              href={`/catalog/${category.slug}`}
               className="min-w-[85vw] md:min-w-[450px] lg:min-w-[500px] snap-center group block"
             >
               <div className="relative aspect-[4/5] overflow-hidden bg-surface glass-card border-none">
