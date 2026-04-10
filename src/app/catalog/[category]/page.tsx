@@ -5,7 +5,7 @@ import { Header } from '@/components/landing/Header';
 import { Footer } from '@/components/landing/Footer';
 import { products, Product } from '@/data/products';
 import { categories, Category } from '@/data/categories';
-import { Search, ChevronLeft, Filter, X } from 'lucide-react';
+import { Search, ChevronLeft, Filter, X, ChevronDown, LayoutGrid, SlidersHorizontal } from 'lucide-react';
 import Link from 'next/link';
 import { motion, AnimatePresence } from 'framer-motion';
 import { QuickView } from '@/components/QuickView';
@@ -21,6 +21,7 @@ export default function CategoryPage({ params }: PageProps) {
   const [selectedProduct, setSelectedProduct] = useState<Product | null>(null);
   const [searchQuery, setSearchQuery] = useState('');
   const [selectedBrand, setSelectedBrand] = useState<string | null>(null);
+  const [isFilterOpen, setIsFilterOpen] = useState(false);
 
   const category = useMemo(() => {
     return categories.find(c => c.slug === categorySlug);
@@ -65,92 +66,165 @@ export default function CategoryPage({ params }: PageProps) {
       
       <QuickView product={selectedProduct} onClose={() => setSelectedProduct(null)} />
 
-      {/* Header Section */}
-      <section className="pt-32 pb-12 border-b border-gray-100 bg-gray-50">
-        <div className="container">
-          <Link href="/catalog" className="flex items-center gap-2 text-[10px] uppercase tracking-widest font-black text-gray-400 hover:text-luxury-red mb-8 transition-colors">
-            <ChevronLeft size={14} /> Retour au catalogue
+      {/* Hero Section */}
+      <section className="pt-32 pb-20 border-b border-gray-100 bg-black relative overflow-hidden">
+        <div className="absolute inset-0 opacity-40">
+           <div className="absolute top-0 right-0 w-1/2 h-full bg-gradient-to-l from-luxury-red/20 to-transparent" />
+        </div>
+        <div className="container relative z-10">
+          <Link href="/catalog" className="inline-flex items-center gap-2 text-[10px] uppercase tracking-widest font-black text-gray-500 hover:text-white mb-12 transition-colors">
+            <ChevronLeft size={14} /> Back to Archive
           </Link>
-          <div className="flex flex-col md:flex-row md:items-end justify-between gap-8">
-            <div className="max-w-2xl">
-              <h1 className="text-4xl md:text-6xl font-black uppercase tracking-tighter mb-4">
-                {category.name} <span className="red-gradient-text italic">Elite</span>
-              </h1>
-              <p className="text-sm text-gray-500 font-medium uppercase tracking-widest">{category.description}</p>
-            </div>
-            <div className="flex items-center gap-4">
-              <span className="text-[10px] font-black uppercase tracking-[0.3em] text-gray-400">
-                {categoryProducts.length} Produits
-              </span>
-            </div>
+          <div className="max-w-4xl">
+            <motion.div
+              initial={{ opacity: 0, x: -20 }}
+              animate={{ opacity: 1, x: 0 }}
+              className="flex items-center gap-4 mb-6"
+            >
+              <div className="h-[1px] w-8 bg-luxury-red" />
+              <span className="text-luxury-red text-[10px] font-black uppercase tracking-[0.4em]">{categoryProducts.length} Exclusive Items</span>
+            </motion.div>
+            <motion.h1 
+              initial={{ opacity: 0, y: 20 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ delay: 0.1 }}
+              className="text-5xl md:text-8xl font-black text-white uppercase tracking-tighter mb-8 leading-[0.85]"
+            >
+              {category.name} <br />
+              <span className="italic red-gradient-text">Collection.</span>
+            </motion.h1>
+            <motion.p 
+              initial={{ opacity: 0 }}
+              animate={{ opacity: 1 }}
+              transition={{ delay: 0.2 }}
+              className="text-lg text-gray-400 font-medium max-w-2xl leading-relaxed"
+            >
+              {category.description}
+            </motion.p>
           </div>
         </div>
       </section>
 
-      {/* Filter Bar */}
-      <div className="sticky top-[72px] z-30 bg-white/90 backdrop-blur-md border-b border-gray-100 py-6">
+      {/* Advanced Filter Interface */}
+      <div className="sticky top-[72px] z-40 bg-white border-b border-gray-100 shadow-sm">
         <div className="container">
-          <div className="flex flex-col lg:flex-row gap-8 items-center justify-between">
-            {/* Category Switcher */}
-            <div className="flex items-center gap-4 overflow-x-auto no-scrollbar w-full lg:w-auto pb-2 lg:pb-0">
-               <span className="text-[10px] font-black uppercase tracking-widest text-gray-400 mr-2">Catégories:</span>
-               {categories.map(cat => (
-                 <Link 
-                   key={cat.id}
-                   href={`/catalog/${cat.slug}`}
-                   className={`whitespace-nowrap px-4 py-2 text-[10px] uppercase tracking-widest font-black border rounded-full transition-all ${cat.slug === categorySlug ? 'bg-black border-black text-white' : 'border-gray-200 hover:border-luxury-red/50 text-gray-500'}`}
-                 >
-                   {cat.name}
-                 </Link>
-               ))}
-            </div>
+          <div className="h-20 flex items-center justify-between gap-8">
+            {/* Filter Toggle */}
+            <button 
+              onClick={() => setIsFilterOpen(!isFilterOpen)}
+              className="flex items-center gap-3 px-6 h-12 rounded-full bg-black text-white hover:bg-luxury-red transition-all duration-300 shadow-lg group"
+            >
+              <SlidersHorizontal size={16} className="group-hover:rotate-180 transition-transform duration-500" />
+              <span className="text-[10px] uppercase tracking-widest font-black">Refine Selection</span>
+              <div className="w-[1px] h-4 bg-white/20 mx-2" />
+              <span className="text-[10px] font-bold text-white/60">{selectedBrand || 'All Brands'}</span>
+            </button>
 
-            {/* Brand Filter */}
-            <div className="flex items-center gap-2 overflow-x-auto no-scrollbar w-full lg:w-auto pb-2 lg:pb-0">
-              <span className="text-[10px] font-black uppercase tracking-widest text-gray-400 mr-2">Marques:</span>
-              <button 
-                onClick={() => setSelectedBrand(null)}
-                className={`whitespace-nowrap px-4 py-2 text-[10px] uppercase tracking-widest font-black border rounded-full transition-all ${!selectedBrand ? 'bg-luxury-red border-luxury-red text-white' : 'border-gray-200 hover:border-luxury-red/50 text-gray-500'}`}
-              >
-                Toutes
-              </button>
-              {brands.map(brand => (
-                <button 
-                  key={brand}
-                  onClick={() => setSelectedBrand(brand)}
-                  className={`whitespace-nowrap px-4 py-2 text-[10px] uppercase tracking-widest font-black border rounded-full transition-all ${selectedBrand === brand ? 'bg-luxury-red border-luxury-red text-white' : 'border-gray-200 hover:border-luxury-red/50 text-gray-500'}`}
-                >
-                  {brand}
-                </button>
-              ))}
-            </div>
-
-            {/* Search Bar */}
-            <div className="relative w-full lg:w-96">
-              <Search className="absolute left-4 top-1/2 -translate-y-1/2 text-gray-400" size={16} />
+            {/* Live Search */}
+            <div className="flex-1 max-w-xl relative hidden md:block">
+              <Search className="absolute left-6 top-1/2 -translate-y-1/2 text-gray-400" size={16} />
               <input 
                 type="text" 
-                placeholder={`Rechercher dans ${category.name}...`} 
+                placeholder={`Search within ${category.name}...`} 
                 value={searchQuery}
                 onChange={(e) => setSearchQuery(e.target.value)}
-                className="w-full bg-gray-50 border border-gray-100 rounded-full py-3 pl-12 pr-6 text-xs font-bold focus:border-luxury-red/30 outline-none transition-all"
+                className="w-full bg-gray-50 border border-gray-200 rounded-full py-4 pl-14 pr-14 text-[11px] font-bold uppercase tracking-wider focus:bg-white focus:border-luxury-red/30 focus:shadow-inner outline-none transition-all"
               />
               {searchQuery && (
                 <button 
                   onClick={() => setSearchQuery('')}
-                  className="absolute right-4 top-1/2 -translate-y-1/2 text-gray-400 hover:text-black"
+                  className="absolute right-6 top-1/2 -translate-y-1/2 text-gray-400 hover:text-black transition-colors"
                 >
                   <X size={14} />
                 </button>
               )}
             </div>
+
+            {/* Quick Stats */}
+            <div className="hidden lg:flex items-center gap-8">
+               <div className="text-right">
+                 <span className="block text-[8px] uppercase tracking-widest text-gray-400 font-bold mb-1">Price Range</span>
+                 <span className="block text-[10px] font-black uppercase tracking-wider">Premium Selection</span>
+               </div>
+               <div className="h-8 w-[1px] bg-gray-100" />
+               <button className="w-12 h-12 flex items-center justify-center rounded-full border border-gray-100 hover:border-black transition-colors">
+                  <LayoutGrid size={18} />
+               </button>
+            </div>
           </div>
         </div>
+
+        {/* Sophisticated Filter Reveal */}
+        <AnimatePresence>
+          {isFilterOpen && (
+            <motion.div
+              initial={{ height: 0, opacity: 0 }}
+              animate={{ height: 'auto', opacity: 1 }}
+              exit={{ height: 0, opacity: 0 }}
+              className="overflow-hidden bg-gray-50 border-t border-gray-100"
+            >
+              <div className="container py-12">
+                <div className="grid grid-cols-1 md:grid-cols-4 gap-12">
+                  {/* Category Selection */}
+                  <div className="md:col-span-3">
+                    <span className="block text-[10px] uppercase tracking-[0.3em] text-gray-400 font-black mb-6">Switch Department</span>
+                    <div className="grid grid-cols-2 md:grid-cols-4 gap-3">
+                      {categories.map(cat => (
+                        <Link 
+                          key={cat.id}
+                          href={`/catalog/${cat.slug}`}
+                          className={`px-4 py-3 rounded-xl border text-[9px] uppercase tracking-widest font-black transition-all flex items-center justify-between group ${cat.slug === categorySlug ? 'bg-black border-black text-white shadow-xl' : 'bg-white border-gray-100 text-gray-500 hover:border-luxury-red/50 hover:text-luxury-red'}`}
+                        >
+                          {cat.name}
+                          <div className={`w-1.5 h-1.5 rounded-full ${cat.slug === categorySlug ? 'bg-luxury-red' : 'bg-gray-100 group-hover:bg-luxury-red/50'}`} />
+                        </Link>
+                      ))}
+                    </div>
+                  </div>
+
+                  {/* Brand Selection */}
+                  <div>
+                    <span className="block text-[10px] uppercase tracking-[0.3em] text-gray-400 font-black mb-6">Select Brand</span>
+                    <div className="space-y-2 max-h-[250px] overflow-y-auto pr-4 custom-scrollbar">
+                      <button 
+                        onClick={() => { setSelectedBrand(null); setIsFilterOpen(false); }}
+                        className={`w-full text-left px-4 py-3 rounded-xl text-[10px] uppercase tracking-widest font-black transition-all ${!selectedBrand ? 'bg-luxury-red text-white' : 'hover:bg-gray-100 text-gray-600'}`}
+                      >
+                        All Master Brands
+                      </button>
+                      {brands.map(brand => (
+                        <button 
+                          key={brand}
+                          onClick={() => { setSelectedBrand(brand); setIsFilterOpen(false); }}
+                          className={`w-full text-left px-4 py-3 rounded-xl text-[10px] uppercase tracking-widest font-black transition-all ${selectedBrand === brand ? 'bg-luxury-red text-white' : 'hover:bg-gray-100 text-gray-600'}`}
+                        >
+                          {brand}
+                        </button>
+                      ))}
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </motion.div>
+          )}
+        </AnimatePresence>
       </div>
 
-      <div className="container py-12">
+      <div className="container py-20 min-h-[600px]">
+        {/* Mobile Search */}
+        <div className="md:hidden mb-8 relative">
+           <Search className="absolute left-6 top-1/2 -translate-y-1/2 text-gray-400" size={16} />
+           <input 
+             type="text" 
+             placeholder="Search collection..." 
+             value={searchQuery}
+             onChange={(e) => setSearchQuery(e.target.value)}
+             className="w-full bg-gray-50 border border-gray-200 rounded-full py-4 pl-14 pr-6 text-[11px] font-bold uppercase tracking-wider outline-none"
+           />
+        </div>
+
         {filteredProducts.length > 0 ? (
-          <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4 md:gap-8">
+          <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4 md:gap-12">
             {filteredProducts.map(product => (
               <ProductCard 
                 key={product.id} 
@@ -160,14 +234,40 @@ export default function CategoryPage({ params }: PageProps) {
             ))}
           </div>
         ) : (
-          <div className="py-40 text-center">
-            <p className="text-gray-400 font-bold text-2xl uppercase tracking-tighter">Aucun produit ne correspond à vos critères.</p>
-            <button onClick={() => {setSearchQuery(''); setSelectedBrand(null);}} className="text-luxury-red uppercase tracking-[0.5em] text-[10px] font-black mt-8 border-b-2 border-luxury-red pb-1">Réinitialiser les filtres</button>
+          <div className="py-40 text-center flex flex-col items-center">
+            <div className="w-20 h-20 rounded-full bg-gray-50 flex items-center justify-center mb-8">
+               <X size={32} className="text-gray-200" />
+            </div>
+            <h3 className="text-2xl font-black uppercase tracking-tighter mb-4 text-gray-300">No matches found</h3>
+            <p className="text-gray-400 text-xs uppercase tracking-widest mb-12">Refine your filters or search query</p>
+            <button 
+              onClick={() => {setSearchQuery(''); setSelectedBrand(null);}} 
+              className="px-12 py-4 bg-black text-white rounded-full text-[10px] uppercase tracking-[0.3em] font-black hover:bg-luxury-red transition-all shadow-xl"
+            >
+              Reset Archive
+            </button>
           </div>
         )}
       </div>
 
       <Footer />
+
+      <style jsx global>{`
+        .custom-scrollbar::-webkit-scrollbar {
+          width: 4px;
+        }
+        .custom-scrollbar::-webkit-scrollbar-track {
+          background: #f3f4f6;
+          border-radius: 10px;
+        }
+        .custom-scrollbar::-webkit-scrollbar-thumb {
+          background: #d1d5db;
+          border-radius: 10px;
+        }
+        .custom-scrollbar::-webkit-scrollbar-thumb:hover {
+          background: #8b0000;
+        }
+      `}</style>
     </main>
   );
 }
