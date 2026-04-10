@@ -18,7 +18,15 @@ import {
   X,
   Layers,
   LogOut,
-  Upload
+  Upload,
+  BarChart3,
+  Users,
+  Eye,
+  Trash2,
+  Edit3,
+  ChevronRight,
+  ArrowUpRight,
+  ArrowDownRight
 } from 'lucide-react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { getProducts, Product } from '@/data/products';
@@ -27,7 +35,7 @@ import Image from 'next/image';
 
 export default function AdminDashboard() {
   const router = useRouter();
-  const [activeTab, setActiveTab] = useState('orders');
+  const [activeTab, setActiveTab] = useState('dashboard');
   const [isLoading, setIsLoading] = useState(true);
   const [currentProducts, setCurrentProducts] = useState<Product[]>([]);
   const [currentCategories, setCurrentCategories] = useState<Category[]>([]);
@@ -50,20 +58,32 @@ export default function AdminDashboard() {
   if (isLoading) return null;
 
   return (
-    <div className="min-h-screen bg-gray-50 text-black flex font-sans">
-      {/* Sidebar */}
-      <aside className="w-72 bg-white border-r border-gray-100 flex flex-col fixed h-full z-20 shadow-xl">
-        <div className="p-10 border-b border-gray-50">
-          <div className="flex items-center gap-4 mb-2">
-            <div className="w-10 h-10 bg-luxury-red rounded-2xl flex items-center justify-center shadow-lg shadow-red-100 rotate-3">
-              <span className="text-white font-black text-xl italic">M</span>
+    <div className="min-h-screen bg-[#0a0a0a] text-white flex font-sans overflow-hidden">
+      {/* Sophisticated Sidebar */}
+      <aside className="w-80 bg-black/40 backdrop-blur-xl border-r border-white/5 flex flex-col fixed h-full z-30">
+        <div className="p-10 mb-8">
+          <div className="flex items-center gap-4 mb-4">
+            <div className="w-12 h-12 bg-luxury-red rounded-2xl flex items-center justify-center shadow-[0_0_30px_rgba(139,0,0,0.3)] rotate-3 group cursor-pointer hover:rotate-12 transition-transform duration-500">
+              <span className="text-white font-black text-2xl italic">M</span>
             </div>
-            <h1 className="text-xl font-black uppercase tracking-tighter">Monaliza <span className="text-luxury-red italic">Admin</span></h1>
+            <div>
+              <h1 className="text-xl font-black uppercase tracking-tighter leading-none">Monaliza</h1>
+              <span className="text-[10px] text-luxury-red font-black uppercase tracking-[0.4em] italic">Terminal Elite</span>
+            </div>
           </div>
-          <p className="text-[8px] uppercase tracking-[0.4em] text-gray-400 font-black">Terminal v.0.1.0-ELITE</p>
         </div>
 
-        <nav className="flex-1 p-6 space-y-2 mt-8">
+        <nav className="flex-1 px-6 space-y-2">
+          <div className="pb-4 opacity-30">
+            <p className="text-[8px] uppercase tracking-[0.5em] font-black ml-4">Command & Control</p>
+          </div>
+          
+          <NavItem 
+            icon={BarChart3} 
+            label="Vue d'Ensemble" 
+            active={activeTab === 'dashboard'} 
+            onClick={() => setActiveTab('dashboard')} 
+          />
           <NavItem 
             icon={ShoppingCart} 
             label="Commandes" 
@@ -71,59 +91,101 @@ export default function AdminDashboard() {
             onClick={() => setActiveTab('orders')} 
             badge="12"
           />
-          <div className="pt-8 pb-4">
-            <p className="text-[8px] uppercase tracking-[0.4em] text-gray-400 font-black ml-4">Gestion Inventaire</p>
+          
+          <div className="pt-10 pb-4 opacity-30">
+            <p className="text-[8px] uppercase tracking-[0.5em] font-black ml-4">Inventory Management</p>
           </div>
+          
           <NavItem 
             icon={Package} 
-            label="Ajouter Produit" 
+            label="Archive Produits" 
+            active={activeTab === 'products'} 
+            onClick={() => setActiveTab('products')} 
+          />
+          <NavItem 
+            icon={Plus} 
+            label="Cataloguer" 
             active={activeTab === 'add-product'} 
             onClick={() => setActiveTab('add-product')} 
           />
           <NavItem 
             icon={Layers} 
-            label="Ajouter Catégorie" 
+            label="Architecture" 
             active={activeTab === 'add-category'} 
             onClick={() => setActiveTab('add-category')} 
           />
         </nav>
 
-        <div className="p-6 border-t border-gray-50">
+        <div className="p-8">
           <button 
             onClick={handleLogout}
-            className="w-full flex items-center gap-4 px-4 py-4 text-gray-400 hover:text-luxury-red transition-all text-[10px] uppercase tracking-widest font-black rounded-2xl hover:bg-red-50"
+            className="w-full flex items-center gap-4 px-6 py-4 text-white/40 hover:text-luxury-red transition-all text-[10px] uppercase tracking-[0.3em] font-black rounded-2xl border border-white/5 hover:border-luxury-red/30 hover:bg-luxury-red/5"
           >
             <LogOut size={18} />
-            Déconnexion
+            Terminer Session
           </button>
         </div>
       </aside>
 
-      {/* Main Content */}
-      <main className="flex-1 ml-72">
-        <header className="h-24 bg-white/80 backdrop-blur-md border-b border-gray-100 flex items-center justify-between px-12 sticky top-0 z-10">
-          <div className="flex items-center gap-4">
-            <h2 className="text-xs font-black text-luxury-red uppercase tracking-[0.3em]">
-              Protocole {activeTab.replace('-', ' ')}
-            </h2>
-          </div>
-          <div className="flex items-center gap-8">
-            <div className="text-right">
-              <p className="text-xs font-black uppercase tracking-widest">Terminal Administrateur</p>
-              <p className="text-[8px] text-luxury-red uppercase tracking-[0.4em] font-black">Autorisation Absolue</p>
+      {/* Main Content Area */}
+      <main className="flex-1 ml-80 relative min-h-screen overflow-y-auto custom-scrollbar bg-[radial-gradient(circle_at_top_right,_var(--tw-gradient-stops))] from-luxury-red/5 via-transparent to-transparent">
+        {/* Header */}
+        <header className="h-28 bg-black/20 backdrop-blur-xl border-b border-white/5 flex items-center justify-between px-16 sticky top-0 z-20">
+          <div>
+            <h2 className="text-[10px] font-black text-luxury-red uppercase tracking-[0.5em] mb-1">Système Opérationnel</h2>
+            <div className="flex items-center gap-3">
+              <div className="w-2 h-2 rounded-full bg-green-500 animate-pulse shadow-[0_0_10px_rgba(34,197,94,0.5)]" />
+              <p className="text-sm font-bold uppercase tracking-widest">{activeTab.replace('-', ' ')}</p>
             </div>
-            <div className="w-12 h-12 bg-gray-50 border border-gray-100 rounded-2xl overflow-hidden relative shadow-inner">
-               <Image src="/images/logo.jpeg" alt="Admin" fill className="object-cover" />
+          </div>
+          
+          <div className="flex items-center gap-10">
+            <div className="text-right hidden md:block">
+              <p className="text-xs font-black uppercase tracking-widest text-white/80">Othman Bennani</p>
+              <p className="text-[9px] text-luxury-red uppercase tracking-[0.3em] font-black mt-1">Niveau d'Accès : Alpha</p>
+            </div>
+            <div className="w-14 h-14 rounded-2xl p-[1px] bg-gradient-to-br from-luxury-red/50 to-transparent shadow-2xl relative group cursor-pointer overflow-hidden">
+               <div className="absolute inset-0 bg-black z-0" />
+               <Image src="/images/logo.jpeg" alt="Admin" fill className="object-cover relative z-10 group-hover:scale-110 transition-transform duration-700 opacity-80" />
             </div>
           </div>
         </header>
 
-        <div className="p-12">
-          {activeTab === 'orders' && <OrdersTab />}
-          {activeTab === 'add-product' && <AddProductTab categories={currentCategories} onComplete={() => {setActiveTab('orders'); refreshData();}} />}
-          {activeTab === 'add-category' && <AddCategoryTab onComplete={() => {setActiveTab('orders'); refreshData();}} />}
+        {/* Dynamic Content */}
+        <div className="p-16">
+          <AnimatePresence mode="wait">
+            <motion.div
+              key={activeTab}
+              initial={{ opacity: 0, y: 10 }}
+              animate={{ opacity: 1, y: 0 }}
+              exit={{ opacity: 0, y: -10 }}
+              transition={{ duration: 0.4 }}
+            >
+              {activeTab === 'dashboard' && <DashboardOverview />}
+              {activeTab === 'orders' && <OrdersTab />}
+              {activeTab === 'products' && <ProductsArchive products={currentProducts} />}
+              {activeTab === 'add-product' && <AddProductTab categories={currentCategories} onComplete={() => {setActiveTab('products'); refreshData();}} />}
+              {activeTab === 'add-category' && <AddCategoryTab onComplete={() => {setActiveTab('dashboard'); refreshData();}} />}
+            </motion.div>
+          </AnimatePresence>
         </div>
       </main>
+
+      <style jsx global>{`
+        .custom-scrollbar::-webkit-scrollbar {
+          width: 5px;
+        }
+        .custom-scrollbar::-webkit-scrollbar-track {
+          background: transparent;
+        }
+        .custom-scrollbar::-webkit-scrollbar-thumb {
+          background: rgba(255, 255, 255, 0.05);
+          border-radius: 10px;
+        }
+        .custom-scrollbar::-webkit-scrollbar-thumb:hover {
+          background: rgba(139, 0, 0, 0.3);
+        }
+      `}</style>
     </div>
   );
 }
@@ -132,22 +194,122 @@ function NavItem({ icon: Icon, label, active, onClick, badge }: any) {
   return (
     <button 
       onClick={onClick}
-      className={`w-full flex items-center justify-between px-4 py-4 transition-all relative group rounded-2xl ${active ? 'bg-red-50 text-luxury-red' : 'text-gray-400 hover:text-black hover:bg-gray-50'}`}
+      className={`w-full flex items-center justify-between px-6 py-5 transition-all relative group rounded-2xl overflow-hidden ${active ? 'bg-luxury-red/10 text-white' : 'text-white/30 hover:text-white/60 hover:bg-white/[0.02]'}`}
     >
-      <div className="flex items-center gap-4">
-        <Icon size={20} strokeWidth={active ? 2.5 : 1.5} />
-        <span className="text-[10px] uppercase tracking-widest font-black">{label}</span>
+      <div className="flex items-center gap-5 relative z-10">
+        <Icon size={20} className={`${active ? 'text-luxury-red' : 'text-white/20 group-hover:text-white/40'} transition-colors`} />
+        <span className="text-[10px] uppercase tracking-[0.2em] font-black">{label}</span>
       </div>
+      
       {badge && (
-        <span className="bg-luxury-red text-white text-[8px] px-2 py-0.5 rounded-full font-black shadow-lg shadow-red-100">{badge}</span>
+        <span className="bg-luxury-red text-white text-[8px] px-2.5 py-1 rounded-lg font-black shadow-[0_0_15px_rgba(139,0,0,0.4)] relative z-10">
+          {badge}
+        </span>
       )}
+
       {active && (
         <motion.div 
           layoutId="sidebarActive"
-          className="absolute left-[-24px] w-1.5 h-8 bg-luxury-red rounded-r-full" 
+          className="absolute left-0 w-1 h-8 bg-luxury-red rounded-r-full" 
         />
       )}
     </button>
+  );
+}
+
+function DashboardOverview() {
+  const stats = [
+    { label: 'Revenu Total', value: '142,500 MAD', icon: DollarSign, trend: '+12.5%', isUp: true },
+    { label: 'Commandes', value: '384', icon: ShoppingCart, trend: '+5.2%', isUp: true },
+    { label: 'Clients Actifs', value: '1,204', icon: Users, trend: '-2.1%', isUp: false },
+    { label: 'Stock Critique', value: '18', icon: Package, trend: '8.4%', isUp: true },
+  ];
+
+  return (
+    <div className="space-y-16">
+      <div className="flex flex-col md:flex-row md:items-end justify-between gap-8">
+        <div>
+          <h2 className="text-5xl font-black uppercase tracking-tighter mb-4">Performance <span className="red-gradient-text italic">Globale.</span></h2>
+          <p className="text-white/40 text-[10px] uppercase tracking-[0.5em] font-black">Indicateurs Stratégiques en Temps Réel</p>
+        </div>
+        <div className="flex items-center gap-4 bg-white/5 border border-white/10 p-2 rounded-2xl">
+           <button className="px-6 py-3 bg-luxury-red text-[10px] font-black uppercase tracking-widest rounded-xl shadow-lg">Aujourd'hui</button>
+           <button className="px-6 py-3 text-white/40 text-[10px] font-black uppercase tracking-widest hover:text-white transition-colors">Semaine</button>
+           <button className="px-6 py-3 text-white/40 text-[10px] font-black uppercase tracking-widest hover:text-white transition-colors">Mois</button>
+        </div>
+      </div>
+
+      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8">
+        {stats.map((stat, i) => (
+          <motion.div 
+            key={i}
+            initial={{ opacity: 0, y: 20 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ delay: i * 0.1 }}
+            className="bg-white/[0.03] border border-white/5 p-10 rounded-[2.5rem] relative group hover:bg-white/[0.05] transition-all duration-500 overflow-hidden"
+          >
+            <div className="absolute top-0 right-0 w-32 h-32 bg-luxury-red/5 rounded-full blur-3xl -translate-y-1/2 translate-x-1/2 group-hover:bg-luxury-red/10 transition-colors" />
+            
+            <div className="flex items-center justify-between mb-8">
+               <div className="w-14 h-14 bg-black border border-white/10 rounded-2xl flex items-center justify-center group-hover:scale-110 transition-transform duration-500 shadow-2xl">
+                  <stat.icon className="text-luxury-red" size={24} />
+               </div>
+               <div className={`flex items-center gap-1 px-3 py-1.5 rounded-full text-[9px] font-black ${stat.isUp ? 'text-green-400 bg-green-400/10' : 'text-luxury-red bg-luxury-red/10'}`}>
+                  {stat.isUp ? <ArrowUpRight size={12} /> : <ArrowDownRight size={12} />}
+                  {stat.trend}
+               </div>
+            </div>
+            
+            <span className="block text-[10px] uppercase tracking-[0.3em] text-white/30 font-black mb-2">{stat.label}</span>
+            <span className="block text-3xl font-black tracking-tighter">{stat.value}</span>
+          </motion.div>
+        ))}
+      </div>
+
+      <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
+         <div className="lg:col-span-2 bg-white/[0.02] border border-white/5 p-12 rounded-[2.5rem]">
+            <div className="flex items-center justify-between mb-12">
+               <h3 className="text-xl font-black uppercase tracking-tighter">Flux de <span className="text-luxury-red italic">Capital.</span></h3>
+               <button className="text-[10px] font-black uppercase tracking-widest text-white/40 hover:text-white flex items-center gap-2">Rapport Complet <ChevronRight size={14} /></button>
+            </div>
+            <div className="h-80 flex items-end gap-4">
+               {[40, 70, 45, 90, 65, 80, 50, 95, 60, 85, 40, 75].map((h, i) => (
+                 <div key={i} className="flex-1 flex flex-col items-center gap-4 group cursor-pointer">
+                    <div className="w-full relative bg-white/[0.02] rounded-t-lg overflow-hidden h-64">
+                       <motion.div 
+                         initial={{ height: 0 }}
+                         animate={{ height: `${h}%` }}
+                         transition={{ delay: i * 0.05, duration: 1 }}
+                         className="absolute bottom-0 left-0 w-full bg-gradient-to-t from-luxury-red/40 to-luxury-red group-hover:from-luxury-red group-hover:to-red-400 transition-all shadow-[0_0_20px_rgba(139,0,0,0.3)]" 
+                       />
+                    </div>
+                    <span className="text-[8px] font-black text-white/20 group-hover:text-white transition-colors">{['J', 'F', 'M', 'A', 'M', 'J', 'J', 'A', 'S', 'O', 'N', 'D'][i]}</span>
+                 </div>
+               ))}
+            </div>
+         </div>
+         
+         <div className="bg-white/[0.02] border border-white/5 p-12 rounded-[3rem] flex flex-col items-center justify-center text-center gap-8 group">
+            <div className="relative w-48 h-48">
+               <svg className="w-full h-full transform -rotate-90">
+                 <circle cx="96" cy="96" r="80" stroke="currentColor" strokeWidth="12" fill="transparent" className="text-white/[0.03]" />
+                 <circle cx="96" cy="96" r="80" stroke="currentColor" strokeWidth="12" fill="transparent" strokeDasharray="502" strokeDashoffset={502 * (1 - 0.78)} className="text-luxury-red transition-all duration-[2s] group-hover:text-red-400" />
+               </svg>
+               <div className="absolute inset-0 flex flex-col items-center justify-center">
+                  <span className="text-4xl font-black">78%</span>
+                  <span className="text-[8px] uppercase tracking-widest text-white/30 font-black">Quota Atteint</span>
+               </div>
+            </div>
+            <div>
+               <h4 className="text-lg font-black uppercase tracking-tighter mb-2">Objectif <span className="text-luxury-red">Expansion.</span></h4>
+               <p className="text-[10px] text-white/40 uppercase tracking-[0.2em] font-medium leading-loose">
+                  Croissance projetée pour <br /> le trimestre Q2 2026.
+               </p>
+            </div>
+            <button className="w-full py-4 bg-white/5 border border-white/10 rounded-2xl text-[10px] font-black uppercase tracking-widest hover:bg-white hover:text-black transition-all">Optimiser Strategie</button>
+         </div>
+      </div>
+    </div>
   );
 }
 
@@ -158,57 +320,131 @@ function OrdersTab() {
     { id: '#M-4020', customer: 'Mehdi Alami', city: 'Marrakech', total: '2,400 MAD', status: 'En Attente', date: '2026-03-19' },
     { id: '#M-4019', customer: 'Sami Tazi', city: 'Tanger', total: '450 MAD', status: 'Annulé', date: '2026-03-18' },
     { id: '#M-4018', customer: 'Layla Mansouri', city: 'Fès', total: '1,100 MAD', status: 'Livré', date: '2026-03-18' },
+    { id: '#M-4017', customer: 'Anas Iraqi', city: 'Agadir', total: '3,200 MAD', status: 'Livré', date: '2026-03-17' },
   ];
 
   return (
     <div className="space-y-12">
       <div className="flex items-end justify-between">
         <div>
-          <h2 className="text-4xl font-black uppercase tracking-tighter mb-2">Gestion des <span className="red-gradient-text italic">Commandes.</span></h2>
-          <p className="text-gray-400 text-[10px] uppercase tracking-[0.4em] font-black">Protocole Logistique Royaume</p>
+          <h2 className="text-5xl font-black uppercase tracking-tighter mb-4">Gestion des <span className="red-gradient-text italic">Flux.</span></h2>
+          <p className="text-white/40 text-[10px] uppercase tracking-[0.5em] font-black">Protocole Logistique Royaume</p>
+        </div>
+        <div className="flex items-center gap-4">
+           <div className="relative">
+              <Search size={16} className="absolute left-5 top-1/2 -translate-y-1/2 text-white/20" />
+              <input type="text" placeholder="RECHERCHER COMMANDE..." className="bg-white/5 border border-white/10 rounded-2xl py-4 pl-12 pr-6 text-[10px] font-black uppercase tracking-widest outline-none focus:border-luxury-red transition-all w-64" />
+           </div>
+           <button className="p-4 bg-white/5 border border-white/10 rounded-2xl hover:text-luxury-red transition-all"><Filter size={20} /></button>
         </div>
       </div>
 
-      <div className="bg-white border border-gray-100 overflow-hidden shadow-2xl rounded-[2.5rem]">
+      <div className="bg-white/[0.02] border border-white/5 overflow-hidden shadow-2xl rounded-[3rem]">
         <table className="w-full text-left border-collapse">
           <thead>
-            <tr className="border-b border-gray-50 bg-gray-50/50">
-              <th className="p-8 text-[10px] uppercase tracking-widest font-black text-luxury-red">ID Protocole</th>
-              <th className="p-8 text-[10px] uppercase tracking-widest font-black text-luxury-red">Client</th>
-              <th className="p-8 text-[10px] uppercase tracking-widest font-black text-luxury-red">Ville</th>
-              <th className="p-8 text-[10px] uppercase tracking-widest font-black text-luxury-red">Investissement</th>
-              <th className="p-8 text-[10px] uppercase tracking-widest font-black text-luxury-red">Statut</th>
-              <th className="p-8 text-[10px] uppercase tracking-widest font-black text-luxury-red">Date</th>
-              <th className="p-8 text-[10px] uppercase tracking-widest font-black text-luxury-red">Action</th>
+            <tr className="border-b border-white/5 bg-white/[0.01]">
+              <th className="p-10 text-[10px] uppercase tracking-[0.2em] font-black text-luxury-red">ID Protocole</th>
+              <th className="p-10 text-[10px] uppercase tracking-[0.2em] font-black text-luxury-red">Client Elitiste</th>
+              <th className="p-10 text-[10px] uppercase tracking-[0.2em] font-black text-luxury-red">Zone</th>
+              <th className="p-10 text-[10px] uppercase tracking-[0.2em] font-black text-luxury-red">Investissement</th>
+              <th className="p-10 text-[10px] uppercase tracking-[0.2em] font-black text-luxury-red">Statut</th>
+              <th className="p-10 text-[10px] uppercase tracking-[0.2em] font-black text-luxury-red">Date</th>
+              <th className="p-10 text-[10px] uppercase tracking-[0.2em] font-black text-luxury-red text-right">Action</th>
             </tr>
           </thead>
-          <tbody className="divide-y divide-gray-50 font-medium">
+          <tbody className="divide-y divide-white/5 font-medium">
             {orders.map((order) => (
-              <tr key={order.id} className="hover:bg-gray-50/50 transition-colors group">
-                <td className="p-8 text-[10px] font-black tracking-widest text-black">{order.id}</td>
-                <td className="p-8 text-sm font-bold">{order.customer}</td>
-                <td className="p-8 text-[10px] uppercase tracking-widest text-gray-400 font-black">{order.city}</td>
-                <td className="p-8 text-sm font-black text-black">{order.total}</td>
-                <td className="p-8">
-                  <span className={`text-[8px] font-black uppercase tracking-widest px-3 py-1 rounded-lg border ${
-                    order.status === 'Livré' ? 'border-green-100 text-green-600 bg-green-50' :
-                    order.status === 'En Transit' ? 'border-blue-100 text-blue-600 bg-blue-50' :
-                    order.status === 'Annulé' ? 'border-red-100 text-red-600 bg-red-50' :
-                    'border-orange-100 text-orange-600 bg-orange-50'
+              <tr key={order.id} className="hover:bg-white/[0.02] transition-colors group">
+                <td className="p-10 text-[10px] font-black tracking-widest text-white/80">{order.id}</td>
+                <td className="p-10 text-sm font-bold">{order.customer}</td>
+                <td className="p-10 text-[10px] uppercase tracking-widest text-white/30 font-black">{order.city}</td>
+                <td className="p-10 text-sm font-black text-white">{order.total}</td>
+                <td className="p-10">
+                  <span className={`text-[8px] font-black uppercase tracking-widest px-4 py-2 rounded-xl border ${
+                    order.status === 'Livré' ? 'border-green-500/20 text-green-400 bg-green-400/5' :
+                    order.status === 'En Transit' ? 'border-blue-500/20 text-blue-400 bg-blue-400/5' :
+                    order.status === 'Annulé' ? 'border-luxury-red/20 text-luxury-red bg-luxury-red/5' :
+                    'border-orange-500/20 text-orange-400 bg-orange-400/5'
                   }`}>
                     {order.status}
                   </span>
                 </td>
-                <td className="p-8 text-[10px] text-gray-400 font-black">{order.date}</td>
-                <td className="p-8">
-                  <button className="text-gray-300 hover:text-black transition-colors">
-                    <MoreVertical size={18} />
+                <td className="p-10 text-[10px] text-white/20 font-black">{order.date}</td>
+                <td className="p-10 text-right">
+                  <button className="w-10 h-10 rounded-xl bg-white/5 border border-white/10 flex items-center justify-center hover:bg-luxury-red hover:text-white transition-all">
+                    <MoreVertical size={16} />
                   </button>
                 </td>
               </tr>
             ))}
           </tbody>
         </table>
+      </div>
+    </div>
+  );
+}
+
+function ProductsArchive({ products }: { products: Product[] }) {
+  const [search, setSearch] = useState('');
+  
+  const filtered = products.filter(p => 
+    p.name.toLowerCase().includes(search.toLowerCase()) || 
+    p.brand.toLowerCase().includes(search.toLowerCase())
+  );
+
+  return (
+    <div className="space-y-12">
+      <div className="flex items-end justify-between">
+        <div>
+          <h2 className="text-5xl font-black uppercase tracking-tighter mb-4">Archives <span className="red-gradient-text italic">Inventaire.</span></h2>
+          <p className="text-white/40 text-[10px] uppercase tracking-[0.5em] font-black">Indexation des {products.length} Unités Cataloguées</p>
+        </div>
+        <div className="relative">
+          <Search size={16} className="absolute left-5 top-1/2 -translate-y-1/2 text-white/20" />
+          <input 
+            type="text" 
+            placeholder="RECHERCHER DANS L'ARCHIVE..." 
+            value={search}
+            onChange={(e) => setSearch(e.target.value)}
+            className="bg-white/5 border border-white/10 rounded-2xl py-4 pl-12 pr-6 text-[10px] font-black uppercase tracking-widest outline-none focus:border-luxury-red transition-all w-80" 
+          />
+        </div>
+      </div>
+
+      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8">
+        {filtered.map((product, i) => (
+          <motion.div 
+            key={product.id}
+            initial={{ opacity: 0, y: 10 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ delay: (i % 8) * 0.05 }}
+            className="bg-white/[0.02] border border-white/5 p-8 rounded-[2.5rem] group hover:bg-white/[0.04] transition-all duration-500"
+          >
+            <div className="aspect-square relative rounded-3xl overflow-hidden bg-black/40 p-6 mb-6">
+              <Image src={product.image} alt={product.name} fill className="object-contain p-6 grayscale group-hover:grayscale-0 transition-all duration-700 group-hover:scale-110" />
+              <div className="absolute inset-0 bg-luxury-red/0 group-hover:bg-luxury-red/5 transition-colors" />
+            </div>
+            
+            <div className="space-y-2">
+               <div className="flex justify-between items-start">
+                  <span className="text-[8px] font-black uppercase tracking-widest text-luxury-red">{product.brand}</span>
+                  <span className="text-xs font-black text-white">{product.price} MAD</span>
+               </div>
+               <h4 className="text-[11px] font-bold uppercase tracking-tight line-clamp-2 h-8">{product.name}</h4>
+               <div className="pt-4 flex items-center justify-between">
+                  <span className="text-[7px] font-black uppercase tracking-[0.3em] text-white/30">{product.category}</span>
+                  <div className="flex gap-2">
+                     <button className="w-8 h-8 rounded-lg bg-white/5 flex items-center justify-center hover:bg-white hover:text-black transition-all">
+                        <Edit3 size={12} />
+                     </button>
+                     <button className="w-8 h-8 rounded-lg bg-white/5 flex items-center justify-center hover:bg-luxury-red hover:text-white transition-all">
+                        <Trash2 size={12} />
+                     </button>
+                  </div>
+               </div>
+            </div>
+          </motion.div>
+        ))}
       </div>
     </div>
   );
@@ -280,137 +516,136 @@ function AddProductTab({ categories, onComplete }: { categories: Category[], onC
   };
 
   return (
-    <div className="max-w-4xl space-y-12">
+    <div className="max-w-6xl space-y-16">
       <div>
-        <h2 className="text-4xl font-black uppercase tracking-tighter mb-2">Cataloguer un <span className="red-gradient-text italic">Produit.</span></h2>
-        <p className="text-gray-400 text-[10px] uppercase tracking-[0.4em] font-black">Protocole d'expansion d'inventaire</p>
+        <h2 className="text-5xl font-black uppercase tracking-tighter mb-4">Cataloguer un <span className="red-gradient-text italic">Produit.</span></h2>
+        <p className="text-white/40 text-[10px] uppercase tracking-[0.5em] font-black">Protocole d'expansion d'inventaire stratégique</p>
       </div>
 
-      <form onSubmit={handleSubmit} className="space-y-12">
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-10">
-          <div className="space-y-8">
-            <div className="space-y-3">
-              <label className="text-[10px] uppercase tracking-[0.4em] text-luxury-red font-black ml-4">Nom du Produit</label>
+      <form onSubmit={handleSubmit} className="space-y-16">
+        <div className="grid grid-cols-1 lg:grid-cols-2 gap-16">
+          <div className="space-y-10">
+            <div className="space-y-4">
+              <label className="text-[10px] uppercase tracking-[0.4em] text-luxury-red font-black ml-6">Nom du Produit</label>
               <input 
                 required
                 type="text" 
                 value={formData.name}
                 onChange={(e) => setFormData({...formData, name: e.target.value})}
-                className="w-full bg-white border border-gray-100 focus:border-luxury-red outline-none p-5 text-sm font-bold transition-all rounded-2xl shadow-sm" 
-                placeholder="ex: ISO 100 Hydrolyzed" 
+                className="w-full bg-white/[0.03] border border-white/5 focus:border-luxury-red outline-none p-6 text-sm font-bold transition-all rounded-[1.5rem]" 
+                placeholder="EX: ISO 100 HYDROLYZED" 
               />
             </div>
-            <div className="space-y-3">
-              <label className="text-[10px] uppercase tracking-[0.4em] text-luxury-red font-black ml-4">Marque</label>
-              <input 
-                required
-                type="text" 
-                value={formData.brand}
-                onChange={(e) => setFormData({...formData, brand: e.target.value})}
-                className="w-full bg-white border border-gray-100 focus:border-luxury-red outline-none p-5 text-sm font-bold transition-all rounded-2xl shadow-sm" 
-                placeholder="ex: Dymatize" 
-              />
-            </div>
+            
             <div className="grid grid-cols-2 gap-8">
-              <div className="space-y-3">
-                <label className="text-[10px] uppercase tracking-[0.4em] text-luxury-red font-black ml-4">Prix (MAD)</label>
+               <div className="space-y-4">
+                 <label className="text-[10px] uppercase tracking-[0.4em] text-luxury-red font-black ml-6">Marque</label>
+                 <input 
+                   required
+                   type="text" 
+                   value={formData.brand}
+                   onChange={(e) => setFormData({...formData, brand: e.target.value})}
+                   className="w-full bg-white/[0.03] border border-white/5 focus:border-luxury-red outline-none p-6 text-sm font-bold transition-all rounded-[1.5rem]" 
+                   placeholder="DYMATIZE" 
+                 />
+               </div>
+               <div className="space-y-4">
+                 <label className="text-[10px] uppercase tracking-[0.4em] text-luxury-red font-black ml-6">Classification</label>
+                 <select 
+                   required
+                   value={formData.category}
+                   onChange={(e) => setFormData({...formData, category: e.target.value})}
+                   className="w-full bg-white/[0.03] border border-white/5 focus:border-luxury-red outline-none p-6 text-[10px] uppercase tracking-widest font-black transition-all appearance-none rounded-[1.5rem]"
+                 >
+                   <option value="" className="bg-black text-white">SELECT DEPT</option>
+                   {categories.map(cat => (
+                     <option key={cat.id} value={cat.slug} className="bg-black text-white">{cat.name}</option>
+                   ))}
+                 </select>
+               </div>
+            </div>
+
+            <div className="grid grid-cols-2 gap-8">
+              <div className="space-y-4">
+                <label className="text-[10px] uppercase tracking-[0.4em] text-luxury-red font-black ml-6">Investissement (MAD)</label>
                 <input 
                   required
                   type="number" 
                   value={formData.price}
                   onChange={(e) => setFormData({...formData, price: e.target.value})}
-                  className="w-full bg-white border border-gray-100 focus:border-luxury-red outline-none p-5 text-sm font-bold transition-all rounded-2xl shadow-sm" 
+                  className="w-full bg-white/[0.03] border border-white/5 focus:border-luxury-red outline-none p-6 text-sm font-bold transition-all rounded-[1.5rem]" 
                   placeholder="950" 
                 />
               </div>
-              <div className="space-y-3">
-                <label className="text-[10px] uppercase tracking-[0.4em] text-luxury-red font-black ml-4">Classification</label>
-                <select 
+              <div className="space-y-4">
+                <label className="text-[10px] uppercase tracking-[0.4em] text-luxury-red font-black ml-6">Poids / Specs</label>
+                <input 
                   required
-                  value={formData.category}
-                  onChange={(e) => setFormData({...formData, category: e.target.value})}
-                  className="w-full bg-white border border-gray-100 focus:border-luxury-red outline-none p-5 text-[10px] uppercase tracking-widest font-black transition-all appearance-none rounded-2xl shadow-sm"
-                >
-                  <option value="">Sélectionner</option>
-                  {categories.map(cat => (
-                    <option key={cat.id} value={cat.slug}>{cat.name}</option>
-                  ))}
-                </select>
+                  value={formData.specs[0].value}
+                  onChange={(e) => setFormData({...formData, specs: [{ label: 'Poids', value: e.target.value }]})}
+                  className="w-full bg-white/[0.03] border border-white/5 focus:border-luxury-red outline-none p-6 text-sm font-bold rounded-[1.5rem]" 
+                  placeholder="2.27KG" 
+                />
               </div>
             </div>
           </div>
 
-          <div className="space-y-3">
-            <label className="text-[10px] uppercase tracking-[0.4em] text-luxury-red font-black ml-4">Manifestation Visuelle</label>
+          <div className="space-y-4">
+            <label className="text-[10px] uppercase tracking-[0.4em] text-luxury-red font-black ml-6">Manifestation Visuelle</label>
             <div 
               onClick={() => fileInputRef.current?.click()}
-              className="aspect-square border-2 border-dashed border-gray-100 bg-white hover:bg-red-50/30 hover:border-luxury-red/30 transition-all cursor-pointer flex flex-col items-center justify-center p-8 relative overflow-hidden rounded-[2.5rem] shadow-sm"
+              className="aspect-square border-2 border-dashed border-white/5 bg-white/[0.02] hover:bg-luxury-red/[0.02] hover:border-luxury-red/30 transition-all cursor-pointer flex flex-col items-center justify-center p-12 relative overflow-hidden rounded-[3rem] group"
             >
               {preview ? (
-                <Image src={preview} alt="Preview" fill className="object-contain p-8" />
+                <Image src={preview} alt="Preview" fill className="object-contain p-12 group-hover:scale-110 transition-transform duration-700" />
               ) : (
-                <>
-                  <Upload size={40} className="text-gray-200 mb-4" />
-                  <p className="text-[10px] uppercase tracking-widest text-gray-400 text-center leading-relaxed font-black">
-                    Télécharger PNG/WebP <br /> Recommandé 800x800
+                <div className="text-center space-y-4">
+                  <div className="w-20 h-20 bg-black rounded-3xl flex items-center justify-center mx-auto border border-white/10 group-hover:border-luxury-red/50 transition-colors">
+                     <Upload size={32} className="text-white/20 group-hover:text-luxury-red transition-colors" />
+                  </div>
+                  <p className="text-[10px] uppercase tracking-widest text-white/30 leading-relaxed font-black">
+                    Uploader PNG/WebP <br /> <span className="text-white/10">800x800 Optimal</span>
                   </p>
-                </>
+                </div>
               )}
               <input type="file" ref={fileInputRef} onChange={handleImageChange} className="hidden" accept="image/*" />
             </div>
           </div>
         </div>
 
-        <div className="space-y-3">
-          <label className="text-[10px] uppercase tracking-[0.4em] text-luxury-red font-black ml-4">Description Narrative</label>
+        <div className="space-y-4">
+          <label className="text-[10px] uppercase tracking-[0.4em] text-luxury-red font-black ml-6">Description Narrative</label>
           <textarea 
             required
             rows={4} 
             value={formData.description}
             onChange={(e) => setFormData({...formData, description: e.target.value})}
-            className="w-full bg-white border border-gray-100 focus:border-luxury-red outline-none p-5 text-sm font-bold transition-all resize-none rounded-2xl shadow-sm" 
-            placeholder="Détails techniques de l'isolat..." 
+            className="w-full bg-white/[0.03] border border-white/5 focus:border-luxury-red outline-none p-8 text-sm font-bold transition-all resize-none rounded-[2rem]" 
+            placeholder="DÉTAILS TECHNIQUES ET POSITIONNEMENT DU PRODUIT..." 
           />
         </div>
 
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-10">
-          <div className="space-y-4">
-            <label className="text-[10px] uppercase tracking-[0.4em] text-luxury-red font-black ml-4">Avantages Clés</label>
+        <div className="space-y-6">
+          <label className="text-[10px] uppercase tracking-[0.4em] text-luxury-red font-black ml-6">Avantages de Performance</label>
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
             {formData.benefits.map((benefit, i) => (
               <input 
                 key={i}
                 type="text" 
                 value={benefit}
                 onChange={(e) => handleBenefitChange(i, e.target.value)}
-                className="w-full bg-white border border-gray-100 focus:border-luxury-red outline-none p-4 text-xs font-bold transition-all rounded-xl shadow-sm" 
-                placeholder={`Avantage 0${i+1}`} 
+                className="w-full bg-white/[0.01] border border-white/5 focus:border-luxury-red outline-none p-5 text-[11px] font-bold transition-all rounded-xl" 
+                placeholder={`AVANTAGE 0${i+1}`} 
               />
             ))}
-            <button type="button" onClick={handleAddBenefit} className="text-[10px] uppercase tracking-widest text-luxury-red font-black flex items-center gap-2 hover:translate-x-2 transition-transform ml-4">
-              <Plus size={14} /> Ajouter une Propriété
-            </button>
           </div>
-          <div className="space-y-4">
-            <label className="text-[10px] uppercase tracking-[0.4em] text-luxury-red font-black ml-4">Specs Techniques</label>
-            <div className="flex gap-4">
-               <input 
-                 readOnly 
-                 value="Poids" 
-                 className="w-1/3 bg-gray-50 border border-gray-100 p-4 text-[10px] uppercase tracking-widest font-black rounded-xl" 
-               />
-               <input 
-                 required
-                 value={formData.specs[0].value}
-                 onChange={(e) => setFormData({...formData, specs: [{ label: 'Poids', value: e.target.value }]})}
-                 className="flex-1 bg-white border border-gray-100 focus:border-luxury-red outline-none p-4 text-xs font-bold rounded-xl shadow-sm" 
-                 placeholder="ex: 2.27kg" 
-               />
-            </div>
-          </div>
+          <button type="button" onClick={handleAddBenefit} className="text-[10px] uppercase tracking-[0.3em] text-luxury-red font-black flex items-center gap-3 hover:translate-x-3 transition-transform ml-6">
+            <Plus size={14} /> Ajouter une Propriété
+          </button>
         </div>
 
-        <div className="pt-8 flex justify-end">
-          <button type="submit" className="luxury-button !px-20 py-6 rounded-2xl">
+        <div className="pt-12 flex justify-end">
+          <button type="submit" className="px-16 py-6 bg-luxury-red text-white text-[11px] font-black uppercase tracking-[0.4em] rounded-[1.5rem] hover:bg-red-500 hover:scale-105 transition-all shadow-[0_20px_40px_rgba(139,0,0,0.3)]">
             Cataloguer le Produit
           </button>
         </div>
@@ -460,67 +695,69 @@ function AddCategoryTab({ onComplete }: { onComplete: () => void }) {
     const dynamicCats = saved ? JSON.parse(saved) : [];
     localStorage.setItem('monalisa_dynamic_categories', JSON.stringify([...dynamicCats, newCategory]));
 
-    alert("Catégorie établie avec succès.");
+    alert("Pilier Architectural Établi.");
     onComplete();
   };
 
   return (
-    <div className="max-w-4xl space-y-12">
+    <div className="max-w-5xl space-y-16">
       <div>
-        <h2 className="text-4xl font-black uppercase tracking-tighter mb-2">Établir un Nouveau <span className="red-gradient-text italic">Pilier.</span></h2>
-        <p className="text-gray-400 text-[10px] uppercase tracking-[0.4em] font-black">Protocole d'expansion structurelle</p>
+        <h2 className="text-5xl font-black uppercase tracking-tighter mb-4">Établir un Nouveau <span className="red-gradient-text italic">Pilier.</span></h2>
+        <p className="text-white/40 text-[10px] uppercase tracking-[0.5em] font-black">Protocole d'expansion structurelle du catalogue</p>
       </div>
 
       <form onSubmit={handleSubmit} className="space-y-12">
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-10">
-          <div className="space-y-8">
-            <div className="space-y-3">
-              <label className="text-[10px] uppercase tracking-[0.4em] text-luxury-red font-black ml-4">Nom de la Catégorie</label>
+        <div className="grid grid-cols-1 lg:grid-cols-2 gap-16">
+          <div className="space-y-10">
+            <div className="space-y-4">
+              <label className="text-[10px] uppercase tracking-[0.4em] text-luxury-red font-black ml-6">Nom de la Catégorie</label>
               <input 
                 required
                 type="text" 
                 value={formData.name}
                 onChange={(e) => setFormData({...formData, name: e.target.value})}
-                className="w-full bg-white border border-gray-100 focus:border-luxury-red outline-none p-5 text-sm font-bold transition-all rounded-2xl shadow-sm" 
-                placeholder="ex: Vitamines & Essentiels" 
+                className="w-full bg-white/[0.03] border border-white/5 focus:border-luxury-red outline-none p-6 text-sm font-bold transition-all rounded-[1.5rem]" 
+                placeholder="EX: VITAMINES & ESSENTIELS" 
               />
             </div>
-            <div className="space-y-3">
-              <label className="text-[10px] uppercase tracking-[0.4em] text-luxury-red font-black ml-4">Description Stratégique</label>
+            <div className="space-y-4">
+              <label className="text-[10px] uppercase tracking-[0.4em] text-luxury-red font-black ml-6">Description Stratégique</label>
               <textarea 
                 required
-                rows={4} 
+                rows={5} 
                 value={formData.description}
                 onChange={(e) => setFormData({...formData, description: e.target.value})}
-                className="w-full bg-white border border-gray-100 focus:border-luxury-red outline-none p-5 text-sm font-bold transition-all resize-none rounded-2xl shadow-sm" 
-                placeholder="Définition de cette ligne de produits..." 
+                className="w-full bg-white/[0.03] border border-white/5 focus:border-luxury-red outline-none p-8 text-sm font-bold transition-all resize-none rounded-[2rem]" 
+                placeholder="DÉFINITION ET POSITIONNEMENT DE CETTE LIGNE..." 
               />
             </div>
           </div>
 
-          <div className="space-y-3">
-            <label className="text-[10px] uppercase tracking-[0.4em] text-luxury-red font-black ml-4">Image de Couverture</label>
+          <div className="space-y-4">
+            <label className="text-[10px] uppercase tracking-[0.4em] text-luxury-red font-black ml-6">Image Architecturelle</label>
             <div 
               onClick={() => fileInputRef.current?.click()}
-              className="aspect-[4/3] border-2 border-dashed border-gray-100 bg-white hover:bg-red-50/30 hover:border-luxury-red/30 transition-all cursor-pointer flex flex-col items-center justify-center relative overflow-hidden rounded-[2.5rem] shadow-sm"
+              className="aspect-video border-2 border-dashed border-white/5 bg-white/[0.02] hover:bg-luxury-red/[0.02] hover:border-luxury-red/30 transition-all cursor-pointer flex flex-col items-center justify-center relative overflow-hidden rounded-[3rem] group"
             >
               {preview ? (
-                <Image src={preview} alt="Preview" fill className="object-cover opacity-60" />
+                <Image src={preview} alt="Preview" fill className="object-cover opacity-60 group-hover:scale-110 transition-transform duration-[2s]" />
               ) : (
-                <>
-                  <Upload size={40} className="text-gray-200 mb-4" />
-                  <p className="text-[10px] uppercase tracking-widest text-gray-400 text-center leading-relaxed font-black">
-                    Télécharger Arrière-plan <br /> Recommandé 1200x800
-                  </p>
-                </>
+                <div className="text-center space-y-4">
+                   <div className="w-16 h-16 bg-black rounded-2xl flex items-center justify-center mx-auto border border-white/10 group-hover:border-luxury-red/50 transition-colors">
+                      <ImageIcon size={28} className="text-white/20 group-hover:text-luxury-red transition-colors" />
+                   </div>
+                   <p className="text-[10px] uppercase tracking-widest text-white/30 font-black">
+                     Background de Section <br /> <span className="text-white/10">1200x800 Recommandé</span>
+                   </p>
+                </div>
               )}
               <input type="file" ref={fileInputRef} onChange={handleImageChange} className="hidden" accept="image/*" />
             </div>
           </div>
         </div>
 
-        <div className="pt-8 flex justify-end">
-          <button type="submit" className="luxury-button !px-20 py-6 rounded-2xl">
+        <div className="pt-12 flex justify-end">
+          <button type="submit" className="px-16 py-6 bg-luxury-red text-white text-[11px] font-black uppercase tracking-[0.4em] rounded-[1.5rem] hover:bg-red-500 transition-all shadow-xl">
             Établir la Catégorie
           </button>
         </div>
