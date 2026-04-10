@@ -16,12 +16,12 @@ export const InfoBar = () => {
         {/* Delivery Info */}
         <div className="flex items-center gap-3 text-gray-500">
           <Truck size={22} className="text-luxury-red" />
-          <span className="uppercase tracking-widest text-[10px] font-bold">Livraison partout au Maroc</span>
+          <span className="uppercase tracking-widest text-[10px] font-bold">Livraison Gratuite dès 2 articles</span>
         </div>
 
         {/* WhatsApp Button */}
         <a 
-          href="https://wa.me/212600000000" 
+          href="https://wa.me/212662802351" 
           target="_blank" 
           rel="noopener noreferrer"
           className="flex items-center gap-3 text-white transition-all bg-luxury-red px-6 py-2.5 rounded-full shadow-lg shadow-red-100 hover:scale-105"

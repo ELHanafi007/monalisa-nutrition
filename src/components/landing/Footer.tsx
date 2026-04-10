@@ -2,7 +2,7 @@
 
 import Link from 'next/link';
 import Image from 'next/image';
-import { Music, MessageCircle, Phone, Mail, MapPin, Clock, User } from 'lucide-react';
+import { Music, MessageCircle, Phone, Mail, MapPin, Clock, Facebook, Instagram } from 'lucide-react';
 
 export const Footer = () => {
   return (
@@ -66,13 +66,13 @@ export const Footer = () => {
           <div>
             <h3 className="font-black text-text-main uppercase tracking-[0.2em] text-xs mb-8 border-b-2 border-luxury-red pb-2 w-fit">Suivez-nous</h3>
             <div className="flex gap-4">
-              <a href="#" className="w-12 h-12 bg-surface border border-border rounded-2xl flex items-center justify-center hover:bg-luxury-red hover:text-white transition-all shadow-sm group">
-                <Mail size={22} className="text-text-muted group-hover:text-white" />
+              <a href="https://facebook.com/monalizahouse" target="_blank" className="w-12 h-12 bg-surface border border-border rounded-2xl flex items-center justify-center hover:bg-luxury-red hover:text-white transition-all shadow-sm group">
+                <Facebook size={22} className="text-text-muted group-hover:text-white" />
               </a>
-              <a href="#" className="w-12 h-12 bg-surface border border-border rounded-2xl flex items-center justify-center hover:bg-luxury-red hover:text-white transition-all shadow-sm group">
-                <User size={22} className="text-text-muted group-hover:text-white" />
+              <a href="https://instagram.com/monalizahouse" target="_blank" className="w-12 h-12 bg-surface border border-border rounded-2xl flex items-center justify-center hover:bg-luxury-red hover:text-white transition-all shadow-sm group">
+                <Instagram size={22} className="text-text-muted group-hover:text-white" />
               </a>
-              <a href="https://tiktok.com" target="_blank" className="w-12 h-12 bg-surface border border-border rounded-2xl flex items-center justify-center hover:bg-luxury-red hover:text-white transition-all shadow-sm group">
+              <a href="https://tiktok.com/@monalizahouse" target="_blank" className="w-12 h-12 bg-surface border border-border rounded-2xl flex items-center justify-center hover:bg-luxury-red hover:text-white transition-all shadow-sm group">
                 <Music size={22} className="text-text-muted group-hover:text-white" />
               </a>
               <a href="https://wa.me/212662802351" target="_blank" className="w-12 h-12 bg-surface border border-border rounded-2xl flex items-center justify-center hover:bg-luxury-red hover:text-white transition-all shadow-sm group">
@@ -86,10 +86,10 @@ export const Footer = () => {
           <p>© 2026 Monaliza House Nutrition. Tous droits réservés.</p>
           <div className="flex gap-8">
             <span>Powered by Monalisa Tech</span>
-            <div className="flex gap-4">
-              <div className="w-10 h-6 bg-surface-hover rounded border border-border" />
-              <div className="w-10 h-6 bg-surface-hover rounded border border-border" />
-              <div className="w-10 h-6 bg-surface-hover rounded border border-border" />
+            <div className="flex items-center gap-4">
+              <span className="text-[8px] uppercase font-black">Paiement à la livraison</span>
+              <div className="w-10 h-6 bg-surface-hover rounded border border-border flex items-center justify-center text-[10px] font-black text-luxury-red">COD</div>
+              <div className="w-10 h-6 bg-surface-hover rounded border border-border flex items-center justify-center text-[10px] font-black">FEZ</div>
             </div>
           </div>
         </div>

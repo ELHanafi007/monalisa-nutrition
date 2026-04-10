@@ -22,9 +22,13 @@ export const ProductCard = ({ product, onQuickView }: ProductCardProps) => {
       className="group bg-white border border-gray-100 p-3 md:p-6 transition-all hover:border-luxury-red/30 hover:shadow-xl rounded-2xl"
     >
       <div className="aspect-square relative mb-4 bg-gray-50 rounded-xl overflow-hidden cursor-pointer" onClick={() => onQuickView(product)}>
-        {product.isRupture && (
+        {product.isRupture ? (
           <div className="absolute top-2 left-2 z-20 bg-gray-400 text-white text-[8px] px-2 py-1 font-bold uppercase tracking-widest rounded">
             Rupture
+          </div>
+        ) : (
+          <div className="absolute top-2 left-2 z-20 bg-white/90 backdrop-blur-sm text-black border border-gray-100 text-[8px] px-2 py-1 font-bold uppercase tracking-widest rounded shadow-sm">
+            100% Original
           </div>
         )}
         {product.oldPrice && (

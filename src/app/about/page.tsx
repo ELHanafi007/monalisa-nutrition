@@ -99,10 +99,13 @@ export default function About() {
               <h2 className="text-4xl md:text-5xl font-black uppercase tracking-tighter">Notre <span className="red-gradient-text italic">Engagement</span></h2>
               <div className="space-y-6 text-gray-600 font-medium text-lg leading-relaxed">
                 <p>
-                  Depuis notre création, nous nous sommes donné pour mission de sourcer uniquement les molécules les plus pures des laboratoires mondiaux les plus prestigieux.
+                  Oui, tous les compléments alimentaires vendus par Monaliza House sont 100 % originaux et authentiques. Nous travaillons directement avec les marques officielles, sans intermédiaires.
                 </p>
                 <p>
-                  Chaque produit sur nos étagères est rigoureusement sélectionné et certifié, garantissant que chaque milligramme que vous consommez sert un but précis dans votre progression.
+                  Cette approche directe nous permet de garantir la qualité, la traçabilité et l'authenticité de chaque produit, assurant que tous nos compléments alimentaires vendus au Maroc respectent les standards internationaux les plus stricts.
+                </p>
+                <p>
+                  Chaque produit est importé via des circuits officiels et contrôlés, pour offrir à nos clients une sécurité et une transparence totales.
                 </p>
               </div>
               <div className="grid grid-cols-1 sm:grid-cols-2 gap-6 pt-8">
@@ -112,7 +115,7 @@ export default function About() {
                   </div>
                   <div>
                     <h4 className="font-black text-black uppercase tracking-widest text-xs mb-1">Authenticité</h4>
-                    <p className="text-sm text-gray-500">Produits 100% certifiés</p>
+                    <p className="text-sm text-gray-500">100% Original Garanti</p>
                   </div>
                 </div>
                 <div className="flex gap-4">
@@ -121,7 +124,7 @@ export default function About() {
                   </div>
                   <div>
                     <h4 className="font-black text-black uppercase tracking-widest text-xs mb-1">Qualité</h4>
-                    <p className="text-sm text-gray-500">Standard International</p>
+                    <p className="text-sm text-gray-500">Circuit Officiel</p>
                   </div>
                 </div>
               </div>

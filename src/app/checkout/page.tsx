@@ -13,8 +13,8 @@ export default function Checkout() {
   const { cart, totalItems, totalPrice, removeFromCart, updateQuantity } = useCart();
   const [isOrdering, setIsOrdering] = useState(false);
 
-  // Delivery costs (example)
-  const deliveryFee = 40;
+  // Delivery costs: 35 MAD fixed, Free for 2+ articles
+  const deliveryFee = totalItems >= 2 ? 0 : 35;
   const grandTotal = totalPrice + deliveryFee;
 
   if (cart.length === 0) {
@@ -127,7 +127,7 @@ export default function Checkout() {
                 </div>
                 <div className="flex justify-between items-center text-text-muted text-sm font-bold">
                   <span className="uppercase tracking-widest">Livraison</span>
-                  <span>{deliveryFee} MAD</span>
+                  <span>{deliveryFee === 0 ? 'GRATUIT' : `${deliveryFee} MAD`}</span>
                 </div>
                 <div className="pt-4 border-t border-border flex justify-between items-center">
                   <span className="text-lg font-black uppercase tracking-tighter">Total</span>
@@ -138,11 +138,11 @@ export default function Checkout() {
               <div className="space-y-4 pt-6 relative z-10">
                 <div className="flex items-center gap-4 text-[10px] uppercase tracking-widest font-black text-text-muted">
                   <ShieldCheck size={16} className="text-luxury-red" />
-                  Paiement 100% Sécurisé
+                  Produits 100% Authentiques
                 </div>
                 <div className="flex items-center gap-4 text-[10px] uppercase tracking-widest font-black text-text-muted">
                   <Truck size={16} className="text-luxury-red" />
-                  Livraison 24h/48h au Maroc
+                  Livraison 24h/72h au Maroc
                 </div>
                 <div className="flex items-center gap-4 text-[10px] uppercase tracking-widest font-black text-text-muted">
                   <CreditCard size={16} className="text-luxury-red" />

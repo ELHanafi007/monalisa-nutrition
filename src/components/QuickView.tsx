@@ -39,6 +39,12 @@ export const QuickView = ({ product, onClose }: QuickViewProps) => {
             <div className="bg-white border border-gray-100 w-full max-w-5xl pointer-events-auto relative rounded-3xl overflow-hidden flex flex-col md:flex-row h-full max-h-[90vh] md:max-h-auto overflow-y-auto md:overflow-hidden shadow-2xl">
               {/* Product Visual */}
               <div className="flex-1 bg-gray-50 p-12 relative flex items-center justify-center border-b md:border-b-0 md:border-r border-gray-100">
+                <div className="absolute top-8 left-8 z-10 flex gap-2">
+                  <div className="bg-white border border-border px-3 py-1.5 rounded-xl shadow-sm flex items-center gap-2">
+                    <Shield size={14} className="text-luxury-red" />
+                    <span className="text-[10px] font-black uppercase tracking-widest">100% Original</span>
+                  </div>
+                </div>
                 <div className="relative w-full h-full min-h-[300px]">
                   <Image 
                     src={product.image} 
@@ -100,7 +106,7 @@ export const QuickView = ({ product, onClose }: QuickViewProps) => {
                   </div>
                   
                   <div className="flex justify-between items-center text-[10px] uppercase tracking-widest text-gray-400 font-bold pt-4 border-t border-gray-100">
-                    <span className="flex items-center gap-2"><Shield size={14} className="text-luxury-red" /> Qualité Garantie</span>
+                    <span className="flex items-center gap-2"><Shield size={14} className="text-luxury-red" /> 100% Authentique</span>
                     <span className="flex items-center gap-2"><Zap size={14} className="text-luxury-red" /> Livraison Express</span>
                   </div>
                 </div>
