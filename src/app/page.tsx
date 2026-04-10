@@ -16,7 +16,7 @@ export default function Home() {
 
   // Filter products
   const promoPacks = products.filter(p => p.category === 'packs' || (p.oldPrice && p.oldPrice > p.price)).slice(0, 4);
-  const bestSellers = products.filter(p => p.category !== 'packs').slice(0, 8);
+  const bestSellers = products.filter(p => p.category !== 'packs').slice(0, 20);
 
   return (
     <main className="min-h-screen bg-white text-black">

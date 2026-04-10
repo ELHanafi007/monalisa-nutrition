@@ -83,6 +83,13 @@ const defaultCategories: Category[] = [
     slug: "accessoires",
     description: "High-quality gear and essentials for your fitness journey.",
     image: "/images/products/shaker-high-tech-quality.webp"
+  },
+  {
+    id: "cat12",
+    name: "Suppléments",
+    slug: "supplements",
+    description: "Une large gamme de compléments pour votre bien-être.",
+    image: "/images/products/melatonin-extra-10mg-100-capsules-now-food.webp"
   }
 ];
 

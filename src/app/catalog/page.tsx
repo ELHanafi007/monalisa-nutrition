@@ -173,7 +173,7 @@ export default function Catalog() {
             if (categoryProducts.length === 0) return null;
 
             const isExpanded = expandedCategories[category.slug];
-            const displayedProducts = isExpanded ? categoryProducts : categoryProducts.slice(0, 4);
+            const displayedProducts = isExpanded ? categoryProducts : categoryProducts.slice(0, 12);
 
             return (
               <section key={category.id} id={category.slug} className="scroll-mt-32">
@@ -182,7 +182,7 @@ export default function Catalog() {
                     <h2 className="text-2xl md:text-4xl font-black uppercase tracking-tighter">{category.name}</h2>
                     <p className="text-[10px] text-gray-500 uppercase tracking-[0.3em] mt-2 font-bold">{category.description}</p>
                   </div>
-                  {categoryProducts.length > 4 && (
+                  {categoryProducts.length > 12 && (
                     <button 
                       onClick={() => toggleCategory(category.slug)}
                       className="hidden md:flex items-center gap-2 text-luxury-red text-[10px] uppercase tracking-widest font-black hover:underline"
@@ -198,13 +198,13 @@ export default function Catalog() {
                   ))}
                 </div>
 
-                {categoryProducts.length > 4 && (
+                {categoryProducts.length > 12 && (
                   <div className="mt-8 flex justify-center md:hidden">
                     <button 
                       onClick={() => toggleCategory(category.slug)}
                       className="w-full py-4 border border-gray-100 rounded-xl text-[10px] uppercase tracking-widest font-black text-luxury-red bg-gray-50"
                     >
-                      {isExpanded ? 'Réduire la liste' : `Voir plus (${categoryProducts.length - 4} produits)`}
+                      {isExpanded ? 'Réduire la liste' : `Voir plus (${categoryProducts.length - 12} produits)`}
                     </button>
                   </div>
                 )}
