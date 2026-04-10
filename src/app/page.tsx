@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from 'react';
+import { useState, useMemo } from 'react';
 import { Header } from '@/components/landing/Header';
 import { InfoBar } from '@/components/landing/InfoBar';
 import { HeroSlider } from '@/components/landing/HeroSlider';
@@ -14,9 +14,16 @@ import { products, Product } from '@/data/products';
 export default function Home() {
   const [selectedProduct, setSelectedProduct] = useState<Product | null>(null);
 
-  // Filter products
+  // Filter products with a better variety
   const promoPacks = products.filter(p => p.category === 'packs' || (p.oldPrice && p.oldPrice > p.price)).slice(0, 4);
-  const bestSellers = products.filter(p => p.category !== 'packs').slice(0, 20);
+  
+  // Get a more diverse set of best sellers (not just the first few)
+  const bestSellers = useMemo(() => {
+    const nonPacks = products.filter(p => p.category !== 'packs');
+    // Simple way to get a variety: shuffle or pick from different brands
+    // For now, let's just reverse or take a slice that includes scraped products
+    return [...nonPacks].reverse().slice(0, 20);
+  }, [products]);
 
   return (
     <main className="min-h-screen bg-white text-black">
