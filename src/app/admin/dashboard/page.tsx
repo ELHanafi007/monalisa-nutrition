@@ -26,7 +26,9 @@ import {
   Edit3,
   ChevronRight,
   ArrowUpRight,
-  ArrowDownRight
+  ArrowDownRight,
+  Archive,
+  AlertTriangle
 } from 'lucide-react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { getProducts, Product } from '@/data/products';
@@ -39,6 +41,7 @@ export default function AdminDashboard() {
   const [isLoading, setIsLoading] = useState(true);
   const [currentProducts, setCurrentProducts] = useState<Product[]>([]);
   const [currentCategories, setCurrentCategories] = useState<Category[]>([]);
+  const [editingProduct, setEditingProduct] = useState<Product | null>(null);
 
   useEffect(() => {
     setIsLoading(false);
@@ -53,6 +56,30 @@ export default function AdminDashboard() {
   const handleLogout = () => {
     document.cookie = "admin_session=; path=/; expires=Thu, 01 Jan 1970 00:00:00 GMT";
     router.push('/admin');
+  };
+
+  const startEdit = (product: Product) => {
+    setEditingProduct(product);
+    setActiveTab('add-product');
+  };
+
+  const toggleStock = (productId: string) => {
+    const updated = currentProducts.map(p => {
+      if (p.id === productId) {
+        return { ...p, isRupture: !p.isRupture };
+      }
+      return p;
+    });
+    localStorage.setItem('monalisa_inventory_v1', JSON.stringify(updated));
+    refreshData();
+  };
+
+  const deleteProduct = (productId: string) => {
+    if (confirm('Êtes-vous sûr de vouloir supprimer ce produit de l\'archive ?')) {
+      const updated = currentProducts.filter(p => p.id !== productId);
+      localStorage.setItem('monalisa_inventory_v1', JSON.stringify(updated));
+      refreshData();
+    }
   };
 
   if (isLoading) return null;
@@ -82,13 +109,13 @@ export default function AdminDashboard() {
             icon={BarChart3} 
             label="Vue d'Ensemble" 
             active={activeTab === 'dashboard'} 
-            onClick={() => setActiveTab('dashboard')} 
+            onClick={() => {setActiveTab('dashboard'); setEditingProduct(null);}} 
           />
           <NavItem 
             icon={ShoppingCart} 
             label="Commandes" 
             active={activeTab === 'orders'} 
-            onClick={() => setActiveTab('orders')} 
+            onClick={() => {setActiveTab('orders'); setEditingProduct(null);}} 
             badge="12"
           />
           
@@ -100,11 +127,11 @@ export default function AdminDashboard() {
             icon={Package} 
             label="Archive Produits" 
             active={activeTab === 'products'} 
-            onClick={() => setActiveTab('products')} 
+            onClick={() => {setActiveTab('products'); setEditingProduct(null);}} 
           />
           <NavItem 
-            icon={Plus} 
-            label="Cataloguer" 
+            icon={editingProduct ? Edit3 : Plus} 
+            label={editingProduct ? "Modifier Produit" : "Cataloguer"} 
             active={activeTab === 'add-product'} 
             onClick={() => setActiveTab('add-product')} 
           />
@@ -112,7 +139,7 @@ export default function AdminDashboard() {
             icon={Layers} 
             label="Architecture" 
             active={activeTab === 'add-category'} 
-            onClick={() => setActiveTab('add-category')} 
+            onClick={() => {setActiveTab('add-category'); setEditingProduct(null);}} 
           />
         </nav>
 
@@ -163,8 +190,25 @@ export default function AdminDashboard() {
             >
               {activeTab === 'dashboard' && <DashboardOverview />}
               {activeTab === 'orders' && <OrdersTab />}
-              {activeTab === 'products' && <ProductsArchive products={currentProducts} />}
-              {activeTab === 'add-product' && <AddProductTab categories={currentCategories} onComplete={() => {setActiveTab('products'); refreshData();}} />}
+              {activeTab === 'products' && (
+                <ProductsArchive 
+                  products={currentProducts} 
+                  onToggleStock={toggleStock} 
+                  onEdit={startEdit} 
+                  onDelete={deleteProduct} 
+                />
+              )}
+              {activeTab === 'add-product' && (
+                <AddProductTab 
+                  categories={currentCategories} 
+                  editingProduct={editingProduct}
+                  onComplete={() => {
+                    setEditingProduct(null);
+                    setActiveTab('products'); 
+                    refreshData();
+                  }} 
+                />
+              )}
               {activeTab === 'add-category' && <AddCategoryTab onComplete={() => {setActiveTab('dashboard'); refreshData();}} />}
             </motion.div>
           </AnimatePresence>
@@ -384,7 +428,14 @@ function OrdersTab() {
   );
 }
 
-function ProductsArchive({ products }: { products: Product[] }) {
+interface ProductsArchiveProps {
+  products: Product[];
+  onToggleStock: (id: string) => void;
+  onEdit: (product: Product) => void;
+  onDelete: (id: string) => void;
+}
+
+function ProductsArchive({ products, onToggleStock, onEdit, onDelete }: ProductsArchiveProps) {
   const [search, setSearch] = useState('');
   
   const filtered = products.filter(p => 
@@ -394,7 +445,7 @@ function ProductsArchive({ products }: { products: Product[] }) {
 
   return (
     <div className="space-y-12">
-      <div className="flex items-end justify-between">
+      <div className="flex flex-col md:flex-row md:items-end justify-between gap-8">
         <div>
           <h2 className="text-5xl font-black uppercase tracking-tighter mb-4">Archives <span className="red-gradient-text italic">Inventaire.</span></h2>
           <p className="text-white/40 text-[10px] uppercase tracking-[0.5em] font-black">Indexation des {products.length} Unités Cataloguées</p>
@@ -406,7 +457,7 @@ function ProductsArchive({ products }: { products: Product[] }) {
             placeholder="RECHERCHER DANS L'ARCHIVE..." 
             value={search}
             onChange={(e) => setSearch(e.target.value)}
-            className="bg-white/5 border border-white/10 rounded-2xl py-4 pl-12 pr-6 text-[10px] font-black uppercase tracking-widest outline-none focus:border-luxury-red transition-all w-80" 
+            className="bg-white/5 border border-white/10 rounded-2xl py-4 pl-12 pr-6 text-[10px] font-black uppercase tracking-widest outline-none focus:border-luxury-red transition-all w-80 shadow-2xl" 
           />
         </div>
       </div>
@@ -418,29 +469,51 @@ function ProductsArchive({ products }: { products: Product[] }) {
             initial={{ opacity: 0, y: 10 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ delay: (i % 8) * 0.05 }}
-            className="bg-white/[0.02] border border-white/5 p-8 rounded-[2.5rem] group hover:bg-white/[0.04] transition-all duration-500"
+            className={`bg-white/[0.02] border ${product.isRupture ? 'border-luxury-red/20' : 'border-white/5'} p-8 rounded-[2.5rem] group hover:bg-white/[0.04] transition-all duration-500 relative`}
           >
+            {product.isRupture && (
+              <div className="absolute top-6 left-6 z-20 bg-luxury-red text-white text-[7px] px-3 py-1.5 font-black uppercase tracking-widest rounded-lg flex items-center gap-2 shadow-lg shadow-red-900/40">
+                <AlertTriangle size={10} /> RUPTURE DE STOCK
+              </div>
+            )}
+            
             <div className="aspect-square relative rounded-3xl overflow-hidden bg-black/40 p-6 mb-6">
-              <Image src={product.image} alt={product.name} fill className="object-contain p-6 grayscale group-hover:grayscale-0 transition-all duration-700 group-hover:scale-110" />
+              <Image 
+                src={product.image} 
+                alt={product.name} 
+                fill 
+                className={`object-contain p-6 transition-all duration-700 group-hover:scale-110 ${product.isRupture ? 'grayscale brightness-50' : 'grayscale group-hover:grayscale-0'}`} 
+              />
               <div className="absolute inset-0 bg-luxury-red/0 group-hover:bg-luxury-red/5 transition-colors" />
             </div>
             
-            <div className="space-y-2">
+            <div className="space-y-4">
                <div className="flex justify-between items-start">
                   <span className="text-[8px] font-black uppercase tracking-widest text-luxury-red">{product.brand}</span>
                   <span className="text-xs font-black text-white">{product.price} MAD</span>
                </div>
-               <h4 className="text-[11px] font-bold uppercase tracking-tight line-clamp-2 h-8">{product.name}</h4>
-               <div className="pt-4 flex items-center justify-between">
-                  <span className="text-[7px] font-black uppercase tracking-[0.3em] text-white/30">{product.category}</span>
-                  <div className="flex gap-2">
-                     <button className="w-8 h-8 rounded-lg bg-white/5 flex items-center justify-center hover:bg-white hover:text-black transition-all">
-                        <Edit3 size={12} />
-                     </button>
-                     <button className="w-8 h-8 rounded-lg bg-white/5 flex items-center justify-center hover:bg-luxury-red hover:text-white transition-all">
-                        <Trash2 size={12} />
-                     </button>
-                  </div>
+               <h4 className="text-[11px] font-bold uppercase tracking-tight line-clamp-2 h-8 group-hover:text-white transition-colors">{product.name}</h4>
+               
+               <div className="pt-4 grid grid-cols-3 gap-2">
+                  <button 
+                    onClick={() => onToggleStock(product.id)}
+                    title={product.isRupture ? "Remettre en stock" : "Marquer comme rupture"}
+                    className={`h-10 rounded-xl flex items-center justify-center transition-all ${product.isRupture ? 'bg-green-500/10 text-green-500 hover:bg-green-500 hover:text-white' : 'bg-white/5 text-white/40 hover:bg-luxury-red hover:text-white'}`}
+                  >
+                     {product.isRupture ? <PackageCheck size={16} /> : <Archive size={16} />}
+                  </button>
+                  <button 
+                    onClick={() => onEdit(product)}
+                    className="h-10 rounded-xl bg-white/5 text-white/40 flex items-center justify-center hover:bg-white hover:text-black transition-all"
+                  >
+                     <Edit3 size={16} />
+                  </button>
+                  <button 
+                    onClick={() => onDelete(product.id)}
+                    className="h-10 rounded-xl bg-white/5 text-white/40 flex items-center justify-center hover:bg-luxury-red hover:text-white transition-all"
+                  >
+                     <Trash2 size={16} />
+                  </button>
                </div>
             </div>
           </motion.div>
@@ -450,7 +523,13 @@ function ProductsArchive({ products }: { products: Product[] }) {
   );
 }
 
-function AddProductTab({ categories, onComplete }: { categories: Category[], onComplete: () => void }) {
+interface AddProductTabProps {
+  categories: Category[];
+  editingProduct: Product | null;
+  onComplete: () => void;
+}
+
+function AddProductTab({ categories, editingProduct, onComplete }: AddProductTabProps) {
   const [formData, setFormData] = useState({
     name: '',
     brand: '',
@@ -463,6 +542,22 @@ function AddProductTab({ categories, onComplete }: { categories: Category[], onC
   });
   const [preview, setPreview] = useState<string | null>(null);
   const fileInputRef = useRef<HTMLInputElement>(null);
+
+  useEffect(() => {
+    if (editingProduct) {
+      setFormData({
+        name: editingProduct.name,
+        brand: editingProduct.brand,
+        price: editingProduct.price.toString(),
+        category: editingProduct.category,
+        description: editingProduct.description,
+        benefits: editingProduct.benefits.length > 0 ? editingProduct.benefits : ['', ''],
+        specs: editingProduct.specs.length > 0 ? editingProduct.specs : [{ label: 'Poids', value: '' }],
+        image: editingProduct.image
+      });
+      setPreview(editingProduct.image);
+    }
+  }, [editingProduct]);
 
   const handleImageChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0];
@@ -494,32 +589,58 @@ function AddProductTab({ categories, onComplete }: { categories: Category[], onC
       return;
     }
 
-    const newProduct: Product = {
-      id: `dp-${Date.now()}`,
-      name: formData.name,
-      slug: formData.name.toLowerCase().replace(/ /g, '-'),
-      brand: formData.brand,
-      price: parseInt(formData.price),
-      category: formData.category,
-      image: formData.image,
-      description: formData.description,
-      benefits: formData.benefits.filter(b => b.trim() !== ''),
-      specs: formData.specs
-    };
+    const savedInventory = localStorage.getItem('monalisa_inventory_v1');
+    const currentInventory: Product[] = savedInventory ? JSON.parse(savedInventory) : getProducts();
 
-    const saved = localStorage.getItem('monalisa_dynamic_products');
-    const dynamicProducts = saved ? JSON.parse(saved) : [];
-    localStorage.setItem('monalisa_dynamic_products', JSON.stringify([...dynamicProducts, newProduct]));
+    if (editingProduct) {
+      const updated = currentInventory.map(p => {
+        if (p.id === editingProduct.id) {
+          return {
+            ...p,
+            name: formData.name,
+            brand: formData.brand,
+            price: parseInt(formData.price),
+            category: formData.category,
+            image: formData.image,
+            description: formData.description,
+            benefits: formData.benefits.filter(b => b.trim() !== ''),
+            specs: formData.specs
+          };
+        }
+        return p;
+      });
+      localStorage.setItem('monalisa_inventory_v1', JSON.stringify(updated));
+      alert("Produit mis à jour avec succès.");
+    } else {
+      const newProduct: Product = {
+        id: `dp-${Date.now()}`,
+        name: formData.name,
+        slug: formData.name.toLowerCase().replace(/[^a-z0-9]/g, '-'),
+        brand: formData.brand,
+        price: parseInt(formData.price),
+        category: formData.category,
+        image: formData.image,
+        description: formData.description,
+        benefits: formData.benefits.filter(b => b.trim() !== ''),
+        specs: formData.specs,
+        isRupture: false
+      };
+      localStorage.setItem('monalisa_inventory_v1', JSON.stringify([...currentInventory, newProduct]));
+      alert("Produit catalogué avec succès.");
+    }
 
-    alert("Produit catalogué avec succès.");
     onComplete();
   };
 
   return (
     <div className="max-w-6xl space-y-16">
       <div>
-        <h2 className="text-5xl font-black uppercase tracking-tighter mb-4">Cataloguer un <span className="red-gradient-text italic">Produit.</span></h2>
-        <p className="text-white/40 text-[10px] uppercase tracking-[0.5em] font-black">Protocole d'expansion d'inventaire stratégique</p>
+        <h2 className="text-5xl font-black uppercase tracking-tighter mb-4">
+          {editingProduct ? "Modifier le" : "Cataloguer un"} <span className="red-gradient-text italic">Produit.</span>
+        </h2>
+        <p className="text-white/40 text-[10px] uppercase tracking-[0.5em] font-black">
+          {editingProduct ? `PROTOCOLE DE MODIFICATION : ${editingProduct.id}` : "Protocole d'expansion d'inventaire stratégique"}
+        </p>
       </div>
 
       <form onSubmit={handleSubmit} className="space-y-16">
@@ -644,9 +765,18 @@ function AddProductTab({ categories, onComplete }: { categories: Category[], onC
           </button>
         </div>
 
-        <div className="pt-12 flex justify-end">
+        <div className="pt-12 flex justify-end gap-6">
+          {editingProduct && (
+            <button 
+              type="button" 
+              onClick={onComplete}
+              className="px-16 py-6 border border-white/10 text-white/40 text-[11px] font-black uppercase tracking-[0.4em] rounded-[1.5rem] hover:bg-white/5 transition-all"
+            >
+              Annuler
+            </button>
+          )}
           <button type="submit" className="px-16 py-6 bg-luxury-red text-white text-[11px] font-black uppercase tracking-[0.4em] rounded-[1.5rem] hover:bg-red-500 hover:scale-105 transition-all shadow-[0_20px_40px_rgba(139,0,0,0.3)]">
-            Cataloguer le Produit
+            {editingProduct ? "Confirmer Modifications" : "Cataloguer le Produit"}
           </button>
         </div>
       </form>
@@ -686,7 +816,7 @@ function AddCategoryTab({ onComplete }: { onComplete: () => void }) {
     const newCategory: Category = {
       id: `dc-${Date.now()}`,
       name: formData.name,
-      slug: formData.name.toLowerCase().replace(/ /g, '-'),
+      slug: formData.name.toLowerCase().replace(/[^a-z0-9]/g, '-'),
       description: formData.description,
       image: formData.image
     };

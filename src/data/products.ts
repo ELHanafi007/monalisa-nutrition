@@ -1830,19 +1830,35 @@ const defaultProducts: Product[] = [
   }
 ];
 
-// Helper to get products (merging localStorage)
+// Helper to get products (managing via unified localStorage inventory for admin control)
 export const getProducts = (): Product[] => {
   if (typeof window === 'undefined') return defaultProducts;
-  const saved = localStorage.getItem('monalisa_dynamic_products');
-  if (saved) {
+  
+  const savedInventory = localStorage.getItem('monalisa_inventory_v1');
+  if (savedInventory) {
     try {
-      const dynamic = JSON.parse(saved);
-      return [...defaultProducts, ...dynamic];
+      return JSON.parse(savedInventory);
     } catch (e) {
-      return defaultProducts;
+      console.error("Failed to parse monalisa_inventory_v1", e);
     }
   }
-  return defaultProducts;
+
+  // Fallback to legacy dynamic products merged with defaults, or just defaults
+  const legacyDynamic = localStorage.getItem('monalisa_dynamic_products');
+  let currentProducts = defaultProducts;
+  if (legacyDynamic) {
+    try {
+      const dynamic = JSON.parse(legacyDynamic);
+      currentProducts = [...defaultProducts, ...dynamic];
+    } catch (e) {}
+  }
+  
+  // Initialize unified inventory if not present
+  if (typeof window !== 'undefined' && !savedInventory) {
+    localStorage.setItem('monalisa_inventory_v1', JSON.stringify(currentProducts));
+  }
+  
+  return currentProducts;
 };
 
 export const products = getProducts();
