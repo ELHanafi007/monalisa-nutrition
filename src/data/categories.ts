@@ -18,7 +18,7 @@ const defaultCategories: Category[] = [
     id: "cat1",
     name: "Amino Acids",
     slug: "acides-amines",
-    description: "Essential and non-essential amino acids for optimal recovery.",
+    description: "BCAA, Glutamine and other essential recovery aminos.",
     image: "/images/amino-1.webp"
   },
   {
@@ -37,7 +37,7 @@ const defaultCategories: Category[] = [
   },
   {
     id: "cat4",
-    name: "Gainers",
+    name: "Mass Gainers",
     slug: "gainers",
     description: "High-calorie formulas for serious mass.",
     image: "/images/seriousmass.webp"
@@ -60,7 +60,7 @@ const defaultCategories: Category[] = [
     id: "cat7",
     name: "Multivitamins",
     slug: "multivitamines",
-    description: "Daily nutrient support.",
+    description: "Complete daily nutrient support.",
     image: "/images/animal-pak.webp"
   },
   {
@@ -86,10 +86,17 @@ const defaultCategories: Category[] = [
   },
   {
     id: "cat12",
-    name: "Suppléments",
+    name: "Health & Wellness",
     slug: "supplements",
-    description: "Une large gamme de compléments pour votre bien-être.",
+    description: "Natural supplements for your overall well-being and health.",
     image: "/images/products/melatonin-extra-10mg-100-capsules-now-food.webp"
+  },
+  {
+    id: "cat13",
+    name: "Vitamins & Minerals",
+    slug: "vitamins-minerals",
+    description: "Specific vitamins and minerals for targeted health support.",
+    image: "/images/products/vitamin-c1000-90-capsules-ostrovit.webp"
   }
 ];
 
