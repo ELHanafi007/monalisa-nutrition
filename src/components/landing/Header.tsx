@@ -6,11 +6,13 @@ import { ShoppingCart, Search, User, Menu, Moon, Sun } from 'lucide-react';
 import { useCart } from '@/contexts/CartContext';
 import { useState } from 'react';
 import { SearchModal } from '../SearchModal';
+import { CategoryModal } from '../CategoryModal';
 import { useTheme } from '@/providers/ThemeProvider';
 
 export const Header = () => {
   const { totalItems } = useCart();
   const [isSearchOpen, setIsSearchOpen] = useState(false);
+  const [isCategoryModalOpen, setIsCategoryModalOpen] = useState(false);
   const { theme, toggleTheme } = useTheme();
 
   return (
@@ -68,13 +70,17 @@ export const Header = () => {
               </span>
             )}
           </Link>
-          <button className="p-2 text-text-muted hover:bg-surface-hover rounded-full md:hidden">
+          <button 
+            onClick={() => setIsCategoryModalOpen(true)}
+            className="p-2 text-text-muted hover:bg-surface-hover rounded-full md:hidden"
+          >
             <Menu size={22} />
           </button>
         </div>
       </div>
       
       <SearchModal isOpen={isSearchOpen} onClose={() => setIsSearchOpen(false)} />
+      <CategoryModal isOpen={isCategoryModalOpen} onClose={() => setIsCategoryModalOpen(false)} />
     </header>
   );
 };

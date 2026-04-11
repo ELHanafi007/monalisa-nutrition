@@ -2,13 +2,20 @@
 
 import { Menu, Truck, MessageCircle } from 'lucide-react';
 import Link from 'next/link';
+import { useState } from 'react';
+import { CategoryModal } from '../CategoryModal';
 
 export const InfoBar = () => {
+  const [isCategoryModalOpen, setIsCategoryModalOpen] = useState(false);
+
   return (
     <div className="bg-gray-100 py-3 border-b border-gray-200">
       <div className="container mx-auto px-4 flex flex-wrap items-center justify-between gap-4 text-sm font-medium">
         {/* Categories Menu */}
-        <button className="flex items-center gap-3 text-black hover:text-luxury-red transition-colors group">
+        <button 
+          onClick={() => setIsCategoryModalOpen(true)}
+          className="flex items-center gap-3 text-black hover:text-luxury-red transition-colors group"
+        >
           <Menu size={22} className="text-luxury-red group-hover:scale-110 transition-transform" />
           <span className="uppercase tracking-[0.2em] font-black text-xs">Catégories des produits</span>
         </button>
@@ -30,6 +37,11 @@ export const InfoBar = () => {
           <span className="font-black uppercase tracking-widest text-xs">Contactez-nous</span>
         </a>
       </div>
+
+      <CategoryModal 
+        isOpen={isCategoryModalOpen} 
+        onClose={() => setIsCategoryModalOpen(false)} 
+      />
     </div>
   );
 };
