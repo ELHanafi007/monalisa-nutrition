@@ -7,6 +7,7 @@ import { HeroSlider } from '@/components/landing/HeroSlider';
 import { CategoryCircles } from '@/components/landing/CategoryCircles';
 import { ProductSection } from '@/components/landing/ProductSection';
 import { Brands } from '@/components/landing/Brands';
+import { LocationSection } from '@/components/LocationSection';
 import { Footer } from '@/components/landing/Footer';
 import { QuickView } from '@/components/QuickView';
 import { products, Product } from '@/data/products';
@@ -56,7 +57,10 @@ export default function Home() {
       {/* 7. BRANDS SECTION */}
       <Brands />
 
-      {/* 8. FOOTER */}
+      {/* 8. LOCATION SECTION (MAP) */}
+      <LocationSection />
+
+      {/* 9. FOOTER */}
       <Footer />
 
       {/* QuickView Component (Functionality kept) */}

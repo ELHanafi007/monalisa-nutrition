@@ -7,19 +7,19 @@ import { ChevronLeft, ChevronRight } from 'lucide-react';
 
 const slides = [
   {
-    image: "/images/hero/pexels-victorfreitas-949128.jpg",
+    image: "/tt/man&girlworkingout.webp",
     title: "Performance Elite",
-    subtitle: "Découvrez l'excellence de la nutrition sportive"
+    subtitle: "Exprimez votre potentiel maximum avec notre sélection exclusive de suppléments."
   },
   {
-    image: "/images/hero/pexels-tima-miroshnichenko-5327555.jpg",
-    title: "Pureté Absolue",
-    subtitle: "Des formules conçues pour les champions"
+    image: "/tt/healthy-eating-and-exercising-concept.webp",
+    title: "Nutrition Pure",
+    subtitle: "Une alimentation saine et des suppléments de qualité pour un équilibre parfait."
   },
   {
-    image: "/images/hero/pexels-sarazhizmailov-13104546.jpg",
-    title: "Votre Rituel",
-    subtitle: "Atteignez vos objectifs avec Monaliza House"
+    image: "/tt/allproducts.webp",
+    title: "Gamme Complète",
+    subtitle: "Protéines, gainers, créatine, collagène et bien plus encore pour vos objectifs."
   }
 ];
 
