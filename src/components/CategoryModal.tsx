@@ -56,7 +56,7 @@ export const CategoryModal = ({ isOpen, onClose }: { isOpen: boolean; onClose: (
                 {categories.map((category) => (
                   <Link 
                     key={category.id} 
-                    href={`/catalog?category=${category.slug}`}
+                    href={`/catalog/${category.slug}`}
                     onClick={onClose}
                     className="group flex items-center gap-4 p-4 rounded-2xl bg-gray-50 hover:bg-white hover:shadow-xl hover:shadow-red-100 transition-all border border-transparent hover:border-red-100"
                   >

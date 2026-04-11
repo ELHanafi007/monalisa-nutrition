@@ -21,7 +21,7 @@ export const CategoryCircles = () => {
           {categories.map((cat, i) => (
             <Link 
               key={i} 
-              href={`/catalog?category=${cat.slug}`}
+              href={`/catalog/${cat.slug}`}
               className="flex flex-col items-center gap-4 group transition-transform hover:scale-105"
             >
               <div className="w-24 h-24 md:w-40 md:h-40 rounded-full border-2 border-gray-50 p-3 bg-white shadow-sm flex items-center justify-center overflow-hidden group-hover:border-luxury-red transition-all duration-500 group-hover:shadow-xl group-hover:shadow-red-100">
