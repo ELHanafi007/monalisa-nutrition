@@ -8,14 +8,49 @@ import { Trash2, Plus, Minus, ArrowRight, ShieldCheck, Truck, CreditCard } from 
 import Image from 'next/image';
 import Link from 'next/link';
 import { useState } from 'react';
+import { sendOrderEmail } from '../actions/order';
 
 export default function Checkout() {
   const { cart, totalItems, totalPrice, removeFromCart, updateQuantity } = useCart();
   const [isOrdering, setIsOrdering] = useState(false);
+  const [customerInfo, setCustomerInfo] = useState({
+    name: '',
+    phone: '',
+    address: ''
+  });
 
   // Delivery costs: 35 MAD fixed, Free for 2+ articles
   const deliveryFee = totalItems >= 2 ? 0 : 35;
   const grandTotal = totalPrice + deliveryFee;
+
+  const handleOrder = async () => {
+    if (!customerInfo.name || !customerInfo.phone || !customerInfo.address) {
+      alert('Veuillez remplir toutes les informations de livraison.');
+      return;
+    }
+
+    setIsOrdering(true);
+    
+    try {
+      // 1. Send Email via Resend
+      await sendOrderEmail(customerInfo, cart, grandTotal);
+
+      // 2. Redirect to WhatsApp
+      const message = `Bonjour Monaliza House, je souhaite commander :\n\n` + 
+        `Client: ${customerInfo.name}\n` +
+        `Tél: ${customerInfo.phone}\n` +
+        `Adresse: ${customerInfo.address}\n\n` +
+        `Produits:\n` +
+        `${cart.map(i => `- ${i.quantity}x ${i.name}`).join('\n')}\n\n` +
+        `Total: ${grandTotal} MAD.`;
+      
+      window.open(`https://wa.me/212662599179?text=${encodeURIComponent(message)}`, '_blank');
+    } catch (error) {
+      console.error('Order Error:', error);
+    } finally {
+      setIsOrdering(false);
+    }
+  };
 
   if (cart.length === 0) {
     return (
@@ -99,15 +134,32 @@ export default function Checkout() {
                <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                   <div className="space-y-2">
                     <label className="text-[10px] uppercase tracking-widest font-black text-text-muted ml-4">Nom Complet</label>
-                    <input type="text" placeholder="Ex: Ahmed El Amrani" className="w-full bg-bg-main border border-border rounded-2xl py-4 px-6 focus:border-luxury-red outline-none font-bold text-text-main placeholder:text-text-muted/50" />
+                    <input 
+                      type="text" 
+                      placeholder="Ex: Ahmed El Amrani" 
+                      value={customerInfo.name}
+                      onChange={(e) => setCustomerInfo({...customerInfo, name: e.target.value})}
+                      className="w-full bg-bg-main border border-border rounded-2xl py-4 px-6 focus:border-luxury-red outline-none font-bold text-text-main placeholder:text-text-muted/50" 
+                    />
                   </div>
                   <div className="space-y-2">
                     <label className="text-[10px] uppercase tracking-widest font-black text-text-muted ml-4">Téléphone</label>
-                    <input type="tel" placeholder="+212 6..." className="w-full bg-bg-main border border-border rounded-2xl py-4 px-6 focus:border-luxury-red outline-none font-bold text-text-main placeholder:text-text-muted/50" />
+                    <input 
+                      type="tel" 
+                      placeholder="+212 6..." 
+                      value={customerInfo.phone}
+                      onChange={(e) => setCustomerInfo({...customerInfo, phone: e.target.value})}
+                      className="w-full bg-bg-main border border-border rounded-2xl py-4 px-6 focus:border-luxury-red outline-none font-bold text-text-main placeholder:text-text-muted/50" 
+                    />
                   </div>
                   <div className="space-y-2 md:col-span-2">
                     <label className="text-[10px] uppercase tracking-widest font-black text-text-muted ml-4">Adresse de Livraison</label>
-                    <textarea placeholder="Votre adresse exacte à Casablanca, Marrakech, etc." className="w-full bg-bg-main border border-border rounded-2xl py-4 px-6 focus:border-luxury-red outline-none font-bold text-text-main placeholder:text-text-muted/50 min-h-[120px]" />
+                    <textarea 
+                      placeholder="Votre adresse exacte à Casablanca, Marrakech, etc." 
+                      value={customerInfo.address}
+                      onChange={(e) => setCustomerInfo({...customerInfo, address: e.target.value})}
+                      className="w-full bg-bg-main border border-border rounded-2xl py-4 px-6 focus:border-luxury-red outline-none font-bold text-text-main placeholder:text-text-muted/50 min-h-[120px]" 
+                    />
                   </div>
                </div>
             </div>
@@ -151,14 +203,7 @@ export default function Checkout() {
               </div>
 
               <button 
-                onClick={() => {
-                  setIsOrdering(true);
-                  setTimeout(() => {
-                    const message = `Bonjour Monaliza House, je souhaite commander : ${cart.map(i => `${i.quantity}x ${i.name}`).join(', ')}. Total: ${grandTotal} MAD.`;
-                    window.open(`https://wa.me/212662599179?text=${encodeURIComponent(message)}`, '_blank');
-                    setIsOrdering(false);
-                  }, 1000);
-                }}
+                onClick={handleOrder}
                 disabled={isOrdering}
                 className="w-full luxury-button py-6 relative z-10 scale-105 shadow-xl shadow-red-900/20"
               >

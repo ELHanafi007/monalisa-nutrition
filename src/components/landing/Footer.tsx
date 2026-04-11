@@ -2,7 +2,7 @@
 
 import Link from 'next/link';
 import Image from 'next/image';
-import { Music, MessageCircle, Phone, Mail, MapPin, Clock, Facebook, Instagram } from 'lucide-react';
+import { MessageCircle, Phone, Mail, MapPin, Clock, Facebook, Instagram } from 'lucide-react';
 
 export const Footer = () => {
   return (
@@ -71,8 +71,10 @@ export const Footer = () => {
               <a href="https://www.instagram.com/monaliza__house/" target="_blank" className="w-12 h-12 bg-surface border border-border rounded-2xl flex items-center justify-center hover:bg-luxury-red hover:text-white transition-all shadow-sm group">
                 <Instagram size={22} className="text-text-muted group-hover:text-white" />
               </a>
-              <a href="https://www.tiktok.com/@monaliza__house?_r=1&_t=ZS-95Qvxm3MA0i/" target="_blank" className="w-12 h-12 bg-surface border border-border rounded-2xl flex items-center justify-center hover:bg-luxury-red hover:text-white transition-all shadow-sm group">
-                <Music size={22} className="text-text-muted group-hover:text-white" />
+              <a href="https://www.tiktok.com/@monaliza__house?_r=1&_t=ZS-95Qvxm3MA0i/" target="_blank" className="w-12 h-12 bg-surface border border-border rounded-2xl flex items-center justify-center hover:bg-luxury-red hover:text-white transition-all shadow-sm group overflow-hidden">
+                <div className="relative w-7 h-7 grayscale group-hover:grayscale-0 transition-all duration-500">
+                  <Image src="/tt/pastel-pink-tiktok-logo-500x281.webp" alt="TikTok" fill className="object-contain" />
+                </div>
               </a>
               <a href="https://wa.me/212662599179" target="_blank" className="w-12 h-12 bg-surface border border-border rounded-2xl flex items-center justify-center hover:bg-luxury-red hover:text-white transition-all shadow-sm group">
                 <MessageCircle size={22} className="text-text-muted group-hover:text-white" />
