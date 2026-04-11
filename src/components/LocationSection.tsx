@@ -77,16 +77,8 @@ export const LocationSection = () => {
                   </div>
                   <div className="space-y-2">
                     <div className="flex justify-between items-center border-b border-white/5 pb-2">
-                      <span className="text-text-muted text-xs uppercase tracking-widest">Mon - Fri</span>
-                      <span className="text-white text-sm">09:00 — 21:00</span>
-                    </div>
-                    <div className="flex justify-between items-center border-b border-white/5 pb-2">
-                      <span className="text-text-muted text-xs uppercase tracking-widest">Saturday</span>
-                      <span className="text-white text-sm">10:00 — 20:00</span>
-                    </div>
-                    <div className="flex justify-between items-center">
-                      <span className="text-text-muted text-xs uppercase tracking-widest">Sunday</span>
-                      <span className="text-gold text-[10px] uppercase tracking-widest font-bold">Closed</span>
+                      <span className="text-text-muted text-xs uppercase tracking-widest">Lun - Dim</span>
+                      <span className="text-white text-sm">10:00 — 21:00</span>
                     </div>
                   </div>
                 </div>
@@ -97,9 +89,9 @@ export const LocationSection = () => {
                     <span className="text-[10px] uppercase tracking-[0.4em] font-bold">Contact</span>
                   </div>
                   <div className="space-y-3">
-                    <a href="tel:+212662802351" className="flex items-center gap-3 text-text-muted hover:text-white transition-colors group/link">
+                    <a href="tel:+212662599179" className="flex items-center gap-3 text-text-muted hover:text-white transition-colors group/link">
                       <Phone size={14} className="group-hover/link:text-gold transition-colors" />
-                      <span className="text-sm">+212 662 802351</span>
+                      <span className="text-sm">+212 662 599179</span>
                     </a>
                     <a href="mailto:monalizahouse598@gmail.com" className="flex items-center gap-3 text-text-muted hover:text-white transition-colors group/link">
                       <Mail size={14} className="group-hover/link:text-gold transition-colors" />

@@ -55,7 +55,7 @@ export default function Concierge() {
               </p>
               <div className="flex flex-col sm:flex-row gap-4 pt-4">
                 <a 
-                  href="https://wa.me/212600000000" 
+                  href="https://wa.me/212662599179" 
                   target="_blank" 
                   className="luxury-button flex items-center gap-3"
                 >
@@ -150,7 +150,7 @@ export default function Concierge() {
               </p>
               <div className="flex justify-center">
                 <a 
-                  href="https://wa.me/212600000000" 
+                  href="https://wa.me/212662599179" 
                   className="luxury-button scale-125"
                 >
                   Démarrer sur WhatsApp

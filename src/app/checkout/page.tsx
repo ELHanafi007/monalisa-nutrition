@@ -155,7 +155,7 @@ export default function Checkout() {
                   setIsOrdering(true);
                   setTimeout(() => {
                     const message = `Bonjour Monaliza House, je souhaite commander : ${cart.map(i => `${i.quantity}x ${i.name}`).join(', ')}. Total: ${grandTotal} MAD.`;
-                    window.open(`https://wa.me/212662802351?text=${encodeURIComponent(message)}`, '_blank');
+                    window.open(`https://wa.me/212662599179?text=${encodeURIComponent(message)}`, '_blank');
                     setIsOrdering(false);
                   }, 1000);
                 }}

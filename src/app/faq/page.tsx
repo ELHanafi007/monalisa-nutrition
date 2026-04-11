@@ -84,7 +84,7 @@ export default function FAQ() {
               Notre équipe de concierge est à votre disposition pour vous conseiller et répondre à toutes vos interrogations sur WhatsApp.
             </p>
             <a 
-              href="https://wa.me/212662802351"
+              href="https://wa.me/212662599179"
               target="_blank"
               className="inline-block bg-white text-luxury-red px-10 py-4 rounded-2xl font-black uppercase tracking-widest text-sm hover:scale-105 transition-transform"
             >

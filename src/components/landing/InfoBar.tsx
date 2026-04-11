@@ -21,7 +21,7 @@ export const InfoBar = () => {
 
         {/* WhatsApp Button */}
         <a 
-          href="https://wa.me/212662802351" 
+          href="https://wa.me/212662599179" 
           target="_blank" 
           rel="noopener noreferrer"
           className="flex items-center gap-3 text-white transition-all bg-luxury-red px-6 py-2.5 rounded-full shadow-lg shadow-red-100 hover:scale-105"

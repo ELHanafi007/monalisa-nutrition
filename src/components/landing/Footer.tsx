@@ -24,7 +24,7 @@ export const Footer = () => {
               </div>
               <div className="flex items-center gap-3">
                 <Phone size={18} className="text-luxury-red shrink-0" />
-                <a href="tel:+212662802351" className="hover:text-luxury-red transition-colors">+212 662 802351</a>
+                <a href="tel:+212662599179" className="hover:text-luxury-red transition-colors">+212 662 599179</a>
               </div>
               <div className="flex items-center gap-3">
                 <Mail size={18} className="text-luxury-red shrink-0" />
@@ -33,8 +33,7 @@ export const Footer = () => {
               <div className="flex items-start gap-3">
                 <Clock size={18} className="text-luxury-red shrink-0" />
                 <div className="flex flex-col gap-1 text-[10px] uppercase font-black">
-                  <span>Lun - Ven / 09h00 - 20h00</span>
-                  <span>Samedi / 10h00 - 18h00</span>
+                  <span>Lun - Dim / 10H - 21H</span>
                 </div>
               </div>
             </div>
@@ -66,16 +65,16 @@ export const Footer = () => {
           <div>
             <h3 className="font-black text-text-main uppercase tracking-[0.2em] text-xs mb-8 border-b-2 border-luxury-red pb-2 w-fit">Suivez-nous</h3>
             <div className="flex gap-4">
-              <a href="https://facebook.com/monalizahouse" target="_blank" className="w-12 h-12 bg-surface border border-border rounded-2xl flex items-center justify-center hover:bg-luxury-red hover:text-white transition-all shadow-sm group">
+              <a href="https://www.facebook.com/monalizahouse" target="_blank" className="w-12 h-12 bg-surface border border-border rounded-2xl flex items-center justify-center hover:bg-luxury-red hover:text-white transition-all shadow-sm group">
                 <Facebook size={22} className="text-text-muted group-hover:text-white" />
               </a>
-              <a href="https://instagram.com/monalizahouse" target="_blank" className="w-12 h-12 bg-surface border border-border rounded-2xl flex items-center justify-center hover:bg-luxury-red hover:text-white transition-all shadow-sm group">
+              <a href="https://www.instagram.com/monaliza__house/" target="_blank" className="w-12 h-12 bg-surface border border-border rounded-2xl flex items-center justify-center hover:bg-luxury-red hover:text-white transition-all shadow-sm group">
                 <Instagram size={22} className="text-text-muted group-hover:text-white" />
               </a>
-              <a href="https://tiktok.com/@monalizahouse" target="_blank" className="w-12 h-12 bg-surface border border-border rounded-2xl flex items-center justify-center hover:bg-luxury-red hover:text-white transition-all shadow-sm group">
+              <a href="https://www.tiktok.com/@monaliza__house?_r=1&_t=ZS-95Qvxm3MA0i/" target="_blank" className="w-12 h-12 bg-surface border border-border rounded-2xl flex items-center justify-center hover:bg-luxury-red hover:text-white transition-all shadow-sm group">
                 <Music size={22} className="text-text-muted group-hover:text-white" />
               </a>
-              <a href="https://wa.me/212662802351" target="_blank" className="w-12 h-12 bg-surface border border-border rounded-2xl flex items-center justify-center hover:bg-luxury-red hover:text-white transition-all shadow-sm group">
+              <a href="https://wa.me/212662599179" target="_blank" className="w-12 h-12 bg-surface border border-border rounded-2xl flex items-center justify-center hover:bg-luxury-red hover:text-white transition-all shadow-sm group">
                 <MessageCircle size={22} className="text-text-muted group-hover:text-white" />
               </a>
             </div>
