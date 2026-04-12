@@ -538,9 +538,9 @@ function AddProductTab({ categories, editingProduct, onComplete }: AddProductTab
     description: '',
     benefits: ['', ''],
     specs: [{ label: 'Poids', value: '' }],
-    image: ''
+    image: '',
+    images: [] as string[]
   });
-  const [preview, setPreview] = useState<string | null>(null);
   const fileInputRef = useRef<HTMLInputElement>(null);
 
   useEffect(() => {
@@ -553,23 +553,52 @@ function AddProductTab({ categories, editingProduct, onComplete }: AddProductTab
         description: editingProduct.description,
         benefits: editingProduct.benefits.length > 0 ? editingProduct.benefits : ['', ''],
         specs: editingProduct.specs.length > 0 ? editingProduct.specs : [{ label: 'Poids', value: '' }],
-        image: editingProduct.image
+        image: editingProduct.image,
+        images: editingProduct.images || [editingProduct.image]
       });
-      setPreview(editingProduct.image);
     }
   }, [editingProduct]);
 
   const handleImageChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    const file = e.target.files?.[0];
-    if (file) {
-      const reader = new FileReader();
-      reader.onloadend = () => {
-        const base64 = reader.result as string;
-        setPreview(base64);
-        setFormData({ ...formData, image: base64 });
-      };
-      reader.readAsDataURL(file);
+    const files = e.target.files;
+    if (files) {
+      const filesArray = Array.from(files).slice(0, 5 - formData.images.length);
+      
+      filesArray.forEach(file => {
+        const reader = new FileReader();
+        reader.onloadend = () => {
+          const base64 = reader.result as string;
+          setFormData(prev => {
+            const newImages = [...prev.images, base64];
+            return { 
+              ...prev, 
+              images: newImages,
+              // Set main image to the first one if it's not set
+              image: prev.image || newImages[0]
+            };
+          });
+        };
+        reader.readAsDataURL(file);
+      });
     }
+  };
+
+  const removeImage = (index: number) => {
+    setFormData(prev => {
+      const newImages = prev.images.filter((_, i) => i !== index);
+      return {
+        ...prev,
+        images: newImages,
+        image: newImages[0] || ''
+      };
+    });
+  };
+
+  const setMainImage = (index: number) => {
+    setFormData(prev => ({
+      ...prev,
+      image: prev.images[index]
+    }));
   };
 
   const handleAddBenefit = () => {
@@ -584,27 +613,32 @@ function AddProductTab({ categories, editingProduct, onComplete }: AddProductTab
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
-    if (!formData.category || !formData.image) {
-      alert("Veuillez sélectionner une catégorie et télécharger une image.");
+    if (!formData.category || formData.images.length === 0) {
+      alert("Veuillez sélectionner une catégorie et télécharger au moins une image.");
       return;
     }
 
     const savedInventory = localStorage.getItem('monalisa_inventory_v1');
     const currentInventory: Product[] = savedInventory ? JSON.parse(savedInventory) : getProducts();
 
+    const productData = {
+      name: formData.name,
+      brand: formData.brand,
+      price: parseInt(formData.price),
+      category: formData.category,
+      image: formData.image,
+      images: formData.images,
+      description: formData.description,
+      benefits: formData.benefits.filter(b => b.trim() !== ''),
+      specs: formData.specs
+    };
+
     if (editingProduct) {
       const updated = currentInventory.map(p => {
         if (p.id === editingProduct.id) {
           return {
             ...p,
-            name: formData.name,
-            brand: formData.brand,
-            price: parseInt(formData.price),
-            category: formData.category,
-            image: formData.image,
-            description: formData.description,
-            benefits: formData.benefits.filter(b => b.trim() !== ''),
-            specs: formData.specs
+            ...productData
           };
         }
         return p;
@@ -614,15 +648,8 @@ function AddProductTab({ categories, editingProduct, onComplete }: AddProductTab
     } else {
       const newProduct: Product = {
         id: `dp-${Date.now()}`,
-        name: formData.name,
         slug: formData.name.toLowerCase().replace(/[^a-z0-9]/g, '-'),
-        brand: formData.brand,
-        price: parseInt(formData.price),
-        category: formData.category,
-        image: formData.image,
-        description: formData.description,
-        benefits: formData.benefits.filter(b => b.trim() !== ''),
-        specs: formData.specs,
+        ...productData,
         isRupture: false
       };
       localStorage.setItem('monalisa_inventory_v1', JSON.stringify([...currentInventory, newProduct]));
@@ -711,26 +738,55 @@ function AddProductTab({ categories, editingProduct, onComplete }: AddProductTab
             </div>
           </div>
 
-          <div className="space-y-4">
-            <label className="text-[10px] uppercase tracking-[0.4em] text-luxury-red font-black ml-6">Manifestation Visuelle</label>
-            <div 
-              onClick={() => fileInputRef.current?.click()}
-              className="aspect-square border-2 border-dashed border-white/5 bg-white/[0.02] hover:bg-luxury-red/[0.02] hover:border-luxury-red/30 transition-all cursor-pointer flex flex-col items-center justify-center p-12 relative overflow-hidden rounded-[3rem] group"
-            >
-              {preview ? (
-                <Image src={preview} alt="Preview" fill className="object-contain p-12 group-hover:scale-110 transition-transform duration-700" />
-              ) : (
-                <div className="text-center space-y-4">
-                  <div className="w-20 h-20 bg-black rounded-3xl flex items-center justify-center mx-auto border border-white/10 group-hover:border-luxury-red/50 transition-colors">
-                     <Upload size={32} className="text-white/20 group-hover:text-luxury-red transition-colors" />
+          <div className="space-y-6">
+            <label className="text-[10px] uppercase tracking-[0.4em] text-luxury-red font-black ml-6">Galerie (Jusqu'à 5 photos)</label>
+            <div className="grid grid-cols-3 gap-4">
+              {formData.images.map((img, i) => (
+                <div key={i} className="aspect-square relative rounded-2xl overflow-hidden border border-white/10 group">
+                  <Image src={img} alt={`Preview ${i}`} fill className="object-contain p-2" />
+                  <div className="absolute inset-0 bg-black/60 opacity-0 group-hover:opacity-100 transition-opacity flex items-center justify-center gap-2">
+                    <button 
+                      type="button"
+                      onClick={() => setMainImage(i)}
+                      className={`p-2 rounded-lg ${formData.image === img ? 'bg-luxury-red text-white' : 'bg-white/10 text-white/40 hover:text-white'}`}
+                      title="Définir comme image principale"
+                    >
+                      <Check size={14} />
+                    </button>
+                    <button 
+                      type="button"
+                      onClick={() => removeImage(i)}
+                      className="p-2 bg-luxury-red/20 text-luxury-red rounded-lg hover:bg-luxury-red hover:text-white transition-colors"
+                    >
+                      <X size={14} />
+                    </button>
                   </div>
-                  <p className="text-[10px] uppercase tracking-widest text-white/30 leading-relaxed font-black">
-                    Uploader PNG/WebP <br /> <span className="text-white/10">800x800 Optimal</span>
-                  </p>
+                  {formData.image === img && (
+                    <div className="absolute top-2 left-2 bg-luxury-red text-white text-[6px] px-2 py-0.5 rounded-full font-black uppercase tracking-widest">Principal</div>
+                  )}
                 </div>
+              ))}
+              
+              {formData.images.length < 5 && (
+                <button
+                  type="button"
+                  onClick={() => fileInputRef.current?.click()}
+                  className="aspect-square border-2 border-dashed border-white/5 bg-white/[0.02] hover:bg-luxury-red/[0.02] hover:border-luxury-red/30 transition-all flex flex-col items-center justify-center rounded-2xl group"
+                >
+                  <Upload size={24} className="text-white/20 group-hover:text-luxury-red transition-colors mb-2" />
+                  <span className="text-[8px] uppercase tracking-widest text-white/20 font-black">Ajouter</span>
+                </button>
               )}
-              <input type="file" ref={fileInputRef} onChange={handleImageChange} className="hidden" accept="image/*" />
             </div>
+            <input 
+              type="file" 
+              ref={fileInputRef} 
+              onChange={handleImageChange} 
+              className="hidden" 
+              accept="image/*" 
+              multiple 
+            />
+            <p className="text-[8px] uppercase tracking-widest text-white/20 font-black ml-6">Optimisation : 800x800 WebP recommandé</p>
           </div>
         </div>
 

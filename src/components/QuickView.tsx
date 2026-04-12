@@ -15,8 +15,16 @@ interface QuickViewProps {
 export const QuickView = ({ product, onClose }: QuickViewProps) => {
   const { addToCart } = useCart();
   const [quantity, setQuantity] = useState(1);
+  const [activeImage, setActiveImage] = useState(product?.image || '');
+
+  // Reset active image when product changes
+  useState(() => {
+    if (product) setActiveImage(product.image);
+  });
 
   if (!product) return null;
+
+  const allImages = product.images && product.images.length > 0 ? product.images : [product.image];
 
   return (
     <AnimatePresence>
@@ -38,21 +46,48 @@ export const QuickView = ({ product, onClose }: QuickViewProps) => {
           >
             <div className="bg-white border border-gray-100 w-full max-w-5xl pointer-events-auto relative rounded-3xl overflow-hidden flex flex-col md:flex-row h-full max-h-[90vh] md:max-h-auto overflow-y-auto md:overflow-hidden shadow-2xl">
               {/* Product Visual */}
-              <div className="flex-1 bg-gray-50 p-12 relative flex items-center justify-center border-b md:border-b-0 md:border-r border-gray-100">
+              <div className="flex-1 bg-gray-50 p-12 relative flex flex-col items-center justify-center border-b md:border-b-0 md:border-r border-gray-100">
                 <div className="absolute top-8 left-8 z-10 flex gap-2">
                   <div className="bg-white border border-border px-3 py-1.5 rounded-xl shadow-sm flex items-center gap-2">
                     <Shield size={14} className="text-luxury-red" />
                     <span className="text-[10px] font-black uppercase tracking-widest">100% Original</span>
                   </div>
                 </div>
-                <div className="relative w-full h-full min-h-[300px]">
-                  <Image 
-                    src={product.image} 
-                    alt={product.name} 
-                    fill
-                    className={`object-contain p-8 ${product.isRupture ? 'grayscale' : ''}`}
-                  />
+                
+                <div className="relative w-full flex-1 min-h-[300px]">
+                  <AnimatePresence mode="wait">
+                    <motion.div
+                      key={activeImage}
+                      initial={{ opacity: 0 }}
+                      animate={{ opacity: 1 }}
+                      exit={{ opacity: 0 }}
+                      transition={{ duration: 0.3 }}
+                      className="absolute inset-0"
+                    >
+                      <Image 
+                        src={activeImage} 
+                        alt={product.name} 
+                        fill
+                        className={`object-contain p-8 ${product.isRupture ? 'grayscale' : ''}`}
+                      />
+                    </motion.div>
+                  </AnimatePresence>
                 </div>
+
+                {/* Thumbnails */}
+                {allImages.length > 1 && (
+                  <div className="grid grid-cols-5 gap-3 w-full max-w-sm mt-8">
+                    {allImages.map((img, i) => (
+                      <button
+                        key={i}
+                        onClick={() => setActiveImage(img)}
+                        className={`aspect-square relative rounded-xl overflow-hidden border-2 transition-all ${activeImage === img ? 'border-luxury-red' : 'border-white hover:border-gray-200'}`}
+                      >
+                        <Image src={img} alt={`${product.name} ${i}`} fill className="object-contain p-1" />
+                      </button>
+                    ))}
+                  </div>
+                )}
               </div>
 
               {/* Product Info */}

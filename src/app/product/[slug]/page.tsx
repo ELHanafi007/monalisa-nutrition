@@ -19,6 +19,7 @@ export default function ProductDetail() {
   
   const [quantity, setQuantity] = useState(1);
   const [activeTab, setActiveTab] = useState('description');
+  const [activeImage, setActiveImage] = useState(product?.image || '');
 
   if (!product) {
     return (
@@ -28,6 +29,8 @@ export default function ProductDetail() {
       </div>
     );
   }
+
+  const allImages = product.images && product.images.length > 0 ? product.images : [product.image];
 
   const reviews = [
     { name: "Othman B.", rating: 5, comment: "Pureté absolue. Le taux d'absorption est nettement plus élevé que tout ce qui existe sur le marché.", date: "15 Mars 2026" },
@@ -42,26 +45,52 @@ export default function ProductDetail() {
       <div className="container pt-32 pb-20">
         <div className="grid grid-cols-1 lg:grid-cols-2 gap-12 lg:gap-20">
           {/* Image Gallery */}
-          <motion.div 
-            initial={{ opacity: 0, x: -30 }}
-            animate={{ opacity: 1, x: 0 }}
-            transition={{ duration: 0.8 }}
-            className="relative aspect-square bg-gray-50 rounded-3xl overflow-hidden border border-gray-100 shadow-sm"
-          >
-            <div className="w-full h-full flex items-center justify-center p-12">
-              <Image 
-                src={product.image} 
-                alt={product.name} 
-                fill
-                className={`object-contain p-12 drop-shadow-2xl ${product.isRupture ? 'grayscale' : ''}`}
-              />
-            </div>
-            <div className="absolute top-8 left-8">
-              <span className="bg-luxury-red text-white text-[10px] font-black px-4 py-2 uppercase tracking-widest flex items-center gap-2 rounded-full shadow-lg">
-                <CheckCircle size={12} /> Produit Certifié
-              </span>
-            </div>
-          </motion.div>
+          <div className="space-y-6">
+            <motion.div 
+              initial={{ opacity: 0, x: -30 }}
+              animate={{ opacity: 1, x: 0 }}
+              transition={{ duration: 0.8 }}
+              className="relative aspect-square bg-gray-50 rounded-3xl overflow-hidden border border-gray-100 shadow-sm"
+            >
+              <AnimatePresence mode="wait">
+                <motion.div
+                  key={activeImage}
+                  initial={{ opacity: 0 }}
+                  animate={{ opacity: 1 }}
+                  exit={{ opacity: 0 }}
+                  transition={{ duration: 0.4 }}
+                  className="w-full h-full flex items-center justify-center p-12"
+                >
+                  <Image 
+                    src={activeImage} 
+                    alt={product.name} 
+                    fill
+                    className={`object-contain p-12 drop-shadow-2xl ${product.isRupture ? 'grayscale' : ''}`}
+                  />
+                </motion.div>
+              </AnimatePresence>
+              <div className="absolute top-8 left-8">
+                <span className="bg-luxury-red text-white text-[10px] font-black px-4 py-2 uppercase tracking-widest flex items-center gap-2 rounded-full shadow-lg">
+                  <CheckCircle size={12} /> Produit Certifié
+                </span>
+              </div>
+            </motion.div>
+
+            {/* Thumbnails */}
+            {allImages.length > 1 && (
+              <div className="grid grid-cols-5 gap-4">
+                {allImages.map((img, i) => (
+                  <button
+                    key={i}
+                    onClick={() => setActiveImage(img)}
+                    className={`aspect-square relative rounded-xl overflow-hidden border-2 transition-all ${activeImage === img ? 'border-luxury-red' : 'border-gray-100 hover:border-gray-200'}`}
+                  >
+                    <Image src={img} alt={`${product.name} ${i}`} fill className="object-contain p-2" />
+                  </button>
+                ))}
+              </div>
+            )}
+          </div>
 
           {/* Product Info */}
           <motion.div 

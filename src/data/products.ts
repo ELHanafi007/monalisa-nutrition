@@ -7,6 +7,7 @@ export interface Product {
   oldPrice?: number;
   category: string;
   image: string;
+  images?: string[];
   description: string;
   benefits: string[];
   specs: {
