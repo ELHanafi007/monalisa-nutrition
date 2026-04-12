@@ -355,8 +355,7 @@ const defaultProducts: Product[] = [
     price: 199,
     oldPrice: 250,
     category: "creatine",
-    image: "/images/products/100-creatine-monohydrate-300g-certified-hx-nutrition.jpg",
-    description: "<img decoding=\"async\" width=\"1600\" height=\"747\" src=\"https://maghrebnutrition.ma/wp-content/uploads/2025/12/SLIDER-MAGHREB-NUTRITION4-3-copy-1.webp\" class=\"vc_single_image-img attachment-full\" alt=\"\" title=\"SLIDER MAGHREB NUTRITION4 (3) copy (1)\" srcset=\"https://maghrebnutrition.ma/wp-content/uploads/2025/12/SLIDER-MAGHREB-NUTRITION4-3-copy-1.webp 1600w, https://maghrebnutrition.ma/wp-content/uploads/2025/12/SLIDER-MAGHREB-NUTRITION4-3-copy-1-300x140.webp 300w, https://maghrebnutrition.ma/wp-con",
+    description: "La Créatine Monohydrate de HX Nutrition est un complément de haute qualité conçu pour augmenter la force, la puissance et le volume musculaire. Sa pureté exceptionnelle favorise une récupération rapide entre les séries et une performance accrue lors d'entraînements intensifs.",
     benefits: ["Date d’éxpiration: 04/2028","Favorise la force, la récupération et la prise musculaire","Un complément alimentaire purifié, idéal aux athlètes exigeants","Une solution naturelle, sans additifs et facile à utiliser","Highlights :"],
     specs: [{"label":"Format","value":"Original"}]
   },
@@ -381,8 +380,7 @@ const defaultProducts: Product[] = [
     price: 349,
     oldPrice: 400,
     category: "creatine",
-    image: "/images/products/100-creatine-monohydrate-300g-original-biotech-usa.webp",
-    description: "<img decoding=\"async\" width=\"1600\" height=\"747\" src=\"https://maghrebnutrition.ma/wp-content/uploads/2025/12/SLIDER-MAGHREB-NUTRITION4-3-copy-1.webp\" class=\"vc_single_image-img attachment-full\" alt=\"\" title=\"SLIDER MAGHREB NUTRITION4 (3) copy (1)\" srcset=\"https://maghrebnutrition.ma/wp-content/uploads/2025/12/SLIDER-MAGHREB-NUTRITION4-3-copy-1.webp 1600w, https://maghrebnutrition.ma/wp-content/uploads/2025/12/SLIDER-MAGHREB-NUTRITION4-3-copy-1-300x140.webp 300w, https://maghrebnutrition.ma/wp-con",
+    description: "100% Creatine Monohydrate de BioTech USA est élaborée à partir de créatine pure de qualité pharmaceutique. Elle améliore les performances physiques lors de séries successives d'exercices de courte durée et de haute intensité. Sans saveur, elle se mélange facilement à vos shakes protéinés.",
     benefits: ["Date d’expiration :  04/2028","Apport de 3 à 5 g de créatine monohydrate pure par portion","Amélioration de performances physiques","Augmentation de la masse musculaire.","Goût neutre"],
     specs: [{"label":"Format","value":"Original"}]
   },
@@ -408,7 +406,7 @@ const defaultProducts: Product[] = [
     oldPrice: 500,
     category: "creatine",
     image: "/images/products/100-creatine-monohydrate-50-servings-applied-nutrition.jpg",
-    description: "100% CREATINE MONOHYDRATE 			 					 		      	 		 		 			<img decoding=\"async\" width=\"1600\" height=\"747\" src=\"https://maghrebnutrition.ma/wp-content/uploads/2025/12/SLIDER-MAGHREB-NUTRITION4-3-copy-1.webp\" class=\"vc_single_image-img attachment-full\" alt=\"\" title=\"SLIDER MAGHREB NUTRITION4 (3) copy (1)\" srcset=\"https://maghrebnutrition.ma/wp-content/uploads/2025/12/SLIDER-MAGHREB-NUTRITION4-3-copy-1.webp 1600w, https://maghrebnutrition.ma/wp-content/uploads/2025/12/SLIDER-MAGHREB-NUTRITION4-3-copy-",
+    description: "La créatine monohydrate d'Applied Nutrition est idéale pour toute personne pratiquant des exercices prolongés ou de haute intensité. Elle favorise la production d'énergie musculaire (ATP), améliore les performances physiques et soutient la force globale. Cette formule 100% pure est micronisée pour une solubilité optimale, ce qui en fait un complément essentiel pour les athlètes exigeants.",
     benefits: ["Date d’expiration: 04/2027","Poudre de créatine 100% pure","Favorise la production d’énergie aux muscles.","Améliore les performances physiques.","Parfait pour les athlètes pratiquant les exercices intenses"],
     specs: [{"label":"Format","value":"Original"}]
   },
@@ -421,7 +419,7 @@ const defaultProducts: Product[] = [
     oldPrice: 700,
     category: "creatine",
     image: "/images/products/100-creatine-monohydrate-500g-applied-nutrition.webp",
-    description: "<img decoding=\"async\" width=\"1600\" height=\"747\" src=\"https://maghrebnutrition.ma/wp-content/uploads/2025/12/SLIDER-MAGHREB-NUTRITION4-3-copy-1.webp\" class=\"vc_single_image-img attachment-full\" alt=\"\" title=\"SLIDER MAGHREB NUTRITION4 (3) copy (1)\" srcset=\"https://maghrebnutrition.ma/wp-content/uploads/2025/12/SLIDER-MAGHREB-NUTRITION4-3-copy-1.webp 1600w, https://maghrebnutrition.ma/wp-content/uploads/2025/12/SLIDER-MAGHREB-NUTRITION4-3-copy-1-300x140.webp 300w, https://maghrebnutrition.ma/wp-con",
+    description: "Le format 500g d'Applied Nutrition offre une pureté exceptionnelle de créatine monohydrate micronisée. Idéal pour les athlètes d'endurance et de force, il améliore l'énergie explosive et la récupération musculaire.",
     benefits: ["Date d’expiration: 04/2027","Poudre de créatine 100% pure","Favorise la production d’énergie aux muscles.","Améliore les performances physiques.","Parfait pour les athlètes pratiquant les exercices intenses"],
     specs: [{"label":"Format","value":"Original"}]
   },
@@ -434,7 +432,7 @@ const defaultProducts: Product[] = [
     oldPrice: 500,
     category: "creatine",
     image: "/images/products/100-creatine-monohydrate-500g-147-servings-original-biotech-usa.webp",
-    description: "<img decoding=\"async\" width=\"1600\" height=\"747\" src=\"https://maghrebnutrition.ma/wp-content/uploads/2025/12/SLIDER-MAGHREB-NUTRITION4-3-copy-1.webp\" class=\"vc_single_image-img attachment-full\" alt=\"\" title=\"SLIDER MAGHREB NUTRITION4 (3) copy (1)\" srcset=\"https://maghrebnutrition.ma/wp-content/uploads/2025/12/SLIDER-MAGHREB-NUTRITION4-3-copy-1.webp 1600w, https://maghrebnutrition.ma/wp-content/uploads/2025/12/SLIDER-MAGHREB-NUTRITION4-3-copy-1-300x140.webp 300w, https://maghrebnutrition.ma/wp-con",
+    description: "BioTech USA propose ici un format économique de 147 portions de créatine monohydrate pure. Sa formulation de qualité pharmaceutique garantit une absorption optimale pour booster vos performances et votre force musculaire.",
     benefits: ["Date d’éxpiration: 04/2028","Poudre de créatine 100 % pure.","Augmente la force et les performances physiques.","Stimule l’énergie en produisant de l’ATP","3 g de créatine monohydrate, la dose quotidienne, pour une force améliorée"],
     specs: [{"label":"Format","value":"Original"}]
   },
@@ -460,7 +458,7 @@ const defaultProducts: Product[] = [
     oldPrice: 500,
     category: "creatine",
     image: "/images/products/creapure-creatine-monohydrate-500g-7nutrition.webp",
-    description: "<img decoding=\"async\" width=\"1600\" height=\"747\" src=\"https://maghrebnutrition.ma/wp-content/uploads/2025/12/SLIDER-MAGHREB-NUTRITION4-3-copy-1.webp\" class=\"vc_single_image-img attachment-full\" alt=\"\" title=\"SLIDER MAGHREB NUTRITION4 (3) copy (1)\" srcset=\"https://maghrebnutrition.ma/wp-content/uploads/2025/12/SLIDER-MAGHREB-NUTRITION4-3-copy-1.webp 1600w, https://maghrebnutrition.ma/wp-content/uploads/2025/12/SLIDER-MAGHREB-NUTRITION4-3-copy-1-300x140.webp 300w, https://maghrebnutrition.ma/wp-con",
+    description: "Creapure® de 7Nutrition est la créatine monohydrate la plus pure et la plus testée au monde. Fabriquée en Allemagne, elle garantit une pureté maximale pour une efficacité optimale sur la force et la récupération.",
     benefits: ["Date d’éxpiration: 04/2027","Poudre de créatine 100 % pure.","Augmente la force et les performances physiques.","Stimule l’énergie en produisant de l’ATP","Presque 5g de créatine monohydrate creapure , la dose quotidienne, pour une force améliorée"],
     specs: [{"label":"Format","value":"Original"}]
   },
@@ -473,7 +471,7 @@ const defaultProducts: Product[] = [
     oldPrice: 500,
     category: "creatine",
     image: "/images/products/creatine-monohydrate-gummies-400g-applied-nutrition.webp",
-    description: "CREATINE MONOHYDRATE - GUMMIES 			 					 		      	 		 			Les Creatine Gummies d’Applied Nutrition sont une alternative pratique, gourmande et efficace à la créatine en poudre ou en capsules. Formulées à base de créatine monohydrate, elles apportent 3000 mg de créatine par portion, contribuant à l’amélioration des performances physiques lors d’exercices courts et intensifs, tels que la musculation ou les sports explosifs. Grâce à leur format gummies, elles sont faciles à consommer, sans besoin d’",
+    description: "Les Creatine Gummies d'Applied Nutrition sont une alternative pratique, gourmande et efficace à la créatine en poudre. Chaque portion apporte 3000 mg de créatine monohydrate pour booster vos performances physiques.",
     benefits: ["Date d’expiration: 04/2027","-Format gummies pratique à consommer.","-Alternative sans shaker ni capsules.","Highlights :","Date d’éxpiration: 04/2028"],
     specs: [{"label":"Format","value":"Original"}]
   },
