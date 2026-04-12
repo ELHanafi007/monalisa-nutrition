@@ -54,7 +54,7 @@ export const ProductCard = ({ product, onQuickView }: ProductCardProps) => {
       {/* Product Info */}
       <div className="p-5 flex flex-col flex-1">
         <p className="text-[10px] text-luxury-red font-black uppercase tracking-[0.2em] mb-2">{product.brand}</p>
-        <Link href={`/catalog/${product.slug}`} className="text-sm font-bold text-gray-900 line-clamp-2 hover:text-luxury-red transition-colors mb-4 flex-1 leading-tight">
+        <Link href={`/product/${product.slug}`} className="text-sm font-bold text-gray-900 line-clamp-2 hover:text-luxury-red transition-colors mb-4 flex-1 leading-tight">
           {product.name}
         </Link>
         

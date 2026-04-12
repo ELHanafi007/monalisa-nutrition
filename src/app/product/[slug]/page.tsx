@@ -5,7 +5,7 @@ import { products } from '@/data/products';
 import { Header } from '@/components/landing/Header';
 import { Footer } from '@/components/landing/Footer';
 import { ShoppingCart, Heart, Shield, Truck, RotateCcw, Plus, Minus, Star, Award, CheckCircle } from 'lucide-react';
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import Link from 'next/link';
 import Image from 'next/image';
@@ -20,6 +20,14 @@ export default function ProductDetail() {
   const [quantity, setQuantity] = useState(1);
   const [activeTab, setActiveTab] = useState('description');
   const [activeImage, setActiveImage] = useState(product?.image || '');
+
+  // Reset active image when product changes (navigation)
+  useEffect(() => {
+    if (product) {
+      setActiveImage(product.image);
+      setQuantity(1);
+    }
+  }, [product]);
 
   if (!product) {
     return (
@@ -62,7 +70,7 @@ export default function ProductDetail() {
                   className="w-full h-full flex items-center justify-center p-12"
                 >
                   <Image 
-                    src={activeImage} 
+                    src={activeImage || product.image} 
                     alt={product.name} 
                     fill
                     className={`object-contain p-12 drop-shadow-2xl ${product.isRupture ? 'grayscale' : ''}`}
@@ -276,7 +284,7 @@ export default function ProductDetail() {
           <h2 className="text-4xl md:text-5xl font-black uppercase tracking-tighter mb-12">Produits <span className="red-gradient-text italic">Complémentaires</span></h2>
           <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-8">
             {products.slice(0, 4).map((p) => (
-              <Link href={`/catalog/${p.slug}`} key={p.id} className="group flex flex-col items-center">
+              <Link href={`/product/${p.slug}`} key={p.id} className="group flex flex-col items-center">
                 <div className="aspect-square w-full bg-gray-50 border border-gray-100 rounded-3xl p-8 mb-6 group-hover:border-luxury-red transition-all overflow-hidden relative shadow-sm hover:shadow-xl">
                   <Image 
                     src={p.image} 

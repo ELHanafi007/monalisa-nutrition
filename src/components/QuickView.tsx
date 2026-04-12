@@ -5,7 +5,7 @@ import { X, ShoppingBag, Plus, Minus, Shield, Zap, Heart } from 'lucide-react';
 import { Product } from '@/data/products';
 import { useCart } from '@/contexts/CartContext';
 import Image from 'next/image';
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 
 interface QuickViewProps {
   product: Product | null;
@@ -15,12 +15,15 @@ interface QuickViewProps {
 export const QuickView = ({ product, onClose }: QuickViewProps) => {
   const { addToCart } = useCart();
   const [quantity, setQuantity] = useState(1);
-  const [activeImage, setActiveImage] = useState(product?.image || '');
+  const [activeImage, setActiveImage] = useState('');
 
   // Reset active image when product changes
-  useState(() => {
-    if (product) setActiveImage(product.image);
-  });
+  useEffect(() => {
+    if (product) {
+      setActiveImage(product.image);
+      setQuantity(1);
+    }
+  }, [product]);
 
   if (!product) return null;
 
@@ -65,7 +68,7 @@ export const QuickView = ({ product, onClose }: QuickViewProps) => {
                       className="absolute inset-0"
                     >
                       <Image 
-                        src={activeImage} 
+                        src={activeImage || product.image} 
                         alt={product.name} 
                         fill
                         className={`object-contain p-8 ${product.isRupture ? 'grayscale' : ''}`}
