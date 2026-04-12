@@ -85,9 +85,9 @@ export default function AdminDashboard() {
   if (isLoading) return null;
 
   return (
-    <div className="min-h-screen bg-[#0a0a0a] text-white flex font-sans overflow-hidden">
+    <div className="h-screen bg-[#0a0a0a] text-white flex font-sans overflow-hidden">
       {/* Sophisticated Sidebar */}
-      <aside className="w-80 bg-black/40 backdrop-blur-xl border-r border-white/5 flex flex-col fixed h-full z-30">
+      <aside className="w-80 bg-black/40 backdrop-blur-xl border-r border-white/5 flex flex-col fixed h-full z-30 overflow-y-auto custom-scrollbar">
         <div className="p-10 mb-8">
           <div className="flex items-center gap-4 mb-4">
             <div className="w-12 h-12 bg-luxury-red rounded-2xl flex items-center justify-center shadow-[0_0_30px_rgba(139,0,0,0.3)] rotate-3 group cursor-pointer hover:rotate-12 transition-transform duration-500">
@@ -155,7 +155,7 @@ export default function AdminDashboard() {
       </aside>
 
       {/* Main Content Area */}
-      <main className="flex-1 ml-80 relative min-h-screen overflow-y-auto custom-scrollbar bg-[radial-gradient(circle_at_top_right,_var(--tw-gradient-stops))] from-luxury-red/5 via-transparent to-transparent">
+      <main className="flex-1 ml-80 relative h-screen overflow-y-auto custom-scrollbar bg-[radial-gradient(circle_at_top_right,_var(--tw-gradient-stops))] from-luxury-red/5 via-transparent to-transparent">
         {/* Header */}
         <header className="h-28 bg-black/20 backdrop-blur-xl border-b border-white/5 flex items-center justify-between px-16 sticky top-0 z-20">
           <div>
