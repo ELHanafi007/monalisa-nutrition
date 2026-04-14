@@ -65,17 +65,6 @@ export default function Home() {
 
       {/* QuickView Component (Functionality kept) */}
       <QuickView product={selectedProduct} onClose={() => setSelectedProduct(null)} />
-
-      {/* Custom Styles for no-scrollbar */}
-      <style jsx global>{`
-        .no-scrollbar::-webkit-scrollbar {
-          display: none;
-        }
-        .no-scrollbar {
-          -ms-overflow-style: none;
-          scrollbar-width: none;
-        }
-      `}</style>
     </main>
   );
 }

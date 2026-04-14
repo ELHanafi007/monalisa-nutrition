@@ -23,6 +23,9 @@ export const SearchModal = ({ isOpen, onClose }: { isOpen: boolean; onClose: () 
     } else {
       document.body.style.overflow = 'unset';
     }
+    return () => {
+      document.body.style.overflow = 'unset';
+    };
   }, [isOpen]);
 
   return (
@@ -58,7 +61,7 @@ export const SearchModal = ({ isOpen, onClose }: { isOpen: boolean; onClose: () 
                 </button>
               </div>
 
-              <div className="space-y-12 max-h-[60vh] overflow-y-auto pr-4 no-scrollbar">
+              <div className="space-y-12 max-h-[60vh] overflow-y-auto pr-4">
                 {results.length > 0 ? (
                   <div>
                     <span className="text-[10px] uppercase tracking-widest text-luxury-red font-black mb-8 block">Résultats de recherche</span>

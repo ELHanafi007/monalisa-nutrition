@@ -17,6 +17,17 @@ export const NewsletterModal = () => {
     }
   }, []);
 
+  useEffect(() => {
+    if (isOpen) {
+      document.body.style.overflow = 'hidden';
+    } else {
+      document.body.style.overflow = 'unset';
+    }
+    return () => {
+      document.body.style.overflow = 'unset';
+    };
+  }, [isOpen]);
+
   const handleClose = () => {
     setIsOpen(false);
     // Don't show again in this session

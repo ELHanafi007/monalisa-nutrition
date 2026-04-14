@@ -14,6 +14,9 @@ export const CategoryModal = ({ isOpen, onClose }: { isOpen: boolean; onClose: (
     } else {
       document.body.style.overflow = 'unset';
     }
+    return () => {
+      document.body.style.overflow = 'unset';
+    };
   }, [isOpen]);
 
   return (
@@ -52,7 +55,7 @@ export const CategoryModal = ({ isOpen, onClose }: { isOpen: boolean; onClose: (
                 </button>
               </div>
 
-              <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 overflow-y-auto pr-4 no-scrollbar pb-6">
+              <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 overflow-y-auto pr-4 pb-6">
                 {categories.map((category) => (
                   <Link 
                     key={category.id} 

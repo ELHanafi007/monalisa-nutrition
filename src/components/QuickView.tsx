@@ -17,12 +17,16 @@ export const QuickView = ({ product, onClose }: QuickViewProps) => {
   const [quantity, setQuantity] = useState(1);
   const [activeImage, setActiveImage] = useState('');
 
-  // Reset active image when product changes
+  // Reset active image when product changes and handle body scroll lock
   useEffect(() => {
     if (product) {
       setActiveImage(product.image);
       setQuantity(1);
+      document.body.style.overflow = 'hidden';
     }
+    return () => {
+      document.body.style.overflow = 'unset';
+    };
   }, [product]);
 
   if (!product) return null;
@@ -47,7 +51,7 @@ export const QuickView = ({ product, onClose }: QuickViewProps) => {
             transition={{ type: "spring", damping: 25, stiffness: 300 }}
             className="fixed inset-0 z-[121] flex items-center justify-center p-4 md:p-12 pointer-events-none"
           >
-            <div className="bg-white border border-gray-100 w-full max-w-5xl pointer-events-auto relative rounded-3xl overflow-hidden flex flex-col md:flex-row h-full max-h-[90vh] md:max-h-auto overflow-y-auto md:overflow-hidden shadow-2xl">
+            <div className="bg-white border border-gray-100 w-full max-w-5xl pointer-events-auto relative rounded-3xl overflow-hidden flex flex-col md:flex-row max-h-full md:max-h-[90vh] overflow-y-auto shadow-2xl">
               {/* Product Visual */}
               <div className="flex-1 bg-gray-50 p-12 relative flex flex-col items-center justify-center border-b md:border-b-0 md:border-r border-gray-100">
                 <div className="absolute top-8 left-8 z-10 flex gap-2">
