@@ -355,6 +355,7 @@ const defaultProducts: Product[] = [
     price: 199,
     oldPrice: 250,
     category: "creatine",
+    image: "/images/products/100-creatine-monohydrate-300g-certified-hx-nutrition.jpg",
     description: "La Créatine Monohydrate de HX Nutrition est un complément de haute qualité conçu pour augmenter la force, la puissance et le volume musculaire. Sa pureté exceptionnelle favorise une récupération rapide entre les séries et une performance accrue lors d'entraînements intensifs.",
     benefits: ["Date d’éxpiration: 04/2028","Favorise la force, la récupération et la prise musculaire","Un complément alimentaire purifié, idéal aux athlètes exigeants","Une solution naturelle, sans additifs et facile à utiliser","Highlights :"],
     specs: [{"label":"Format","value":"Original"}]
@@ -380,6 +381,7 @@ const defaultProducts: Product[] = [
     price: 349,
     oldPrice: 400,
     category: "creatine",
+    image: "/images/products/100-creatine-monohydrate-300g-original-biotech-usa.webp",
     description: "100% Creatine Monohydrate de BioTech USA est élaborée à partir de créatine pure de qualité pharmaceutique. Elle améliore les performances physiques lors de séries successives d'exercices de courte durée et de haute intensité. Sans saveur, elle se mélange facilement à vos shakes protéinés.",
     benefits: ["Date d’expiration :  04/2028","Apport de 3 à 5 g de créatine monohydrate pure par portion","Amélioration de performances physiques","Augmentation de la masse musculaire.","Goût neutre"],
     specs: [{"label":"Format","value":"Original"}]
