@@ -68,19 +68,26 @@ const defaultCategories: Category[] = [
 export const getCategories = (): Category[] => {
   if (typeof window === 'undefined') return defaultCategories;
   
-  // Check for migration
-  const migrationDone = localStorage.getItem('monalisa_category_migration_v2');
-  if (!migrationDone) {
-    // Clear dynamic categories to reset to new defaults if they are legacy
-    localStorage.removeItem('monalisa_dynamic_categories');
-    localStorage.setItem('monalisa_category_migration_v2', 'true');
-  }
-
   const saved = localStorage.getItem('monalisa_dynamic_categories');
   if (saved) {
     try {
-      const dynamic = JSON.parse(saved);
-      return [...defaultCategories, ...dynamic];
+      const dynamic = JSON.parse(saved) as Category[];
+      // Use defaultCategories as base, but override with dynamic versions if ID matches
+      const merged = [...defaultCategories];
+      
+      dynamic.forEach(dyn => {
+        const index = merged.findIndex(m => m.id === dyn.id);
+        if (index !== -1) {
+          merged[index] = dyn;
+        } else {
+          merged.push(dyn);
+        }
+      });
+      
+      // Also handle "deleted" categories if we decide to implement that via a flag
+      // return merged.filter(c => !c.isHidden);
+      
+      return merged;
     } catch (e) {
       return defaultCategories;
     }

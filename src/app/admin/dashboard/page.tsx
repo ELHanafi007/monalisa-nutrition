@@ -42,6 +42,7 @@ export default function AdminDashboard() {
   const [currentProducts, setCurrentProducts] = useState<Product[]>([]);
   const [currentCategories, setCurrentCategories] = useState<Category[]>([]);
   const [editingProduct, setEditingProduct] = useState<Product | null>(null);
+  const [editingCategory, setEditingCategory] = useState<Category | null>(null);
 
   useEffect(() => {
     setIsLoading(false);
@@ -63,6 +64,11 @@ export default function AdminDashboard() {
     setActiveTab('add-product');
   };
 
+  const startEditCategory = (category: Category) => {
+    setEditingCategory(category);
+    setActiveTab('add-category');
+  };
+
   const toggleStock = (productId: string) => {
     const updated = currentProducts.map(p => {
       if (p.id === productId) {
@@ -78,6 +84,22 @@ export default function AdminDashboard() {
     if (confirm('Êtes-vous sûr de vouloir supprimer ce produit de l\'archive ?')) {
       const updated = currentProducts.filter(p => p.id !== productId);
       localStorage.setItem('monalisa_inventory_v1', JSON.stringify(updated));
+      refreshData();
+    }
+  };
+
+  const deleteCategory = (categoryId: string) => {
+    if (confirm('Êtes-vous sûr de vouloir supprimer cette catégorie ?')) {
+      const saved = localStorage.getItem('monalisa_dynamic_categories');
+      const dynamicCats = saved ? JSON.parse(saved) : [];
+      
+      // If it's a default category, we might want to "hide" it.
+      // But for now let's just remove it from dynamic categories if it exists.
+      const updated = dynamicCats.filter((c: Category) => c.id !== categoryId);
+      
+      // If it's not in dynamic, it's a default category.
+      // We could add it as "hidden" to dynamic if we want, but let's keep it simple.
+      localStorage.setItem('monalisa_dynamic_categories', JSON.stringify(updated));
       refreshData();
     }
   };
@@ -127,17 +149,23 @@ export default function AdminDashboard() {
             icon={Package} 
             label="Archive Produits" 
             active={activeTab === 'products'} 
-            onClick={() => {setActiveTab('products'); setEditingProduct(null);}} 
+            onClick={() => {setActiveTab('products'); setEditingProduct(null); setEditingCategory(null);}} 
           />
           <NavItem 
             icon={editingProduct ? Edit3 : Plus} 
             label={editingProduct ? "Modifier Produit" : "Cataloguer"} 
             active={activeTab === 'add-product'} 
-            onClick={() => setActiveTab('add-product')} 
+            onClick={() => {setActiveTab('add-product'); setEditingCategory(null);}} 
           />
           <NavItem 
             icon={Layers} 
             label="Architecture" 
+            active={activeTab === 'categories'} 
+            onClick={() => {setActiveTab('categories'); setEditingProduct(null); setEditingCategory(null);}} 
+          />
+          <NavItem 
+            icon={editingCategory ? Edit3 : Plus} 
+            label={editingCategory ? "Modifier Pilier" : "Nouveau Pilier"} 
             active={activeTab === 'add-category'} 
             onClick={() => {setActiveTab('add-category'); setEditingProduct(null);}} 
           />
@@ -209,7 +237,23 @@ export default function AdminDashboard() {
                   }} 
                 />
               )}
-              {activeTab === 'add-category' && <AddCategoryTab onComplete={() => {setActiveTab('dashboard'); refreshData();}} />}
+              {activeTab === 'categories' && (
+                <CategoriesArchive 
+                  categories={currentCategories} 
+                  onEdit={startEditCategory} 
+                  onDelete={deleteCategory} 
+                />
+              )}
+              {activeTab === 'add-category' && (
+                <AddCategoryTab 
+                  editingCategory={editingCategory}
+                  onComplete={() => {
+                    setEditingCategory(null);
+                    setActiveTab('categories'); 
+                    refreshData();
+                  }} 
+                />
+              )}
             </motion.div>
           </AnimatePresence>
         </div>
@@ -840,7 +884,85 @@ function AddProductTab({ categories, editingProduct, onComplete }: AddProductTab
   );
 }
 
-function AddCategoryTab({ onComplete }: { onComplete: () => void }) {
+interface CategoriesArchiveProps {
+  categories: Category[];
+  onEdit: (category: Category) => void;
+  onDelete: (id: string) => void;
+}
+
+function CategoriesArchive({ categories, onEdit, onDelete }: CategoriesArchiveProps) {
+  const [search, setSearch] = useState('');
+  
+  const filtered = categories.filter(c => 
+    c.name.toLowerCase().includes(search.toLowerCase())
+  );
+
+  return (
+    <div className="space-y-12">
+      <div className="flex flex-col md:flex-row md:items-end justify-between gap-8">
+        <div>
+          <h2 className="text-5xl font-black uppercase tracking-tighter mb-4">Architecture <span className="red-gradient-text italic">Sections.</span></h2>
+          <p className="text-white/40 text-[10px] uppercase tracking-[0.5em] font-black">Indexation des {categories.length} Piliers du Catalogue</p>
+        </div>
+        <div className="relative">
+          <Search size={16} className="absolute left-5 top-1/2 -translate-y-1/2 text-white/20" />
+          <input 
+            type="text" 
+            placeholder="RECHERCHER UNE CATÉGORIE..." 
+            value={search}
+            onChange={(e) => setSearch(e.target.value)}
+            className="bg-white/5 border border-white/10 rounded-2xl py-4 pl-12 pr-6 text-[10px] font-black uppercase tracking-widest outline-none focus:border-luxury-red transition-all w-80 shadow-2xl" 
+          />
+        </div>
+      </div>
+
+      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+        {filtered.map((category, i) => (
+          <motion.div 
+            key={category.id}
+            initial={{ opacity: 0, y: 10 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ delay: (i % 8) * 0.05 }}
+            className="bg-white/[0.02] border border-white/5 p-8 rounded-[2.5rem] group hover:bg-white/[0.04] transition-all duration-500 relative overflow-hidden"
+          >
+            <div className="aspect-video relative rounded-3xl overflow-hidden bg-black/40 mb-6">
+              <Image 
+                src={category.image} 
+                alt={category.name} 
+                fill 
+                className="object-cover opacity-60 transition-all duration-700 group-hover:scale-110 group-hover:opacity-80" 
+              />
+              <div className="absolute inset-0 bg-gradient-to-t from-black via-transparent to-transparent opacity-80" />
+            </div>
+            
+            <div className="space-y-4">
+               <h4 className="text-lg font-black uppercase tracking-tighter group-hover:text-luxury-red transition-colors">{category.name}</h4>
+               <p className="text-[10px] text-white/40 uppercase tracking-widest font-medium line-clamp-2 h-10">{category.description}</p>
+               
+               <div className="pt-4 flex gap-4">
+                  <button 
+                    onClick={() => onEdit(category)}
+                    className="flex-1 h-12 rounded-xl bg-white/5 text-white/40 flex items-center justify-center gap-3 hover:bg-white hover:text-black transition-all text-[10px] font-black uppercase tracking-widest"
+                  >
+                     <Edit3 size={16} /> Modifier
+                  </button>
+                  <button 
+                    onClick={() => onDelete(category.id)}
+                    className="w-12 h-12 rounded-xl bg-white/5 text-white/40 flex items-center justify-center hover:bg-luxury-red hover:text-white transition-all"
+                    title="Supprimer (Seulement si dynamique)"
+                  >
+                     <Trash2 size={16} />
+                  </button>
+               </div>
+            </div>
+          </motion.div>
+        ))}
+      </div>
+    </div>
+  );
+}
+
+function AddCategoryTab({ editingCategory, onComplete }: { editingCategory: Category | null, onComplete: () => void }) {
   const [formData, setFormData] = useState({
     name: '',
     description: '',
@@ -848,6 +970,17 @@ function AddCategoryTab({ onComplete }: { onComplete: () => void }) {
   });
   const [preview, setPreview] = useState<string | null>(null);
   const fileInputRef = useRef<HTMLInputElement>(null);
+
+  useEffect(() => {
+    if (editingCategory) {
+      setFormData({
+        name: editingCategory.name,
+        description: editingCategory.description,
+        image: editingCategory.image
+      });
+      setPreview(editingCategory.image);
+    }
+  }, [editingCategory]);
 
   const handleImageChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0];
@@ -869,27 +1002,53 @@ function AddCategoryTab({ onComplete }: { onComplete: () => void }) {
       return;
     }
 
-    const newCategory: Category = {
-      id: `dc-${Date.now()}`,
-      name: formData.name,
-      slug: formData.name.toLowerCase().replace(/[^a-z0-9]/g, '-'),
-      description: formData.description,
-      image: formData.image
-    };
-
     const saved = localStorage.getItem('monalisa_dynamic_categories');
     const dynamicCats = saved ? JSON.parse(saved) : [];
-    localStorage.setItem('monalisa_dynamic_categories', JSON.stringify([...dynamicCats, newCategory]));
 
-    alert("Pilier Architectural Établi.");
+    if (editingCategory) {
+      // Find if it's already in dynamic
+      const existingIndex = dynamicCats.findIndex((c: Category) => c.id === editingCategory.id);
+      
+      const updatedCategory: Category = {
+        ...editingCategory,
+        name: formData.name,
+        slug: formData.name.toLowerCase().replace(/[^a-z0-9]/g, '-'),
+        description: formData.description,
+        image: formData.image
+      };
+
+      if (existingIndex !== -1) {
+        dynamicCats[existingIndex] = updatedCategory;
+      } else {
+        // It's a default category being overridden
+        dynamicCats.push(updatedCategory);
+      }
+      localStorage.setItem('monalisa_dynamic_categories', JSON.stringify(dynamicCats));
+      alert("Pilier Architectural Mis à Jour.");
+    } else {
+      const newCategory: Category = {
+        id: `dc-${Date.now()}`,
+        name: formData.name,
+        slug: formData.name.toLowerCase().replace(/[^a-z0-9]/g, '-'),
+        description: formData.description,
+        image: formData.image
+      };
+      localStorage.setItem('monalisa_dynamic_categories', JSON.stringify([...dynamicCats, newCategory]));
+      alert("Pilier Architectural Établi.");
+    }
+
     onComplete();
   };
 
   return (
     <div className="max-w-5xl space-y-16">
       <div>
-        <h2 className="text-5xl font-black uppercase tracking-tighter mb-4">Établir un Nouveau <span className="red-gradient-text italic">Pilier.</span></h2>
-        <p className="text-white/40 text-[10px] uppercase tracking-[0.5em] font-black">Protocole d'expansion structurelle du catalogue</p>
+        <h2 className="text-5xl font-black uppercase tracking-tighter mb-4">
+          {editingCategory ? "Modifier le" : "Établir un Nouveau"} <span className="red-gradient-text italic">Pilier.</span>
+        </h2>
+        <p className="text-white/40 text-[10px] uppercase tracking-[0.5em] font-black">
+          {editingCategory ? `PROTOCOLE DE MODIFICATION : ${editingCategory.id}` : "Protocole d'expansion structurelle du catalogue"}
+        </p>
       </div>
 
       <form onSubmit={handleSubmit} className="space-y-12">
@@ -942,9 +1101,18 @@ function AddCategoryTab({ onComplete }: { onComplete: () => void }) {
           </div>
         </div>
 
-        <div className="pt-12 flex justify-end">
+        <div className="pt-12 flex justify-end gap-6">
+          {editingCategory && (
+            <button 
+              type="button" 
+              onClick={onComplete}
+              className="px-16 py-6 border border-white/10 text-white/40 text-[11px] font-black uppercase tracking-[0.4em] rounded-[1.5rem] hover:bg-white/5 transition-all"
+            >
+              Annuler
+            </button>
+          )}
           <button type="submit" className="px-16 py-6 bg-luxury-red text-white text-[11px] font-black uppercase tracking-[0.4em] rounded-[1.5rem] hover:bg-red-500 transition-all shadow-xl">
-            Établir la Catégorie
+            {editingCategory ? "Confirmer Modifications" : "Établir la Catégorie"}
           </button>
         </div>
       </form>
