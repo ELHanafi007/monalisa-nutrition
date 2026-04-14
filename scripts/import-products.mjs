@@ -94,7 +94,7 @@ async function scrapeProduct(url) {
       brand,
       price,
       oldPrice: oldPrice && oldPrice > price ? oldPrice : undefined,
-      category: categoryList[0]?.toLowerCase() || 'supplements',
+      category: categoryList[0]?.toLowerCase() || 'vitamines',
       image: images[0] || '',
       description: fullDesc.substring(0, 500),
       benefits: shortDesc.split('\n').map(s => s.trim()).filter(line => line.length > 3).slice(0, 5),

@@ -10,16 +10,15 @@ let currentTsContent = fs.readFileSync(PRODUCTS_TS, 'utf8');
 // Function to map scraped categories to existing slugs
 function mapCategory(scraped) {
   const s = scraped.toLowerCase();
-  if (s.includes('whey') || s.includes('protéine')) return 'whey-proteine';
+  if (s.includes('whey') || s.includes('protéine')) return 'whey';
   if (s.includes('creatine') || s.includes('créatine')) return 'creatine';
-  if (s.includes('vitamin')) return 'multivitamines';
+  if (s.includes('vitamin')) return 'vitamines';
   if (s.includes('gainer')) return 'gainers';
-  if (s.includes('amino') || s.includes('bcaa')) return 'acides-amines';
-  if (s.includes('eaa')) return 'eaa';
+  if (s.includes('amino') || s.includes('bcaa') || s.includes('eaa')) return 'amino';
   if (s.includes('pre-workout') || s.includes('entraînement')) return 'pre-workout';
-  if (s.includes('accessoire') || s.includes('shaker')) return 'accessoires';
-  if (s.includes('pack') || s.includes('promo')) return 'packs';
-  return 'supplements';
+  if (s.includes('accessoire') || s.includes('shaker')) return 'accessories';
+  if (s.includes('pack') || s.includes('promo')) return 'promo';
+  return 'vitamines';
 }
 
 // Prepare products for injection
