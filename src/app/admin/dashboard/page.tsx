@@ -19,6 +19,7 @@ import {
   Layers,
   LogOut,
   Upload,
+  Download,
   BarChart3,
   Users,
   Eye,
@@ -124,21 +125,65 @@ export default function AdminDashboard() {
   };
 
   const deleteCategory = (categoryId: string) => {
+    // Audit: Check if category has products
+    const category = currentCategories.find(c => c.id === categoryId);
+    if (!category) return;
+
+    const productsInCategory = currentProducts.filter(p => p.category === category.slug);
+
+    if (productsInCategory.length > 0) {
+      alert(`Impossible de supprimer : ce pilier contient encore ${productsInCategory.length} produits. Veuillez les réassigner ou les supprimer d'abord.`);
+      return;
+    }
+
     if (confirm('Êtes-vous sûr de vouloir supprimer cette catégorie ?')) {
       const saved = localStorage.getItem('monalisa_dynamic_categories');
       const dynamicCats = saved ? JSON.parse(saved) : [];
-      
-      // If it's a default category, we might want to "hide" it.
-      // But for now let's just remove it from dynamic categories if it exists.
       const updated = dynamicCats.filter((c: Category) => c.id !== categoryId);
-      
-      // If it's not in dynamic, it's a default category.
-      // We could add it as "hidden" to dynamic if we want, but let's keep it simple.
       localStorage.setItem('monalisa_dynamic_categories', JSON.stringify(updated));
       refreshData();
     }
   };
 
+  const exportDatabase = () => {
+    const data = {
+      products: getProducts(),
+      categories: getCategories(),
+      exportedAt: new Date().toISOString()
+    };
+    const blob = new Blob([JSON.stringify(data, null, 2)], { type: 'application/json' });
+    const url = URL.createObjectURL(blob);
+    const a = document.createElement('a');
+    a.href = url;
+    a.download = `monalisa-backup-${new Date().toISOString().split('T')[0]}.json`;
+    a.click();
+    URL.revokeObjectURL(url);
+  };
+
+  const importDatabase = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const file = e.target.files?.[0];
+    if (file) {
+      const reader = new FileReader();
+      reader.onload = (event) => {
+        try {
+          const data = JSON.parse(event.target?.result as string);
+          if (data.products && data.categories) {
+            if (confirm('L\'importation écrasera votre base de données locale actuelle. Continuer ?')) {
+              localStorage.setItem('monalisa_inventory_v1', JSON.stringify(data.products));
+              localStorage.setItem('monalisa_dynamic_categories', JSON.stringify(data.categories.filter((c: any) => c.id.startsWith('dc-'))));
+              refreshData();
+              alert('Base de données restaurée avec succès.');
+            }
+          } else {
+            alert('Format de fichier invalide.');
+          }
+        } catch (err) {
+          alert('Erreur lors de la lecture du fichier.');
+        }
+      };
+      reader.readAsText(file);
+    }
+  };
   if (isLoading) return null;
 
   return (
@@ -230,8 +275,23 @@ export default function AdminDashboard() {
           </div>
           
           <div className="flex items-center gap-10">
-            <div className="text-right hidden md:block">
-              <p className="text-xs font-black uppercase tracking-widest text-white/80">Othman Bennani</p>
+            <div className="hidden lg:flex gap-4">
+               <button 
+                 onClick={exportDatabase}
+                 className="flex items-center gap-3 px-6 h-12 rounded-xl bg-white/5 border border-white/5 hover:border-luxury-red/30 transition-all group"
+                 title="Exporter la base de données"
+               >
+                  <Download size={16} className="text-luxury-red group-hover:scale-110 transition-transform" />
+                  <span className="text-[10px] font-black uppercase tracking-widest text-white/40 group-hover:text-white">Backup</span>
+               </button>
+               <label className="flex items-center gap-3 px-6 h-12 rounded-xl bg-white/5 border border-white/5 hover:border-gold/30 transition-all group cursor-pointer">
+                  <input type="file" className="hidden" accept=".json" onChange={importDatabase} />
+                  <Upload size={16} className="text-gold group-hover:scale-110 transition-transform" />
+                  <span className="text-[10px] font-black uppercase tracking-widest text-white/40 group-hover:text-white">Restore</span>
+               </label>
+            </div>
+            <div className="h-10 w-[1px] bg-white/5 hidden lg:block" />
+            <div className="text-right hidden md:block">              <p className="text-xs font-black uppercase tracking-widest text-white/80">Othman Bennani</p>
               <p className="text-[9px] text-luxury-red uppercase tracking-[0.3em] font-black mt-1">Niveau d'Accès : Alpha</p>
             </div>
             <div className="w-14 h-14 rounded-2xl p-[1px] bg-gradient-to-br from-luxury-red/50 to-transparent shadow-2xl relative group cursor-pointer overflow-hidden">

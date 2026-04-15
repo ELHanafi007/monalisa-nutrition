@@ -1,20 +1,21 @@
 "use client";
 
 import { useParams } from 'next/navigation';
-import { products } from '@/data/products';
+import { useProducts, Product } from '@/data/products';
 import { Header } from '@/components/landing/Header';
 import { Footer } from '@/components/landing/Footer';
 import { ShoppingCart, Heart, Shield, Truck, RotateCcw, Plus, Minus, Star, Award, CheckCircle } from 'lucide-react';
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useMemo } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import Link from 'next/link';
 import Image from 'next/image';
 import { useCart } from '@/contexts/CartContext';
 
 export default function ProductDetail() {
+  const products = useProducts();
   const params = useParams();
   const slug = params.slug as string;
-  const product = products.find(p => p.slug === slug);
+  const product = useMemo(() => products.find(p => p.slug === slug), [products, slug]);
   const { addToCart } = useCart();
   
   const [quantity, setQuantity] = useState(1);
@@ -73,6 +74,7 @@ export default function ProductDetail() {
                     src={activeImage || product.image} 
                     alt={product.name} 
                     fill
+                    unoptimized
                     className={`object-contain p-12 drop-shadow-2xl ${product.isRupture ? 'grayscale' : ''}`}
                   />
                 </motion.div>
@@ -93,7 +95,7 @@ export default function ProductDetail() {
                     onClick={() => setActiveImage(img)}
                     className={`aspect-square relative rounded-xl overflow-hidden border-2 transition-all ${activeImage === img ? 'border-luxury-red' : 'border-gray-100 hover:border-gray-200'}`}
                   >
-                    <Image src={img} alt={`${product.name} ${i}`} fill className="object-contain p-2" />
+                    <Image src={img} alt={`${product.name} ${i}`} fill unoptimized className="object-contain p-2" />
                   </button>
                 ))}
               </div>
@@ -290,6 +292,7 @@ export default function ProductDetail() {
                     src={p.image} 
                     alt={p.name} 
                     fill
+                    unoptimized
                     className={`object-contain transition-all duration-700 p-8 group-hover:scale-110 ${p.isRupture ? 'grayscale' : ''}`}
                   />
                 </div>

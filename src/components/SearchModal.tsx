@@ -1,21 +1,24 @@
 "use client";
 
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useMemo } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { Search, X, ArrowRight } from 'lucide-react';
-import { products } from '@/data/products';
+import { useProducts, Product } from '@/data/products';
 import Link from 'next/link';
 import Image from 'next/image';
 
 export const SearchModal = ({ isOpen, onClose }: { isOpen: boolean; onClose: () => void }) => {
+  const products = useProducts();
   const [query, setQuery] = useState('');
   
-  const results = query.length > 1 
-    ? products.filter(p => 
-        p.name.toLowerCase().includes(query.toLowerCase()) || 
-        p.brand.toLowerCase().includes(query.toLowerCase())
-      ).slice(0, 5)
-    : [];
+  const results = useMemo(() => {
+    return query.length > 1 
+      ? products.filter(p => 
+          p.name.toLowerCase().includes(query.toLowerCase()) || 
+          p.brand.toLowerCase().includes(query.toLowerCase())
+        ).slice(0, 5)
+      : [];
+  }, [products, query]);
 
   useEffect(() => {
     if (isOpen) {
