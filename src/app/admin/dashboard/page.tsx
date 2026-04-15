@@ -114,6 +114,7 @@ export default function AdminDashboard() {
       .eq('id', productId);
 
     if (error) {
+      console.error("Supabase Error:", error);
       alert("Erreur lors de la mise à jour du stock.");
     } else {
       refreshData();
@@ -154,16 +155,19 @@ export default function AdminDashboard() {
         .eq('id', categoryId);
 
       if (error) {
+        console.error("Supabase Error:", error);
         alert("Erreur lors de la suppression de la catégorie.");
       } else {
         refreshData();
       }
     }
   };
-  const exportDatabase = () => {
+
+  const exportDatabase = async () => {
+    const [p, c] = await Promise.all([getProducts(), getCategories()]);
     const data = {
-      products: getProducts(),
-      categories: getCategories(),
+      products: p,
+      categories: c,
       exportedAt: new Date().toISOString()
     };
     const blob = new Blob([JSON.stringify(data, null, 2)], { type: 'application/json' });
@@ -789,13 +793,22 @@ function AddProductTab({ categories, editingProduct, onComplete }: AddProductTab
       const { error } = await supabase
         .from('products')
         .update({
-          ...productData,
+          name: productData.name,
+          brand: productData.brand,
+          price: productData.price,
+          category: productData.category,
+          image: productData.image,
+          images: productData.images,
+          description: productData.description,
+          benefits: productData.benefits,
+          specs: productData.specs,
           old_price: editingProduct.oldPrice,
           is_rupture: editingProduct.isRupture
         })
         .eq('id', editingProduct.id);
 
       if (error) {
+        console.error("Supabase Error:", error);
         alert("Erreur lors de la mise à jour du produit.");
       } else {
         alert("Produit mis à jour avec succès.");
@@ -804,8 +817,16 @@ function AddProductTab({ categories, editingProduct, onComplete }: AddProductTab
     } else {
       const newProduct = {
         id: `dp-${Date.now()}`,
-        slug: formData.name.toLowerCase().replace(/[^a-z0-9]/g, '-'),
-        ...productData,
+        name: productData.name,
+        slug: productData.name.toLowerCase().replace(/[^a-z0-9]/g, '-'),
+        brand: productData.brand,
+        price: productData.price,
+        category: productData.category,
+        image: productData.image,
+        images: productData.images,
+        description: productData.description,
+        benefits: productData.benefits,
+        specs: productData.specs,
         is_rupture: false
       };
 
@@ -814,6 +835,7 @@ function AddProductTab({ categories, editingProduct, onComplete }: AddProductTab
         .insert([newProduct]);
 
       if (error) {
+        console.error("Supabase Error:", error);
         if (error.code === '23505') {
           alert("Erreur: Un produit avec ce nom existe déjà (conflit de slug).");
         } else {
@@ -1140,6 +1162,7 @@ function AddCategoryTab({ editingCategory, onComplete }: { editingCategory: Cate
         .eq('id', editingCategory.id);
 
       if (error) {
+        console.error("Supabase Error:", error);
         alert("Erreur lors de la mise à jour de la catégorie.");
       } else {
         alert("Pilier Architectural Mis à Jour.");
@@ -1159,6 +1182,7 @@ function AddCategoryTab({ editingCategory, onComplete }: { editingCategory: Cate
         .insert([newCategory]);
 
       if (error) {
+        console.error("Supabase Error:", error);
         if (error.code === '23505') {
           alert("Erreur: Une catégorie avec ce nom existe déjà.");
         } else {
