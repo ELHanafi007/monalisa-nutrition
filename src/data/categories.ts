@@ -66,59 +66,62 @@ const defaultCategories: Category[] = [
 ];
 
 import { useState, useEffect } from 'react';
+import { supabase } from '@/lib/supabase';
 
-export const getCategories = (): Category[] => {
-  if (typeof window === 'undefined') return defaultCategories;
-  
+export const getCategories = async (): Promise<Category[]> => {
   try {
-    const saved = localStorage.getItem('monalisa_dynamic_categories');
-    if (saved) {
-      const dynamic = JSON.parse(saved) as Category[];
-      // Use defaultCategories as base, but override with dynamic versions if ID matches
-      const merged = [...defaultCategories];
-      
-      dynamic.forEach(dyn => {
-        const index = merged.findIndex(m => m.id === dyn.id);
-        if (index !== -1) {
-          merged[index] = dyn;
-        } else {
-          merged.push(dyn);
-        }
-      });
-      
-      return merged;
-    }
+    const { data, error } = await supabase
+      .from('categories')
+      .select('*')
+      .order('created_at', { ascending: true });
+
+    if (error) throw error;
+    if (!data || data.length === 0) return defaultCategories;
+
+    // Merge default with dynamic from DB
+    const merged = [...defaultCategories];
+    data.forEach(dyn => {
+      const index = merged.findIndex(m => m.id === dyn.id);
+      if (index !== -1) {
+        merged[index] = dyn;
+      } else {
+        merged.push(dyn);
+      }
+    });
+    return merged;
   } catch (e) {
-    console.error("Failed to load dynamic categories:", e);
+    console.error("Failed to load categories from Supabase:", e);
+    return defaultCategories;
   }
-  return defaultCategories;
 };
 
 // Hook for reactive access to categories
 export const useCategories = () => {
-  const [categories, setCategories] = useState<Category[]>(typeof window === 'undefined' ? defaultCategories : getCategories());
+  const [categories, setCategories] = useState<Category[]>(defaultCategories);
 
   useEffect(() => {
-    if (typeof window !== 'undefined') {
-      const handleStorageChange = () => {
-        setCategories(getCategories());
-      };
+    const load = async () => {
+      const data = await getCategories();
+      setCategories(data);
+    };
 
-      window.addEventListener('storage', handleStorageChange);
-      // Also listen for local custom events for same-tab updates
-      window.addEventListener('monalisa_data_refresh', handleStorageChange);
-      
-      setCategories(getCategories());
+    load();
 
-      return () => {
-        window.removeEventListener('storage', handleStorageChange);
-        window.removeEventListener('monalisa_data_refresh', handleStorageChange);
-      };
-    }
+    // Real-time subscription
+    const channel = supabase
+      .channel('schema-db-changes')
+      .on('postgres_changes', { event: '*', schema: 'public', table: 'categories' }, () => {
+        load();
+      })
+      .subscribe();
+
+    return () => {
+      supabase.removeChannel(channel);
+    };
   }, []);
 
   return categories;
 };
 
-// For backward compatibility - Note: this will be stale on client-side navigation!
-export const categories = typeof window === 'undefined' ? defaultCategories : getCategories();
+// Note: This is now a dummy for backward compatibility since getCategories is async
+export const categories = defaultCategories;

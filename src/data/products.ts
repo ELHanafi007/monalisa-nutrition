@@ -311,64 +311,70 @@ const defaultProducts: Product[] = [
   // ... more products exist, but we focus on category mapping
 ];
 
-export const getProducts = (): Product[] => {
-  if (typeof window === 'undefined') return defaultProducts;
-  
-  const savedInventory = localStorage.getItem('monalisa_inventory_v1');
-
-  if (savedInventory) {
-    try {
-      return JSON.parse(savedInventory);
-    } catch (e) {
-      console.error("Failed to parse monalisa_inventory_v1", e);
-    }
-  }
-
-  // Fallback / Initial setup
-  const legacyDynamic = localStorage.getItem('monalisa_dynamic_products');
-  let currentProducts = defaultProducts;
-  if (legacyDynamic) {
-    try {
-      const dynamic = JSON.parse(legacyDynamic);
-      currentProducts = [...defaultProducts, ...dynamic];
-    } catch (e) {}
-  }
-  
-  if (typeof window !== 'undefined' && !savedInventory) {
-    localStorage.setItem('monalisa_inventory_v1', JSON.stringify(currentProducts));
-  }
-  
-  return currentProducts;
-};
-
 import { useState, useEffect } from 'react';
+import { supabase } from '@/lib/supabase';
 
-// ... (keep getProducts and defaultProducts as they are)
+export const getProducts = async (): Promise<Product[]> => {
+  try {
+    const { data, error } = await supabase
+      .from('products')
+      .select('*')
+      .order('created_at', { ascending: false });
+
+    if (error) throw error;
+    if (!data || data.length === 0) return defaultProducts;
+
+    // Supabase returns old_price, we map it to oldPrice for our interface
+    const mappedData = data.map(p => ({
+      ...p,
+      oldPrice: p.old_price,
+      isRupture: p.is_rupture
+    }));
+
+    // Merge default with dynamic from DB
+    const merged = [...defaultProducts];
+    mappedData.forEach(dyn => {
+      const index = merged.findIndex(m => m.id === dyn.id);
+      if (index !== -1) {
+        merged[index] = dyn;
+      } else {
+        merged.unshift(dyn); // New ones first
+      }
+    });
+    return merged;
+  } catch (e) {
+    console.error("Failed to load products from Supabase:", e);
+    return defaultProducts;
+  }
+};
 
 // Hook for reactive access to products
 export const useProducts = () => {
-  const [products, setProducts] = useState<Product[]>(typeof window === 'undefined' ? defaultProducts : getProducts());
+  const [products, setProducts] = useState<Product[]>(defaultProducts);
 
   useEffect(() => {
-    if (typeof window !== 'undefined') {
-      const handleStorageChange = () => {
-        setProducts(getProducts());
-      };
+    const load = async () => {
+      const data = await getProducts();
+      setProducts(data);
+    };
 
-      window.addEventListener('storage', handleStorageChange);
-      window.addEventListener('monalisa_data_refresh', handleStorageChange);
+    load();
 
-      setProducts(getProducts());
+    // Real-time subscription
+    const channel = supabase
+      .channel('products-db-changes')
+      .on('postgres_changes', { event: '*', schema: 'public', table: 'products' }, () => {
+        load();
+      })
+      .subscribe();
 
-      return () => {
-        window.removeEventListener('storage', handleStorageChange);
-        window.removeEventListener('monalisa_data_refresh', handleStorageChange);
-      };
-    }
+    return () => {
+      supabase.removeChannel(channel);
+    };
   }, []);
 
   return products;
 };
 
-// For backward compatibility - Note: this will be stale on client-side navigation!
-export const products = typeof window === 'undefined' ? defaultProducts : getProducts();
+// For backward compatibility
+export const products = defaultProducts;

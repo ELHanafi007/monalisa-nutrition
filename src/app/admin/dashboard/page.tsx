@@ -34,6 +34,7 @@ import {
 import { motion, AnimatePresence } from 'framer-motion';
 import { getProducts, Product } from '@/data/products';
 import { getCategories, Category } from '@/data/categories';
+import { supabase } from '@/lib/supabase';
 import Image from 'next/image';
 
 // Utility to compress images before saving to localStorage
@@ -82,12 +83,10 @@ export default function AdminDashboard() {
     refreshData();
   }, []);
 
-  const refreshData = () => {
-    setCurrentProducts(getProducts());
-    setCurrentCategories(getCategories());
-    if (typeof window !== 'undefined') {
-      window.dispatchEvent(new Event('monalisa_data_refresh'));
-    }
+  const refreshData = async () => {
+    const [p, c] = await Promise.all([getProducts(), getCategories()]);
+    setCurrentProducts(p);
+    setCurrentCategories(c);
   };
 
   const handleLogout = () => {
@@ -105,26 +104,38 @@ export default function AdminDashboard() {
     setActiveTab('add-category');
   };
 
-  const toggleStock = (productId: string) => {
-    const updated = currentProducts.map(p => {
-      if (p.id === productId) {
-        return { ...p, isRupture: !p.isRupture };
-      }
-      return p;
-    });
-    localStorage.setItem('monalisa_inventory_v1', JSON.stringify(updated));
-    refreshData();
-  };
+  const toggleStock = async (productId: string) => {
+    const product = currentProducts.find(p => p.id === productId);
+    if (!product) return;
 
-  const deleteProduct = (productId: string) => {
-    if (confirm('Êtes-vous sûr de vouloir supprimer ce produit de l\'archive ?')) {
-      const updated = currentProducts.filter(p => p.id !== productId);
-      localStorage.setItem('monalisa_inventory_v1', JSON.stringify(updated));
+    const { error } = await supabase
+      .from('products')
+      .update({ is_rupture: !product.isRupture })
+      .eq('id', productId);
+
+    if (error) {
+      alert("Erreur lors de la mise à jour du stock.");
+    } else {
       refreshData();
     }
   };
 
-  const deleteCategory = (categoryId: string) => {
+  const deleteProduct = async (productId: string) => {
+    if (confirm('Êtes-vous sûr de vouloir supprimer ce produit de l\'archive ?')) {
+      const { error } = await supabase
+        .from('products')
+        .delete()
+        .eq('id', productId);
+
+      if (error) {
+        alert("Erreur lors de la suppression.");
+      } else {
+        refreshData();
+      }
+    }
+  };
+
+  const deleteCategory = async (categoryId: string) => {
     // Audit: Check if category has products
     const category = currentCategories.find(c => c.id === categoryId);
     if (!category) return;
@@ -137,14 +148,18 @@ export default function AdminDashboard() {
     }
 
     if (confirm('Êtes-vous sûr de vouloir supprimer cette catégorie ?')) {
-      const saved = localStorage.getItem('monalisa_dynamic_categories');
-      const dynamicCats = saved ? JSON.parse(saved) : [];
-      const updated = dynamicCats.filter((c: Category) => c.id !== categoryId);
-      localStorage.setItem('monalisa_dynamic_categories', JSON.stringify(updated));
-      refreshData();
+      const { error } = await supabase
+        .from('categories')
+        .delete()
+        .eq('id', categoryId);
+
+      if (error) {
+        alert("Erreur lors de la suppression de la catégorie.");
+      } else {
+        refreshData();
+      }
     }
   };
-
   const exportDatabase = () => {
     const data = {
       products: getProducts(),
@@ -751,15 +766,12 @@ function AddProductTab({ categories, editingProduct, onComplete }: AddProductTab
     setFormData({ ...formData, benefits: newBenefits });
   };
 
-  const handleSubmit = (e: React.FormEvent) => {
+  const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     if (!formData.category || formData.images.length === 0) {
       alert("Veuillez sélectionner une catégorie et télécharger au moins une image.");
       return;
     }
-
-    const savedInventory = localStorage.getItem('monalisa_inventory_v1');
-    const currentInventory: Product[] = savedInventory ? JSON.parse(savedInventory) : getProducts();
 
     const productData = {
       name: formData.name,
@@ -774,45 +786,44 @@ function AddProductTab({ categories, editingProduct, onComplete }: AddProductTab
     };
 
     if (editingProduct) {
-      const updated = currentInventory.map(p => {
-        if (p.id === editingProduct.id) {
-          return {
-            ...p,
-            ...productData
-          };
-        }
-        return p;
-      });
-      try {
-        localStorage.setItem('monalisa_inventory_v1', JSON.stringify(updated));
+      const { error } = await supabase
+        .from('products')
+        .update({
+          ...productData,
+          old_price: editingProduct.oldPrice,
+          is_rupture: editingProduct.isRupture
+        })
+        .eq('id', editingProduct.id);
+
+      if (error) {
+        alert("Erreur lors de la mise à jour du produit.");
+      } else {
         alert("Produit mis à jour avec succès.");
-      } catch (e) {
-        if (e instanceof DOMException && e.name === 'QuotaExceededError') {
-          alert("Erreur: Mémoire saturée. Veuillez essayer avec moins d'images ou des images plus petites.");
-        } else {
-          alert("Une erreur est survenue lors de la sauvegarde.");
-        }
+        onComplete();
       }
     } else {
-      const newProduct: Product = {
+      const newProduct = {
         id: `dp-${Date.now()}`,
         slug: formData.name.toLowerCase().replace(/[^a-z0-9]/g, '-'),
         ...productData,
-        isRupture: false
+        is_rupture: false
       };
-      try {
-        localStorage.setItem('monalisa_inventory_v1', JSON.stringify([...currentInventory, newProduct]));
-        alert("Produit catalogué avec succès.");
-      } catch (e) {
-        if (e instanceof DOMException && e.name === 'QuotaExceededError') {
-          alert("Erreur: Mémoire saturée. Veuillez essayer avec moins d'images ou des images plus petites.");
+
+      const { error } = await supabase
+        .from('products')
+        .insert([newProduct]);
+
+      if (error) {
+        if (error.code === '23505') {
+          alert("Erreur: Un produit avec ce nom existe déjà (conflit de slug).");
         } else {
-          alert("Une erreur est survenue lors de la sauvegarde.");
+          alert("Erreur lors du catalogage du produit.");
         }
+      } else {
+        alert("Produit catalogué avec succès.");
+        onComplete();
       }
     }
-
-    onComplete();
   };
 
   return (
@@ -1109,66 +1120,55 @@ function AddCategoryTab({ editingCategory, onComplete }: { editingCategory: Cate
     }
   };
 
-  const handleSubmit = (e: React.FormEvent) => {
+  const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     if (!formData.image) {
       alert("Veuillez télécharger une image de couverture.");
       return;
     }
 
-    const saved = localStorage.getItem('monalisa_dynamic_categories');
-    const dynamicCats = saved ? JSON.parse(saved) : [];
-
     if (editingCategory) {
-      // Find if it's already in dynamic
-      const existingIndex = dynamicCats.findIndex((c: Category) => c.id === editingCategory.id);
-      
-      const updatedCategory: Category = {
-        ...editingCategory,
+      const updatedCategory = {
         name: formData.name,
-        // CRITICAL: Keep the original slug so products don't lose their connection
-        slug: editingCategory.slug, 
         description: formData.description,
         image: formData.image
       };
 
-      if (existingIndex !== -1) {
-        dynamicCats[existingIndex] = updatedCategory;
+      const { error } = await supabase
+        .from('categories')
+        .update(updatedCategory)
+        .eq('id', editingCategory.id);
+
+      if (error) {
+        alert("Erreur lors de la mise à jour de la catégorie.");
       } else {
-        // It's a default category being overridden
-        dynamicCats.push(updatedCategory);
-      }
-      try {
-        localStorage.setItem('monalisa_dynamic_categories', JSON.stringify(dynamicCats));
         alert("Pilier Architectural Mis à Jour.");
-      } catch (e) {
-        if (e instanceof DOMException && e.name === 'QuotaExceededError') {
-          alert("Erreur: Mémoire saturée. Veuillez essayer avec une image plus petite ou supprimer des éléments anciens.");
-        } else {
-          alert("Une erreur est survenue lors de la sauvegarde.");
-        }
+        onComplete();
       }
     } else {
-      const newCategory: Category = {
+      const newCategory = {
         id: `dc-${Date.now()}`,
         name: formData.name,
         slug: formData.name.toLowerCase().replace(/[^a-z0-9]/g, '-'),
         description: formData.description,
         image: formData.image
       };
-      try {
-        localStorage.setItem('monalisa_dynamic_categories', JSON.stringify([...dynamicCats, newCategory]));
-        alert("Pilier Architectural Établi.");
-      } catch (e) {
-        if (e instanceof DOMException && e.name === 'QuotaExceededError') {
-          alert("Erreur: Mémoire saturée. Veuillez essayer avec une image plus petite ou supprimer des éléments anciens.");
+
+      const { error } = await supabase
+        .from('categories')
+        .insert([newCategory]);
+
+      if (error) {
+        if (error.code === '23505') {
+          alert("Erreur: Une catégorie avec ce nom existe déjà.");
         } else {
-          alert("Une erreur est survenue lors de la sauvegarde.");
+          alert("Erreur lors de l'établissement de la catégorie.");
         }
+      } else {
+        alert("Pilier Architectural Établi.");
+        onComplete();
       }
     }
-
-    onComplete();
   };
 
   return (
