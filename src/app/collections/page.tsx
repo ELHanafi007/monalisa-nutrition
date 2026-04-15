@@ -8,7 +8,15 @@ import { motion } from 'framer-motion';
 import Image from 'next/image';
 
 export default function Collections() {
-  const categories = useCategories();
+  const { categories, loading } = useCategories();
+
+  if (loading) {
+    return (
+      <main className="min-h-screen bg-white flex items-center justify-center">
+        <div className="w-12 h-12 border-4 border-luxury-red border-t-transparent rounded-full animate-spin" />
+      </main>
+    );
+  }
   return (
     <main className="min-h-screen bg-white text-black">
       <Header />

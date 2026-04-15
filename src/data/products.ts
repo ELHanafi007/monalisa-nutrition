@@ -355,11 +355,14 @@ export const getProducts = async (): Promise<Product[]> => {
 // Hook for reactive access to products
 export const useProducts = () => {
   const [products, setProducts] = useState<Product[]>(defaultProducts);
+  const [loading, setLoading] = useState(true);
 
   useEffect(() => {
     const load = async () => {
+      setLoading(true);
       const data = await getProducts();
       setProducts(data);
+      setLoading(false);
     };
 
     load();
@@ -377,7 +380,7 @@ export const useProducts = () => {
     };
   }, []);
 
-  return products;
+  return { products, loading };
 };
 
 // For backward compatibility

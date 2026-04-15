@@ -8,7 +8,7 @@ import Link from 'next/link';
 import Image from 'next/image';
 
 export const SearchModal = ({ isOpen, onClose }: { isOpen: boolean; onClose: () => void }) => {
-  const products = useProducts();
+  const { products, loading } = useProducts();
   const [query, setQuery] = useState('');
   
   const results = useMemo(() => {

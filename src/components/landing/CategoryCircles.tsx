@@ -5,9 +5,9 @@ import Image from 'next/image';
 import { useCategories } from '@/data/categories';
 
 export const CategoryCircles = () => {
-  const categories = useCategories();
+  const { categories, loading } = useCategories();
 
-  if (categories.length === 0) return null;
+  if (loading || categories.length === 0) return null;
 
   return (
     <section className="py-12 bg-white">

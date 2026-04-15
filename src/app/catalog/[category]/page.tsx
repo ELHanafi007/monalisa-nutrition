@@ -15,8 +15,8 @@ interface PageProps {
 }
 
 export default function CategoryPage({ params }: PageProps) {
-  const products = useProducts();
-  const categories = useCategories();
+  const { products, loading: productsLoading } = useProducts();
+  const { categories, loading: categoriesLoading } = useCategories();
   const resolvedParams = use(params);
   const categorySlug = resolvedParams.category;
   const [selectedProduct, setSelectedProduct] = useState<Product | null>(null);
@@ -26,11 +26,11 @@ export default function CategoryPage({ params }: PageProps) {
 
   const category = useMemo(() => {
     return categories.find(c => c.slug === categorySlug);
-  }, [categorySlug]);
+  }, [categories, categorySlug]);
 
   const categoryProducts = useMemo(() => {
     return products.filter(p => p.category === categorySlug);
-  }, [categorySlug]);
+  }, [products, categorySlug]);
 
   const brands = useMemo(() => {
     const allBrands = categoryProducts.map(p => p.brand);
@@ -45,6 +45,14 @@ export default function CategoryPage({ params }: PageProps) {
       return matchesSearch && matchesBrand;
     });
   }, [categoryProducts, searchQuery, selectedBrand]);
+
+  if (categoriesLoading || productsLoading) {
+    return (
+      <main className="min-h-screen bg-white flex items-center justify-center">
+        <div className="w-12 h-12 border-4 border-luxury-red border-t-transparent rounded-full animate-spin" />
+      </main>
+    );
+  }
 
   if (!category) {
     return (

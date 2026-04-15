@@ -8,7 +8,7 @@ import Image from 'next/image';
 import { useEffect, useState } from 'react';
 
 export const CategoryModal = ({ isOpen, onClose }: { isOpen: boolean; onClose: () => void }) => {
-  const categories = useCategories();
+  const { categories, loading } = useCategories();
 
   useEffect(() => {
     if (isOpen) {

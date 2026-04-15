@@ -102,11 +102,14 @@ export const getCategories = async (): Promise<Category[]> => {
 // Hook for reactive access to categories
 export const useCategories = () => {
   const [categories, setCategories] = useState<Category[]>(defaultCategories);
+  const [loading, setLoading] = useState(true);
 
   useEffect(() => {
     const load = async () => {
+      setLoading(true);
       const data = await getCategories();
       setCategories(data);
+      setLoading(false);
     };
 
     load();
@@ -124,7 +127,7 @@ export const useCategories = () => {
     };
   }, []);
 
-  return categories;
+  return { categories, loading };
 };
 
 // Note: This is now a dummy for backward compatibility since getCategories is async

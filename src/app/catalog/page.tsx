@@ -12,8 +12,8 @@ import { QuickView } from '@/components/QuickView';
 import { ProductCard } from '@/components/ProductCard';
 
 export default function Catalog() {
-  const products = useProducts();
-  const categories = useCategories();
+  const { products, loading: productsLoading } = useProducts();
+  const { categories, loading: categoriesLoading } = useCategories();
   const [selectedProduct, setSelectedProduct] = useState<Product | null>(null);
   const [searchQuery, setSearchQuery] = useState('');
   const [selectedBrand, setSelectedBrand] = useState<string | null>(null);
@@ -22,7 +22,7 @@ export default function Catalog() {
   const brands = useMemo(() => {
     const allBrands = products.map(p => p.brand);
     return Array.from(new Set(allBrands)).sort();
-  }, []);
+  }, [products]);
 
   const filteredProducts = useMemo(() => {
     return products.filter(p => {
@@ -31,7 +31,15 @@ export default function Catalog() {
       const matchesBrand = selectedBrand ? p.brand === selectedBrand : true;
       return matchesSearch && matchesBrand;
     });
-  }, [searchQuery, selectedBrand]);
+  }, [products, searchQuery, selectedBrand]);
+
+  if (categoriesLoading || productsLoading) {
+    return (
+      <main className="min-h-screen bg-white flex items-center justify-center">
+        <div className="w-12 h-12 border-4 border-luxury-red border-t-transparent rounded-full animate-spin" />
+      </main>
+    );
+  }
 
   return (
     <main className="min-h-screen bg-white text-black">

@@ -13,7 +13,7 @@ import { QuickView } from '@/components/QuickView';
 import { useProducts, Product } from '@/data/products';
 
 export default function Home() {
-  const products = useProducts();
+  const { products } = useProducts();
   const [selectedProduct, setSelectedProduct] = useState<Product | null>(null);
 
   // Filter products with a better variety

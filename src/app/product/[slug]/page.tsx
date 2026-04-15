@@ -12,15 +12,29 @@ import Image from 'next/image';
 import { useCart } from '@/contexts/CartContext';
 
 export default function ProductDetail() {
-  const products = useProducts();
+  const { products, loading } = useProducts();
   const params = useParams();
   const slug = params.slug as string;
   const product = useMemo(() => products.find(p => p.slug === slug), [products, slug]);
   const { addToCart } = useCart();
-  
+
   const [quantity, setQuantity] = useState(1);
   const [activeTab, setActiveTab] = useState('description');
-  const [activeImage, setActiveImage] = useState(product?.image || '');
+  const [activeImage, setActiveImage] = useState('');
+
+  useEffect(() => {
+    if (product) {
+      setActiveImage(product.image);
+    }
+  }, [product]);
+
+  if (loading) {
+    return (
+      <main className="min-h-screen bg-white flex items-center justify-center">
+        <div className="w-12 h-12 border-4 border-luxury-red border-t-transparent rounded-full animate-spin" />
+      </main>
+    );
+  }
 
   // Reset active image when product changes (navigation)
   useEffect(() => {

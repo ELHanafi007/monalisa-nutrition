@@ -8,7 +8,9 @@ import { ArrowRight, MoveRight } from 'lucide-react';
 import { useRef } from 'react';
 
 export const CategorySection = () => {
-  const categories = useCategories();
+  const { categories, loading } = useCategories();
+  
+  if (loading || categories.length === 0) return null;
   return (
     <section className="section-padding bg-black overflow-hidden relative">
       <div className="absolute top-0 left-0 w-full h-full opacity-20 pointer-events-none">
