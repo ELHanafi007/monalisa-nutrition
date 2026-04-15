@@ -908,8 +908,8 @@ function AddProductTab({ categories, editingProduct, onComplete }: AddProductTab
           description: productData.description,
           benefits: productData.benefits,
           specs: productData.specs,
-          old_price: editingProduct.oldPrice,
-          is_rupture: editingProduct.isRupture
+          old_price: editingProduct.oldPrice || null,
+          is_rupture: editingProduct.isRupture || false
         })
         .eq('id', editingProduct.id);
 
