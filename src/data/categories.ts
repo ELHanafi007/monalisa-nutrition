@@ -82,13 +82,18 @@ export const getCategories = async (): Promise<Category[]> => {
     }
     if (!data || data.length === 0) return defaultCategories;
 
-    // Merge default with dynamic from DB
+    // Merge default with dynamic from DB - DB MUST OVERRIDE DEFAULT
     const merged = [...defaultCategories];
     data.forEach(dyn => {
-      const index = merged.findIndex(m => m.id === dyn.id);
+      const index = merged.findIndex(m => m.id === dyn.id || m.slug === dyn.slug);
       if (index !== -1) {
-        merged[index] = dyn;
+        // Update the existing category with DB data
+        merged[index] = {
+          ...merged[index],
+          ...dyn
+        };
       } else {
+        // Add new category if it doesn't exist in defaults
         merged.push(dyn);
       }
     });

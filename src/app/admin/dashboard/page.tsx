@@ -1259,7 +1259,8 @@ function AddCategoryTab({ editingCategory, onComplete }: { editingCategory: Cate
       const updatedCategory = {
         name: formData.name,
         description: formData.description,
-        image: formData.image
+        image: formData.image,
+        slug: editingCategory.slug // Keep original slug for product stability
       };
 
       const { error } = await supabase
