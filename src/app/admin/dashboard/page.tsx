@@ -1257,6 +1257,7 @@ function AddCategoryTab({ editingCategory, onComplete }: { editingCategory: Cate
 
     if (editingCategory) {
       const updatedCategory = {
+        id: editingCategory.id, // CRITICAL: Include the ID for upsert
         name: formData.name,
         description: formData.description,
         image: formData.image,
@@ -1265,8 +1266,7 @@ function AddCategoryTab({ editingCategory, onComplete }: { editingCategory: Cate
 
       const { error } = await supabase
         .from('categories')
-        .update(updatedCategory)
-        .eq('id', editingCategory.id);
+        .upsert(updatedCategory); // Use upsert instead of update
 
       if (error) {
         console.error("Supabase Error:", error);
