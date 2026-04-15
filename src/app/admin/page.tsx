@@ -4,6 +4,7 @@ import { useState } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { Lock, User, ArrowRight, ShieldCheck, Cpu } from 'lucide-react';
 import { useRouter } from 'next/navigation';
+import { authenticateAdmin } from '@/app/actions/auth';
 
 export default function AdminLogin() {
   const [username, setUsername] = useState('');
@@ -15,15 +16,19 @@ export default function AdminLogin() {
   const handleLogin = async (e: React.FormEvent) => {
     e.preventDefault();
     setIsAuthenticating(true);
+    setError('');
     
-    // Simulate biometric/terminal delay
-    await new Promise(resolve => setTimeout(resolve, 1500));
-
-    if (username === 'admin' && password === 'monalisa2026') {
-      document.cookie = "admin_session=true; path=/; max-age=86400; SameSite=Strict";
-      router.push('/admin/dashboard');
-    } else {
-      setError('PROTOCOLE ÉCHOUÉ : IDENTIFIANTS INVALIDES');
+    try {
+      const result = await authenticateAdmin(username, password);
+      
+      if (result.success) {
+        router.push('/admin/dashboard');
+      } else {
+        setError(result.error || 'IDENTIFIANTS INVALIDES');
+        setIsAuthenticating(false);
+      }
+    } catch (err) {
+      setError('ERREUR SYSTÈME LORS DE L\'AUTHENTIFICATION');
       setIsAuthenticating(false);
     }
   };
