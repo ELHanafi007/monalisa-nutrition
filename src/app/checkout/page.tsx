@@ -9,6 +9,7 @@ import Image from 'next/image';
 import Link from 'next/link';
 import { useState } from 'react';
 import { sendOrderEmail } from '../actions/order';
+import { createOrder } from '../actions/order-db';
 
 export default function Checkout() {
   const { cart, totalItems, totalPrice, removeFromCart, updateQuantity } = useCart();
@@ -32,10 +33,19 @@ export default function Checkout() {
     setIsOrdering(true);
     
     try {
-      // 1. Send Email via Resend
+      // 1. Save to Supabase (Database Backup)
+      await createOrder({
+        customer_name: customerInfo.name,
+        customer_phone: customerInfo.phone,
+        customer_address: customerInfo.address,
+        items: cart,
+        total_amount: grandTotal
+      });
+
+      // 2. Send Email via Resend
       await sendOrderEmail(customerInfo, cart, grandTotal);
 
-      // 2. Redirect to WhatsApp
+      // 3. Redirect to WhatsApp
       const message = `Bonjour Monaliza House, je souhaite commander :\n\n` + 
         `Client: ${customerInfo.name}\n` +
         `Tél: ${customerInfo.phone}\n` +

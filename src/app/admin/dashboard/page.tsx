@@ -26,6 +26,10 @@ import {
   Trash2,
   Edit3,
   ChevronRight,
+  ClipboardList,
+  CheckCircle2,
+  Clock,
+  Truck as TruckIcon,
   ArrowUpRight,
   ArrowDownRight,
   Archive,
@@ -75,6 +79,7 @@ export default function AdminDashboard() {
   const [isLoading, setIsLoading] = useState(true);
   const [currentProducts, setCurrentProducts] = useState<Product[]>([]);
   const [currentCategories, setCurrentCategories] = useState<Category[]>([]);
+  const [currentOrders, setCurrentOrders] = useState<any[]>([]);
   const [editingProduct, setEditingProduct] = useState<Product | null>(null);
   const [editingCategory, setEditingCategory] = useState<Category | null>(null);
 
@@ -84,9 +89,14 @@ export default function AdminDashboard() {
   }, []);
 
   const refreshData = async () => {
-    const [p, c] = await Promise.all([getProducts(), getCategories()]);
+    const [p, c, o] = await Promise.all([
+      getProducts(), 
+      getCategories(),
+      supabase.from('orders').select('*').order('created_at', { ascending: false })
+    ]);
     setCurrentProducts(p);
     setCurrentCategories(c);
+    if (o.data) setCurrentOrders(o.data);
   };
 
   const handleLogout = () => {
@@ -160,6 +170,34 @@ export default function AdminDashboard() {
       } else {
         refreshData();
       }
+    }
+  };
+
+  const deleteOrder = async (orderId: number) => {
+    if (confirm('Supprimer définitivement cette commande de l\'archive ?')) {
+      const { error } = await supabase
+        .from('orders')
+        .delete()
+        .eq('id', orderId);
+
+      if (error) {
+        alert("Erreur lors de la suppression de la commande.");
+      } else {
+        refreshData();
+      }
+    }
+  };
+
+  const updateOrderStatus = async (orderId: number, status: string) => {
+    const { error } = await supabase
+      .from('orders')
+      .update({ status })
+      .eq('id', orderId);
+
+    if (error) {
+      alert("Erreur lors de la mise à jour du statut.");
+    } else {
+      refreshData();
     }
   };
 
@@ -237,7 +275,7 @@ export default function AdminDashboard() {
             label="Commandes" 
             active={activeTab === 'orders'} 
             onClick={() => {setActiveTab('orders'); setEditingProduct(null);}} 
-            badge="12"
+            badge={currentOrders.length > 0 ? currentOrders.length.toString() : null}
           />
           
           <div className="pt-10 pb-4 opacity-30">
@@ -330,8 +368,14 @@ export default function AdminDashboard() {
               exit={{ opacity: 0, y: -10 }}
               transition={{ duration: 0.4 }}
             >
-              {activeTab === 'dashboard' && <DashboardOverview />}
-              {activeTab === 'orders' && <OrdersTab />}
+              {activeTab === 'dashboard' && <DashboardOverview products={currentProducts} orders={currentOrders} />}
+              {activeTab === 'orders' && (
+                <OrdersTab 
+                  orders={currentOrders} 
+                  onDelete={deleteOrder} 
+                  onUpdateStatus={updateOrderStatus} 
+                />
+              )}
               {activeTab === 'products' && (
                 <ProductsArchive 
                   products={currentProducts} 
@@ -419,12 +463,15 @@ function NavItem({ icon: Icon, label, active, onClick, badge }: any) {
   );
 }
 
-function DashboardOverview() {
+function DashboardOverview({ products, orders }: { products: Product[], orders: any[] }) {
+  const totalRevenue = orders.reduce((acc, curr) => acc + (curr.total_amount || 0), 0);
+  const criticalStock = products.filter(p => p.isRupture).length;
+
   const stats = [
-    { label: 'Revenu Total', value: '142,500 MAD', icon: DollarSign, trend: '+12.5%', isUp: true },
-    { label: 'Commandes', value: '384', icon: ShoppingCart, trend: '+5.2%', isUp: true },
-    { label: 'Clients Actifs', value: '1,204', icon: Users, trend: '-2.1%', isUp: false },
-    { label: 'Stock Critique', value: '18', icon: Package, trend: '8.4%', isUp: true },
+    { label: 'Revenu Archive', value: `${totalRevenue.toLocaleString()} MAD`, icon: DollarSign, trend: 'LIVE', isUp: true },
+    { label: 'Flux Commandes', value: orders.length.toString(), icon: ShoppingCart, trend: 'LIVE', isUp: true },
+    { label: 'Unités Rupture', value: criticalStock.toString(), icon: Package, trend: 'ALERT', isUp: criticalStock > 0 ? false : true },
+    { label: 'Piliers Actifs', value: '8', icon: Users, trend: 'ALPHA', isUp: true },
   ];
 
   return (
@@ -515,72 +562,131 @@ function DashboardOverview() {
   );
 }
 
-function OrdersTab() {
-  const orders = [
-    { id: '#M-4022', customer: 'Othman Bennani', city: 'Casablanca', total: '1,200 MAD', status: 'En Transit', date: '2026-03-20' },
-    { id: '#M-4021', customer: 'Yasmine Kadiri', city: 'Rabat', total: '850 MAD', status: 'Livré', date: '2026-03-19' },
-    { id: '#M-4020', customer: 'Mehdi Alami', city: 'Marrakech', total: '2,400 MAD', status: 'En Attente', date: '2026-03-19' },
-    { id: '#M-4019', customer: 'Sami Tazi', city: 'Tanger', total: '450 MAD', status: 'Annulé', date: '2026-03-18' },
-    { id: '#M-4018', customer: 'Layla Mansouri', city: 'Fès', total: '1,100 MAD', status: 'Livré', date: '2026-03-18' },
-    { id: '#M-4017', customer: 'Anas Iraqi', city: 'Agadir', total: '3,200 MAD', status: 'Livré', date: '2026-03-17' },
-  ];
+function OrdersTab({ orders, onDelete, onUpdateStatus }: { orders: any[], onDelete: (id: number) => void, onUpdateStatus: (id: number, status: string) => void }) {
+  const [search, setSearch] = useState('');
+  
+  const filtered = orders.filter(o => 
+    o.customer_name.toLowerCase().includes(search.toLowerCase()) ||
+    o.customer_phone.includes(search)
+  );
+
+  const getStatusColor = (status: string) => {
+    switch (status) {
+      case 'expedie': return 'text-blue-400 bg-blue-400/10 border-blue-400/20';
+      case 'livre': return 'text-green-400 bg-green-400/10 border-green-400/20';
+      case 'annule': return 'text-white/20 bg-white/5 border-white/10';
+      default: return 'text-luxury-red bg-luxury-red/10 border-luxury-red/20';
+    }
+  };
+
+  const getStatusLabel = (status: string) => {
+    switch (status) {
+      case 'expedie': return 'Expédié';
+      case 'livre': return 'Livré';
+      case 'annule': return 'Annulé';
+      default: return 'En Attente';
+    }
+  };
 
   return (
     <div className="space-y-12">
-      <div className="flex items-end justify-between">
+      <div className="flex flex-col md:flex-row md:items-end justify-between gap-8">
         <div>
-          <h2 className="text-5xl font-black uppercase tracking-tighter mb-4">Gestion des <span className="red-gradient-text italic">Flux.</span></h2>
-          <p className="text-white/40 text-[10px] uppercase tracking-[0.5em] font-black">Protocole Logistique Royaume</p>
+          <h2 className="text-5xl font-black uppercase tracking-tighter mb-4">Journal des <span className="red-gradient-text italic">Transactions.</span></h2>
+          <p className="text-white/40 text-[10px] uppercase tracking-[0.5em] font-black">Suivi en temps réel des {orders.length} flux de commande</p>
         </div>
-        <div className="flex items-center gap-4">
-           <div className="relative">
-              <Search size={16} className="absolute left-5 top-1/2 -translate-y-1/2 text-white/20" />
-              <input type="text" placeholder="RECHERCHER COMMANDE..." className="bg-white/5 border border-white/10 rounded-2xl py-4 pl-12 pr-6 text-[10px] font-black uppercase tracking-widest outline-none focus:border-luxury-red transition-all w-64" />
-           </div>
-           <button className="p-4 bg-white/5 border border-white/10 rounded-2xl hover:text-luxury-red transition-all"><Filter size={20} /></button>
+        <div className="relative">
+          <Search size={16} className="absolute left-5 top-1/2 -translate-y-1/2 text-white/20" />
+          <input 
+            type="text" 
+            placeholder="RECHERCHER CLIENT / TEL..." 
+            value={search}
+            onChange={(e) => setSearch(e.target.value)}
+            className="bg-white/5 border border-white/10 rounded-2xl py-4 pl-12 pr-6 text-[10px] font-black uppercase tracking-widest outline-none focus:border-luxury-red transition-all w-80 shadow-2xl" 
+          />
         </div>
       </div>
 
-      <div className="bg-white/[0.02] border border-white/5 overflow-hidden shadow-2xl rounded-[3rem]">
-        <table className="w-full text-left border-collapse">
-          <thead>
-            <tr className="border-b border-white/5 bg-white/[0.01]">
-              <th className="p-10 text-[10px] uppercase tracking-[0.2em] font-black text-luxury-red">ID Protocole</th>
-              <th className="p-10 text-[10px] uppercase tracking-[0.2em] font-black text-luxury-red">Client Elitiste</th>
-              <th className="p-10 text-[10px] uppercase tracking-[0.2em] font-black text-luxury-red">Zone</th>
-              <th className="p-10 text-[10px] uppercase tracking-[0.2em] font-black text-luxury-red">Investissement</th>
-              <th className="p-10 text-[10px] uppercase tracking-[0.2em] font-black text-luxury-red">Statut</th>
-              <th className="p-10 text-[10px] uppercase tracking-[0.2em] font-black text-luxury-red">Date</th>
-              <th className="p-10 text-[10px] uppercase tracking-[0.2em] font-black text-luxury-red text-right">Action</th>
-            </tr>
-          </thead>
-          <tbody className="divide-y divide-white/5 font-medium">
-            {orders.map((order) => (
-              <tr key={order.id} className="hover:bg-white/[0.02] transition-colors group">
-                <td className="p-10 text-[10px] font-black tracking-widest text-white/80">{order.id}</td>
-                <td className="p-10 text-sm font-bold">{order.customer}</td>
-                <td className="p-10 text-[10px] uppercase tracking-widest text-white/30 font-black">{order.city}</td>
-                <td className="p-10 text-sm font-black text-white">{order.total}</td>
-                <td className="p-10">
-                  <span className={`text-[8px] font-black uppercase tracking-widest px-4 py-2 rounded-xl border ${
-                    order.status === 'Livré' ? 'border-green-500/20 text-green-400 bg-green-400/5' :
-                    order.status === 'En Transit' ? 'border-blue-500/20 text-blue-400 bg-blue-400/5' :
-                    order.status === 'Annulé' ? 'border-luxury-red/20 text-luxury-red bg-luxury-red/5' :
-                    'border-orange-500/20 text-orange-400 bg-orange-400/5'
-                  }`}>
-                    {order.status}
-                  </span>
-                </td>
-                <td className="p-10 text-[10px] text-white/20 font-black">{order.date}</td>
-                <td className="p-10 text-right">
-                  <button className="w-10 h-10 rounded-xl bg-white/5 border border-white/10 flex items-center justify-center hover:bg-luxury-red hover:text-white transition-all">
-                    <MoreVertical size={16} />
-                  </button>
-                </td>
-              </tr>
-            ))}
-          </tbody>
-        </table>
+      <div className="space-y-6">
+        {filtered.map((order) => (
+          <motion.div 
+            key={order.id}
+            initial={{ opacity: 0, x: -10 }}
+            animate={{ opacity: 1, x: 0 }}
+            className="bg-white/[0.02] border border-white/5 p-10 rounded-[2.5rem] group hover:bg-white/[0.04] transition-all duration-500"
+          >
+            <div className="flex flex-col lg:flex-row justify-between gap-12">
+              <div className="flex-1 space-y-8">
+                <div className="flex flex-wrap items-center gap-6">
+                  <div className={`px-4 py-1.5 rounded-full border text-[8px] font-black uppercase tracking-widest ${getStatusColor(order.status)}`}>
+                    {getStatusLabel(order.status)}
+                  </div>
+                  <span className="text-[10px] text-white/20 font-black uppercase tracking-widest">ID: #ORD-{order.id}</span>
+                  <span className="text-[10px] text-white/20 font-black uppercase tracking-widest">{new Date(order.created_at).toLocaleString()}</span>
+                </div>
+
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-12">
+                  <div className="space-y-4">
+                    <span className="text-[8px] uppercase tracking-[0.4em] text-luxury-red font-black block">Information Client</span>
+                    <h4 className="text-2xl font-black uppercase tracking-tight">{order.customer_name}</h4>
+                    <p className="text-sm font-bold text-white/60">{order.customer_phone}</p>
+                    <p className="text-[10px] text-white/40 uppercase leading-relaxed max-w-sm">{order.customer_address}</p>
+                  </div>
+                  
+                  <div className="space-y-4">
+                    <span className="text-[8px] uppercase tracking-[0.4em] text-luxury-red font-black block">Composition Panier</span>
+                    <div className="space-y-2">
+                      {order.items.map((item: any, idx: number) => (
+                        <div key={idx} className="flex justify-between items-center text-[10px] uppercase font-bold tracking-widest p-3 bg-white/[0.02] rounded-xl border border-white/5">
+                          <span className="text-white/60">{item.quantity}x {item.name}</span>
+                          <span className="text-white/40">{item.price} MAD</span>
+                        </div>
+                      ))}
+                    </div>
+                  </div>
+                </div>
+              </div>
+
+              <div className="lg:w-72 flex flex-col justify-between border-l border-white/5 pl-12 gap-8">
+                <div className="text-right">
+                  <span className="text-[8px] uppercase tracking-[0.4em] text-white/20 font-black block mb-2">Total Transaction</span>
+                  <span className="text-4xl font-black tracking-tighter text-white">{order.total_amount} <span className="text-sm text-luxury-red">MAD</span></span>
+                </div>
+
+                <div className="space-y-3">
+                  <div className="grid grid-cols-2 gap-2">
+                    <button 
+                      onClick={() => onUpdateStatus(order.id, 'expedie')}
+                      className="h-12 rounded-xl bg-blue-500/10 text-blue-500 text-[8px] font-black uppercase tracking-widest hover:bg-blue-500 hover:text-white transition-all border border-blue-500/20"
+                    >
+                      Expédier
+                    </button>
+                    <button 
+                      onClick={() => onUpdateStatus(order.id, 'livre')}
+                      className="h-12 rounded-xl bg-green-500/10 text-green-500 text-[8px] font-black uppercase tracking-widest hover:bg-green-500 hover:text-white transition-all border border-green-500/20"
+                    >
+                      Livré
+                    </button>
+                  </div>
+                  <div className="flex gap-2">
+                    <button 
+                      onClick={() => onUpdateStatus(order.id, 'annule')}
+                      className="flex-1 h-12 rounded-xl bg-white/5 text-white/20 text-[8px] font-black uppercase tracking-widest hover:bg-white/10 hover:text-white transition-all border border-white/10"
+                    >
+                      Annuler
+                    </button>
+                    <button 
+                      onClick={() => onDelete(order.id)}
+                      className="w-12 h-12 rounded-xl bg-luxury-red/10 text-luxury-red flex items-center justify-center hover:bg-luxury-red hover:text-white transition-all border border-luxury-red/20"
+                    >
+                      <Trash2 size={16} />
+                    </button>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </motion.div>
+        ))}
       </div>
     </div>
   );
