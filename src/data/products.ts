@@ -367,9 +367,10 @@ export const useProducts = () => {
 
     load();
 
-    // Real-time subscription
+    // Real-time subscription - Use a unique channel name per instance to avoid conflicts
+    const channelId = Math.random().toString(36).substring(7);
     const channel = supabase
-      .channel('products-db-changes')
+      .channel(`products-db-changes-${channelId}`)
       .on('postgres_changes', { event: '*', schema: 'public', table: 'products' }, () => {
         load();
       })
