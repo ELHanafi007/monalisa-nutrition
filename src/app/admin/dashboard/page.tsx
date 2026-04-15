@@ -35,6 +35,38 @@ import { getProducts, Product } from '@/data/products';
 import { getCategories, Category } from '@/data/categories';
 import Image from 'next/image';
 
+// Utility to compress images before saving to localStorage
+const compressImage = (base64Str: string, maxWidth = 800, maxHeight = 800): Promise<string> => {
+  return new Promise((resolve) => {
+    const img = new window.Image();
+    img.src = base64Str;
+    img.onload = () => {
+      const canvas = document.createElement('canvas');
+      let width = img.width;
+      let height = img.height;
+
+      if (width > height) {
+        if (width > maxWidth) {
+          height *= maxWidth / width;
+          width = maxWidth;
+        }
+      } else {
+        if (height > maxHeight) {
+          width *= maxHeight / height;
+          height = maxHeight;
+        }
+      }
+
+      canvas.width = width;
+      canvas.height = height;
+      const ctx = canvas.getContext('2d');
+      ctx?.drawImage(img, 0, 0, width, height);
+      // Compress as JPEG with 0.7 quality
+      resolve(canvas.toDataURL('image/jpeg', 0.7));
+    };
+  });
+};
+
 export default function AdminDashboard() {
   const router = useRouter();
   const [activeTab, setActiveTab] = useState('dashboard');
@@ -608,15 +640,16 @@ function AddProductTab({ categories, editingProduct, onComplete }: AddProductTab
     const files = e.target.files;
     if (files) {
       const filesArray = Array.from(files).slice(0, 5 - formData.images.length);
-      
+
       filesArray.forEach(file => {
         const reader = new FileReader();
-        reader.onloadend = () => {
+        reader.onloadend = async () => {
           const base64 = reader.result as string;
+          const compressed = await compressImage(base64);
           setFormData(prev => {
-            const newImages = [...prev.images, base64];
-            return { 
-              ...prev, 
+            const newImages = [...prev.images, compressed];
+            return {
+              ...prev,
               images: newImages,
               // Set main image to the first one if it's not set
               image: prev.image || newImages[0]
@@ -627,7 +660,6 @@ function AddProductTab({ categories, editingProduct, onComplete }: AddProductTab
       });
     }
   };
-
   const removeImage = (index: number) => {
     setFormData(prev => {
       const newImages = prev.images.filter((_, i) => i !== index);
@@ -688,8 +720,16 @@ function AddProductTab({ categories, editingProduct, onComplete }: AddProductTab
         }
         return p;
       });
-      localStorage.setItem('monalisa_inventory_v1', JSON.stringify(updated));
-      alert("Produit mis à jour avec succès.");
+      try {
+        localStorage.setItem('monalisa_inventory_v1', JSON.stringify(updated));
+        alert("Produit mis à jour avec succès.");
+      } catch (e) {
+        if (e instanceof DOMException && e.name === 'QuotaExceededError') {
+          alert("Erreur: Mémoire saturée. Veuillez essayer avec moins d'images ou des images plus petites.");
+        } else {
+          alert("Une erreur est survenue lors de la sauvegarde.");
+        }
+      }
     } else {
       const newProduct: Product = {
         id: `dp-${Date.now()}`,
@@ -697,8 +737,16 @@ function AddProductTab({ categories, editingProduct, onComplete }: AddProductTab
         ...productData,
         isRupture: false
       };
-      localStorage.setItem('monalisa_inventory_v1', JSON.stringify([...currentInventory, newProduct]));
-      alert("Produit catalogué avec succès.");
+      try {
+        localStorage.setItem('monalisa_inventory_v1', JSON.stringify([...currentInventory, newProduct]));
+        alert("Produit catalogué avec succès.");
+      } catch (e) {
+        if (e instanceof DOMException && e.name === 'QuotaExceededError') {
+          alert("Erreur: Mémoire saturée. Veuillez essayer avec moins d'images ou des images plus petites.");
+        } else {
+          alert("Une erreur est survenue lors de la sauvegarde.");
+        }
+      }
     }
 
     onComplete();
@@ -988,10 +1036,11 @@ function AddCategoryTab({ editingCategory, onComplete }: { editingCategory: Cate
     const file = e.target.files?.[0];
     if (file) {
       const reader = new FileReader();
-      reader.onloadend = () => {
+      reader.onloadend = async () => {
         const base64 = reader.result as string;
-        setPreview(base64);
-        setFormData({ ...formData, image: base64 });
+        const compressed = await compressImage(base64);
+        setPreview(compressed);
+        setFormData({ ...formData, image: compressed });
       };
       reader.readAsDataURL(file);
     }
@@ -1025,8 +1074,16 @@ function AddCategoryTab({ editingCategory, onComplete }: { editingCategory: Cate
         // It's a default category being overridden
         dynamicCats.push(updatedCategory);
       }
-      localStorage.setItem('monalisa_dynamic_categories', JSON.stringify(dynamicCats));
-      alert("Pilier Architectural Mis à Jour.");
+      try {
+        localStorage.setItem('monalisa_dynamic_categories', JSON.stringify(dynamicCats));
+        alert("Pilier Architectural Mis à Jour.");
+      } catch (e) {
+        if (e instanceof DOMException && e.name === 'QuotaExceededError') {
+          alert("Erreur: Mémoire saturée. Veuillez essayer avec une image plus petite ou supprimer des éléments anciens.");
+        } else {
+          alert("Une erreur est survenue lors de la sauvegarde.");
+        }
+      }
     } else {
       const newCategory: Category = {
         id: `dc-${Date.now()}`,
@@ -1035,8 +1092,16 @@ function AddCategoryTab({ editingCategory, onComplete }: { editingCategory: Cate
         description: formData.description,
         image: formData.image
       };
-      localStorage.setItem('monalisa_dynamic_categories', JSON.stringify([...dynamicCats, newCategory]));
-      alert("Pilier Architectural Établi.");
+      try {
+        localStorage.setItem('monalisa_dynamic_categories', JSON.stringify([...dynamicCats, newCategory]));
+        alert("Pilier Architectural Établi.");
+      } catch (e) {
+        if (e instanceof DOMException && e.name === 'QuotaExceededError') {
+          alert("Erreur: Mémoire saturée. Veuillez essayer avec une image plus petite ou supprimer des éléments anciens.");
+        } else {
+          alert("Une erreur est survenue lors de la sauvegarde.");
+        }
+      }
     }
 
     onComplete();
