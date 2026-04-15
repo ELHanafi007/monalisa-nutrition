@@ -1,10 +1,9 @@
 "use client";
-
 import { useState, useMemo, use } from 'react';
 import { Header } from '@/components/landing/Header';
 import { Footer } from '@/components/landing/Footer';
-import { products, Product } from '@/data/products';
-import { categories, Category } from '@/data/categories';
+import { useProducts, Product } from '@/data/products';
+import { useCategories, Category } from '@/data/categories';
 import { Search, ChevronLeft, Filter, X, ChevronDown, LayoutGrid, SlidersHorizontal } from 'lucide-react';
 import Link from 'next/link';
 import { motion, AnimatePresence } from 'framer-motion';
@@ -16,6 +15,8 @@ interface PageProps {
 }
 
 export default function CategoryPage({ params }: PageProps) {
+  const products = useProducts();
+  const categories = useCategories();
   const resolvedParams = use(params);
   const categorySlug = resolvedParams.category;
   const [selectedProduct, setSelectedProduct] = useState<Product | null>(null);

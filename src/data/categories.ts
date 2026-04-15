@@ -65,12 +65,14 @@ const defaultCategories: Category[] = [
   }
 ];
 
+import { useState, useEffect } from 'react';
+
 export const getCategories = (): Category[] => {
   if (typeof window === 'undefined') return defaultCategories;
   
-  const saved = localStorage.getItem('monalisa_dynamic_categories');
-  if (saved) {
-    try {
+  try {
+    const saved = localStorage.getItem('monalisa_dynamic_categories');
+    if (saved) {
       const dynamic = JSON.parse(saved) as Category[];
       // Use defaultCategories as base, but override with dynamic versions if ID matches
       const merged = [...defaultCategories];
@@ -84,15 +86,26 @@ export const getCategories = (): Category[] => {
         }
       });
       
-      // Also handle "deleted" categories if we decide to implement that via a flag
-      // return merged.filter(c => !c.isHidden);
-      
       return merged;
-    } catch (e) {
-      return defaultCategories;
     }
+  } catch (e) {
+    console.error("Failed to load dynamic categories:", e);
   }
   return defaultCategories;
 };
 
-export const categories = getCategories();
+// Hook for reactive access to categories
+export const useCategories = () => {
+  const [categories, setCategories] = useState<Category[]>(typeof window === 'undefined' ? defaultCategories : getCategories());
+
+  useEffect(() => {
+    if (typeof window !== 'undefined') {
+      setCategories(getCategories());
+    }
+  }, []);
+
+  return categories;
+};
+
+// For backward compatibility - Note: this will be stale on client-side navigation!
+export const categories = typeof window === 'undefined' ? defaultCategories : getCategories();

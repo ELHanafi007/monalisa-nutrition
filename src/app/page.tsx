@@ -10,19 +10,21 @@ import { Brands } from '@/components/landing/Brands';
 import { LocationSection } from '@/components/LocationSection';
 import { Footer } from '@/components/landing/Footer';
 import { QuickView } from '@/components/QuickView';
-import { products, Product } from '@/data/products';
+import { useProducts, Product } from '@/data/products';
 
 export default function Home() {
+  const products = useProducts();
   const [selectedProduct, setSelectedProduct] = useState<Product | null>(null);
 
   // Filter products with a better variety
-  const promoPacks = products.filter(p => p.category === 'packs' || (p.oldPrice && p.oldPrice > p.price)).slice(0, 4);
+  const promoPacks = useMemo(() => {
+    return products.filter(p => p.category === 'packs' || p.category === 'promo' || (p.oldPrice && p.oldPrice > p.price)).slice(0, 4);
+  }, [products]);
   
   // Get a more diverse set of best sellers (not just the first few)
   const bestSellers = useMemo(() => {
-    const nonPacks = products.filter(p => p.category !== 'packs');
+    const nonPacks = products.filter(p => p.category !== 'packs' && p.category !== 'promo');
     // Simple way to get a variety: shuffle or pick from different brands
-    // For now, let's just reverse or take a slice that includes scraped products
     return [...nonPacks].reverse().slice(0, 20);
   }, [products]);
 

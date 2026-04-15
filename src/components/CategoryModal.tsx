@@ -2,12 +2,14 @@
 
 import { motion, AnimatePresence } from 'framer-motion';
 import { X, ArrowRight, LayoutGrid } from 'lucide-react';
-import { categories } from '@/data/categories';
+import { useCategories } from '@/data/categories';
 import Link from 'next/link';
 import Image from 'next/image';
-import { useEffect } from 'react';
+import { useEffect, useState } from 'react';
 
 export const CategoryModal = ({ isOpen, onClose }: { isOpen: boolean; onClose: () => void }) => {
+  const categories = useCategories();
+
   useEffect(() => {
     if (isOpen) {
       document.body.style.overflow = 'hidden';
@@ -68,6 +70,7 @@ export const CategoryModal = ({ isOpen, onClose }: { isOpen: boolean; onClose: (
                          src={category.image} 
                          alt={category.name} 
                          fill 
+                         unoptimized
                          className="object-contain p-2 group-hover:scale-110 transition-transform duration-500" 
                        />
                     </div>

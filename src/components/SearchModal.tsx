@@ -75,8 +75,7 @@ export const SearchModal = ({ isOpen, onClose }: { isOpen: boolean; onClose: () 
                         >
                           <div className="flex items-center gap-6">
                             <div className="w-16 h-16 bg-gray-50 rounded-xl overflow-hidden p-2 relative group-hover:bg-white transition-colors">
-                               <Image src={product.image} alt={product.name} fill className="object-contain p-2" />
-                            </div>
+                               <Image src={product.image} alt={product.name} fill unoptimized className="object-contain p-2" />                            </div>
                             <div>
                               <p className="text-[10px] text-luxury-red uppercase font-black tracking-widest mb-1">{product.brand}</p>
                               <h3 className="text-lg font-black uppercase tracking-tight">{product.name}</h3>

@@ -376,4 +376,22 @@ export const getProducts = (): Product[] => {
   return currentProducts;
 };
 
-export const products = getProducts();
+import { useState, useEffect } from 'react';
+
+// ... (keep getProducts and defaultProducts as they are)
+
+// Hook for reactive access to products
+export const useProducts = () => {
+  const [products, setProducts] = useState<Product[]>(typeof window === 'undefined' ? defaultProducts : getProducts());
+
+  useEffect(() => {
+    if (typeof window !== 'undefined') {
+      setProducts(getProducts());
+    }
+  }, []);
+
+  return products;
+};
+
+// For backward compatibility - Note: this will be stale on client-side navigation!
+export const products = typeof window === 'undefined' ? defaultProducts : getProducts();

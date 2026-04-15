@@ -526,6 +526,7 @@ function ProductsArchive({ products, onToggleStock, onEdit, onDelete }: Products
                 src={product.image} 
                 alt={product.name} 
                 fill 
+                unoptimized
                 className={`object-contain p-6 transition-all duration-700 group-hover:scale-110 ${product.isRupture ? 'grayscale brightness-50' : 'grayscale group-hover:grayscale-0'}`} 
               />
               <div className="absolute inset-0 bg-luxury-red/0 group-hover:bg-luxury-red/5 transition-colors" />
@@ -930,6 +931,7 @@ function CategoriesArchive({ categories, onEdit, onDelete }: CategoriesArchivePr
                 src={category.image} 
                 alt={category.name} 
                 fill 
+                unoptimized
                 className="object-cover opacity-60 transition-all duration-700 group-hover:scale-110 group-hover:opacity-80" 
               />
               <div className="absolute inset-0 bg-gradient-to-t from-black via-transparent to-transparent opacity-80" />
@@ -1085,7 +1087,7 @@ function AddCategoryTab({ editingCategory, onComplete }: { editingCategory: Cate
               className="aspect-video border-2 border-dashed border-white/5 bg-white/[0.02] hover:bg-luxury-red/[0.02] hover:border-luxury-red/30 transition-all cursor-pointer flex flex-col items-center justify-center relative overflow-hidden rounded-[3rem] group"
             >
               {preview ? (
-                <Image src={preview} alt="Preview" fill className="object-cover opacity-60 group-hover:scale-110 transition-transform duration-[2s]" />
+                <Image src={preview} alt="Preview" fill unoptimized className="object-cover opacity-60 group-hover:scale-110 transition-transform duration-[2s]" />
               ) : (
                 <div className="text-center space-y-4">
                    <div className="w-16 h-16 bg-black rounded-2xl flex items-center justify-center mx-auto border border-white/10 group-hover:border-luxury-red/50 transition-colors">

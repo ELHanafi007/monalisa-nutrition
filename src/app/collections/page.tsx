@@ -2,12 +2,13 @@
 
 import { Header } from '@/components/landing/Header';
 import { Footer } from '@/components/landing/Footer';
-import { categories } from '@/data/categories';
+import { useCategories } from '@/data/categories';
 import Link from 'next/link';
 import { motion } from 'framer-motion';
 import Image from 'next/image';
 
 export default function Collections() {
+  const categories = useCategories();
   return (
     <main className="min-h-screen bg-white text-black">
       <Header />
@@ -59,6 +60,7 @@ export default function Collections() {
                      src={category.image} 
                      alt={category.name} 
                      fill
+                     unoptimized
                      className="object-contain p-12 group-hover:scale-110 transition-all duration-1000"
                    />
                    <div className="absolute inset-0 flex items-end justify-start p-12 z-20 pointer-events-none">

@@ -1,10 +1,9 @@
 "use client";
-
 import { useState, useMemo } from 'react';
 import { Header } from '@/components/landing/Header';
 import { Footer } from '@/components/landing/Footer';
-import { products, Product } from '@/data/products';
-import { categories, Category } from '@/data/categories';
+import { useProducts, Product } from '@/data/products';
+import { useCategories, Category } from '@/data/categories';
 import { Search, ChevronRight, X, SlidersHorizontal, LayoutGrid, ArrowRight } from 'lucide-react';
 import Image from 'next/image';
 import Link from 'next/link';
@@ -13,6 +12,8 @@ import { QuickView } from '@/components/QuickView';
 import { ProductCard } from '@/components/ProductCard';
 
 export default function Catalog() {
+  const products = useProducts();
+  const categories = useCategories();
   const [selectedProduct, setSelectedProduct] = useState<Product | null>(null);
   const [searchQuery, setSearchQuery] = useState('');
   const [selectedBrand, setSelectedBrand] = useState<string | null>(null);
