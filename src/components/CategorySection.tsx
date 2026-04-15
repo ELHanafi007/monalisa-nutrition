@@ -68,7 +68,7 @@ export const CategorySection = () => {
             <CategoryCard category={categories.find(c => c.slug === 'gainers') || categories[3]} index={3} />
           </div>
           <div className="md:col-span-4 md:row-span-2">
-            <CategoryCard category={categories.find(c => c.slug === 'vitamins-minerals') || categories[4]} index={4} />
+            <CategoryCard category={categories.find(c => c.slug === 'multivitamines') || categories[4]} index={4} />
           </div>
           <div className="md:col-span-4 md:row-span-1">
             <CategoryCard category={categories.find(c => c.slug === 'pre-workout') || categories[5]} index={5} />

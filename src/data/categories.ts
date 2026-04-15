@@ -10,14 +10,14 @@ const defaultCategories: Category[] = [
   {
     id: "cat_promo",
     name: "PROMO PACKS",
-    slug: "promo",
+    slug: "packs",
     description: "Exclusive curated bundles for ultimate results.",
     image: "/images/DORIANCRAETINE.webp"
   },
   {
     id: "cat_whey",
     name: "Whey Protein",
-    slug: "whey",
+    slug: "whey-proteine",
     description: "Rapid recovery and lean muscle building.",
     image: "/images/gold-standard-whey.webp"
   },
@@ -38,7 +38,7 @@ const defaultCategories: Category[] = [
   {
     id: "cat_amino",
     name: "Amino Acids",
-    slug: "amino",
+    slug: "acides-amines",
     description: "Essential recovery aminos and EAA for muscle protection.",
     image: "/images/amino-1.webp"
   },
@@ -52,14 +52,14 @@ const defaultCategories: Category[] = [
   {
     id: "cat_vitamines",
     name: "Vitamines",
-    slug: "vitamines",
+    slug: "multivitamines",
     description: "Complete daily nutrient support and wellness essentials.",
     image: "/images/animal-pak.webp"
   },
   {
     id: "cat_accessories",
     name: "Accessories",
-    slug: "accessories",
+    slug: "accessoires",
     description: "High-quality gear and essentials for your fitness journey.",
     image: "/images/products/shaker-high-tech-quality.webp"
   }

@@ -26,7 +26,7 @@ const defaultProducts: Product[] = [
     brand: "Optimum Nutrition",
     price: 1199,
     oldPrice: 1300,
-    category: "whey",
+    category: "whey-proteine",
     image: "/images/gold-standard-whey.webp",
     description: "The world's most trusted protein, refined for the elite athlete.",
     benefits: ["24g Protein per serving", "5.5g BCAA", "Zero Sugar"],
@@ -39,7 +39,7 @@ const defaultProducts: Product[] = [
     brand: "MuscleTech",
     price: 849,
     oldPrice: 999,
-    category: "whey",
+    category: "whey-proteine",
     image: "/images/nitrotechelite.webp",
     description: "Advanced muscle-building formula with creatine and amino acids.",
     benefits: ["30g Protein", "3g Creatine", "High Bioavailability"],
@@ -52,7 +52,7 @@ const defaultProducts: Product[] = [
     brand: "Optimum Nutrition",
     price: 829,
     oldPrice: 1000,
-    category: "whey",
+    category: "whey-proteine",
     image: "/images/hydro-whey.webp",
     description: "Fastest absorbing protein.",
     benefits: ["Hydrolyzed Isolate"],
@@ -65,7 +65,7 @@ const defaultProducts: Product[] = [
     brand: "Dymatize",
     price: 949,
     oldPrice: 1200,
-    category: "whey",
+    category: "whey-proteine",
     image: "/images/iso-100.webp",
     description: "Ultra-pure isolate.",
     benefits: ["Zero Fat", "Low Carb"],
@@ -217,7 +217,7 @@ const defaultProducts: Product[] = [
     brand: "MusclePharm",
     price: 449,
     oldPrice: 550,
-    category: "amino",
+    category: "acides-amines",
     image: "/images/amino-1.webp",
     description: "Hydration and recovery formula.",
     benefits: ["BCAA 3:1:2 Ratio", "Coconut Water"],
@@ -230,7 +230,7 @@ const defaultProducts: Product[] = [
     brand: "Biotech USA",
     price: 399,
     oldPrice: 450,
-    category: "amino",
+    category: "acides-amines",
     image: "/images/eaa-zero.webp",
     description: "Essential amino acids with no sugar.",
     benefits: ["Optimal EAA Ratio", "Sugar Free"],
@@ -245,7 +245,7 @@ const defaultProducts: Product[] = [
     brand: "Universal Nutrition",
     price: 649,
     oldPrice: 750,
-    category: "vitamines",
+    category: "multivitamines",
     image: "/images/animal-pak.webp",
     description: "The ultimate training pack.",
     benefits: ["Vitamins & Minerals", "Performance Complex"],
@@ -260,7 +260,7 @@ const defaultProducts: Product[] = [
     brand: "Monalisa Special",
     price: 899,
     oldPrice: 1100,
-    category: "promo",
+    category: "packs",
     image: "/images/DORIANCRAETINE.webp",
     description: "Complete muscle building pack.",
     benefits: ["Monohydrate", "Multivitamins"],
@@ -276,7 +276,7 @@ const defaultProducts: Product[] = [
     brand: "Now Foods",
     price: 349,
     oldPrice: 500,
-    category: "vitamines",
+    category: "multivitamines",
     image: "/images/products/melatonin-extra-10mg-100-capsules-now-food.webp",
     description: "Bed time : ...",
     benefits: ["Date D’expiration : 04/2028 .","Ce produit aide à :","Favoriser un endormissement plus rapide.","Améliorer la qualité du sommeil et le repos nocturne.","Réduire les effets du décalage horaire (jet lag)."],
@@ -289,7 +289,7 @@ const defaultProducts: Product[] = [
     brand: "Ostrovit",
     price: 249,
     oldPrice: 400,
-    category: "vitamines",
+    category: "multivitamines",
     image: "/images/products/vitamin-c1000-90-capsules-ostrovit.webp",
     description: "...",
     benefits: ["Date D’expiration : 04/2027 .","-Contribue au fonctionnement normal du système immunitaire.","-Aide à réduire la fatigue et l’épuisement.","-Protège les cellules contre le stress oxydatif.","-Participe à la formation normale du collagène (peau, os, cartilages, dents, gencives)."],
@@ -311,42 +311,14 @@ const defaultProducts: Product[] = [
   // ... more products exist, but we focus on category mapping
 ];
 
-// Migration Map
-const CATEGORY_MIGRATION_MAP: Record<string, string> = {
-  'whey-proteine': 'whey',
-  'acides-amines': 'amino',
-  'eaa': 'amino',
-  'hard-gainer': 'gainers',
-  'lean-gainer': 'gainers',
-  'mass-gainer': 'gainers',
-  'multivitamines': 'vitamines',
-  'supplements': 'vitamines',
-  'vitamins-minerals': 'vitamines',
-  'accessoires': 'accessories',
-  'packs': 'promo'
-};
-
 export const getProducts = (): Product[] => {
   if (typeof window === 'undefined') return defaultProducts;
   
   const savedInventory = localStorage.getItem('monalisa_inventory_v1');
-  const migrationDone = localStorage.getItem('monalisa_product_migration_v2');
 
   if (savedInventory) {
     try {
-      let products: Product[] = JSON.parse(savedInventory);
-      
-      // Perform migration if not done or if needed
-      if (!migrationDone) {
-        products = products.map(p => ({
-          ...p,
-          category: CATEGORY_MIGRATION_MAP[p.category] || p.category
-        }));
-        localStorage.setItem('monalisa_inventory_v1', JSON.stringify(products));
-        localStorage.setItem('monalisa_product_migration_v2', 'true');
-      }
-      
-      return products;
+      return JSON.parse(savedInventory);
     } catch (e) {
       console.error("Failed to parse monalisa_inventory_v1", e);
     }
@@ -362,15 +334,8 @@ export const getProducts = (): Product[] => {
     } catch (e) {}
   }
   
-  // Apply migration to initial setup if needed
-  currentProducts = currentProducts.map(p => ({
-    ...p,
-    category: CATEGORY_MIGRATION_MAP[p.category] || p.category
-  }));
-
   if (typeof window !== 'undefined' && !savedInventory) {
     localStorage.setItem('monalisa_inventory_v1', JSON.stringify(currentProducts));
-    localStorage.setItem('monalisa_product_migration_v2', 'true');
   }
   
   return currentProducts;

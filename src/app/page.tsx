@@ -18,12 +18,12 @@ export default function Home() {
 
   // Filter products with a better variety
   const promoPacks = useMemo(() => {
-    return products.filter(p => p.category === 'packs' || p.category === 'promo' || (p.oldPrice && p.oldPrice > p.price)).slice(0, 4);
+    return products.filter(p => p.category === 'packs' || (p.oldPrice && p.oldPrice > p.price)).slice(0, 4);
   }, [products]);
   
   // Get a more diverse set of best sellers (not just the first few)
   const bestSellers = useMemo(() => {
-    const nonPacks = products.filter(p => p.category !== 'packs' && p.category !== 'promo');
+    const nonPacks = products.filter(p => p.category !== 'packs');
     // Simple way to get a variety: shuffle or pick from different brands
     return [...nonPacks].reverse().slice(0, 20);
   }, [products]);
