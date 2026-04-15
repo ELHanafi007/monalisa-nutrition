@@ -3,11 +3,12 @@
 import { motion, useScroll, useTransform } from 'framer-motion';
 import Link from 'next/link';
 import Image from 'next/image';
-import { categories } from '@/data/categories';
+import { useCategories } from '@/data/categories';
 import { ArrowRight, MoveRight } from 'lucide-react';
 import { useRef } from 'react';
 
 export const CategorySection = () => {
+  const categories = useCategories();
   return (
     <section className="section-padding bg-black overflow-hidden relative">
       <div className="absolute top-0 left-0 w-full h-full opacity-20 pointer-events-none">
@@ -103,6 +104,7 @@ const CategoryCard = ({ category, index }: { category: any, index: number }) => 
           src={category.image}
           alt={category.name}
           fill
+          unoptimized
           className="object-cover brightness-50 group-hover:scale-110 group-hover:brightness-40 transition-all duration-[2s] ease-out"
         />
         
