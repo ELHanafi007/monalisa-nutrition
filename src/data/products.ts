@@ -315,13 +315,17 @@ import { useState, useEffect } from 'react';
 import { supabase } from '@/lib/supabase';
 
 export const getProducts = async (): Promise<Product[]> => {
+  if (!supabase) return defaultProducts;
   try {
     const { data, error } = await supabase
       .from('products')
       .select('*')
       .order('created_at', { ascending: false });
 
-    if (error) throw error;
+    if (error) {
+      console.warn("Supabase error, using defaults:", error.message);
+      return defaultProducts;
+    }
     if (!data || data.length === 0) return defaultProducts;
 
     // Supabase returns old_price, we map it to oldPrice for our interface

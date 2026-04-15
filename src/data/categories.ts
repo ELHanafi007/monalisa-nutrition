@@ -69,13 +69,17 @@ import { useState, useEffect } from 'react';
 import { supabase } from '@/lib/supabase';
 
 export const getCategories = async (): Promise<Category[]> => {
+  if (!supabase) return defaultCategories;
   try {
     const { data, error } = await supabase
       .from('categories')
       .select('*')
       .order('created_at', { ascending: true });
 
-    if (error) throw error;
+    if (error) {
+      console.warn("Supabase error, using defaults:", error.message);
+      return defaultCategories;
+    }
     if (!data || data.length === 0) return defaultCategories;
 
     // Merge default with dynamic from DB
