@@ -100,7 +100,20 @@ export const useCategories = () => {
 
   useEffect(() => {
     if (typeof window !== 'undefined') {
+      const handleStorageChange = () => {
+        setCategories(getCategories());
+      };
+
+      window.addEventListener('storage', handleStorageChange);
+      // Also listen for local custom events for same-tab updates
+      window.addEventListener('monalisa_data_refresh', handleStorageChange);
+      
       setCategories(getCategories());
+
+      return () => {
+        window.removeEventListener('storage', handleStorageChange);
+        window.removeEventListener('monalisa_data_refresh', handleStorageChange);
+      };
     }
   }, []);
 

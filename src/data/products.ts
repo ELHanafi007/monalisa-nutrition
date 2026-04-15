@@ -351,7 +351,19 @@ export const useProducts = () => {
 
   useEffect(() => {
     if (typeof window !== 'undefined') {
+      const handleStorageChange = () => {
+        setProducts(getProducts());
+      };
+
+      window.addEventListener('storage', handleStorageChange);
+      window.addEventListener('monalisa_data_refresh', handleStorageChange);
+
       setProducts(getProducts());
+
+      return () => {
+        window.removeEventListener('storage', handleStorageChange);
+        window.removeEventListener('monalisa_data_refresh', handleStorageChange);
+      };
     }
   }, []);
 

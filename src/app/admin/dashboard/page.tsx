@@ -84,6 +84,9 @@ export default function AdminDashboard() {
   const refreshData = () => {
     setCurrentProducts(getProducts());
     setCurrentCategories(getCategories());
+    if (typeof window !== 'undefined') {
+      window.dispatchEvent(new Event('monalisa_data_refresh'));
+    }
   };
 
   const handleLogout = () => {
@@ -1063,7 +1066,8 @@ function AddCategoryTab({ editingCategory, onComplete }: { editingCategory: Cate
       const updatedCategory: Category = {
         ...editingCategory,
         name: formData.name,
-        slug: formData.name.toLowerCase().replace(/[^a-z0-9]/g, '-'),
+        // CRITICAL: Keep the original slug so products don't lose their connection
+        slug: editingCategory.slug, 
         description: formData.description,
         image: formData.image
       };
