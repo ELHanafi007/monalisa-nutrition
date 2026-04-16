@@ -1256,22 +1256,25 @@ function AddCategoryTab({ editingCategory, onComplete }: { editingCategory: Cate
     }
 
     if (editingCategory) {
+      console.log("Attempting to UPSERT category:", editingCategory.id);
       const updatedCategory = {
-        id: editingCategory.id, // CRITICAL: Include the ID for upsert
+        id: editingCategory.id,
         name: formData.name,
         description: formData.description,
         image: formData.image,
-        slug: editingCategory.slug // Keep original slug for product stability
+        slug: editingCategory.slug
       };
 
-      const { error } = await supabase
+      const { data, error } = await supabase
         .from('categories')
-        .upsert(updatedCategory); // Use upsert instead of update
+        .upsert(updatedCategory)
+        .select();
 
       if (error) {
-        console.error("Supabase Error:", error);
+        console.error("Supabase UPSERT Error:", error);
         alert("Erreur lors de la mise à jour de la catégorie.");
       } else {
+        console.log("UPSERT Success. Returned data:", data);
         alert("Pilier Architectural Mis à Jour.");
         onComplete();
       }

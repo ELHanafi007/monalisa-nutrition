@@ -85,15 +85,19 @@ export const getCategories = async (): Promise<Category[]> => {
     // Merge default with dynamic from DB - DB MUST OVERRIDE DEFAULT
     const merged = [...defaultCategories];
     data.forEach(dyn => {
+      // Match by ID OR by Slug (Slug is the ultimate source of truth for categories)
       const index = merged.findIndex(m => m.id === dyn.id || m.slug === dyn.slug);
+      
       if (index !== -1) {
-        // Update the existing category with DB data
+        // We found a match in the factory defaults, overwrite it completely with DB data
         merged[index] = {
           ...merged[index],
-          ...dyn
+          ...dyn,
+          // Ensure the ID stays consistent with what the DB sent
+          id: dyn.id 
         };
       } else {
-        // Add new category if it doesn't exist in defaults
+        // This is a brand new category created by the user
         merged.push(dyn);
       }
     });
