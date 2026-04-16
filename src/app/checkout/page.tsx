@@ -20,6 +20,8 @@ export default function Checkout() {
     address: ''
   });
 
+  const [isSuccess, setIsSuccess] = useState(false);
+
   // Delivery costs: 35 MAD fixed, Free for 2+ articles
   const deliveryFee = totalItems >= 2 ? 0 : 35;
   const grandTotal = totalPrice + deliveryFee;
@@ -45,22 +47,46 @@ export default function Checkout() {
       // 2. Send Email via Resend
       await sendOrderEmail(customerInfo, cart, grandTotal);
 
-      // 3. Redirect to WhatsApp
-      const message = `Bonjour Monaliza House, je souhaite commander :\n\n` + 
-        `Client: ${customerInfo.name}\n` +
-        `Tél: ${customerInfo.phone}\n` +
-        `Adresse: ${customerInfo.address}\n\n` +
-        `Produits:\n` +
-        `${cart.map(i => `- ${i.quantity}x ${i.name}`).join('\n')}\n\n` +
-        `Total: ${grandTotal} MAD.`;
-      
-      window.open(`https://wa.me/212662599179?text=${encodeURIComponent(message)}`, '_blank');
+      // 3. Success State
+      setIsSuccess(true);
+      // Optional: You might want to clear the cart here if your CartContext supports it
     } catch (error) {
       console.error('Order Error:', error);
+      alert('Une erreur est survenue lors de la commande. Veuillez réessayer.');
     } finally {
       setIsOrdering(false);
     }
   };
+
+  if (isSuccess) {
+    return (
+      <main className="min-h-screen bg-bg-main text-text-main">
+        <Header />
+        <div className="container py-40 text-center">
+          <motion.div
+            initial={{ opacity: 0, scale: 0.9 }}
+            animate={{ opacity: 1, scale: 1 }}
+            className="max-w-2xl mx-auto space-y-8 bg-surface p-16 rounded-[3rem] border border-border shadow-2xl"
+          >
+            <div className="w-24 h-24 bg-green-500/10 rounded-full flex items-center justify-center mx-auto mb-8">
+              <ShieldCheck size={48} className="text-green-500" />
+            </div>
+            <h1 className="text-4xl font-black uppercase tracking-tighter">Commande <span className="red-gradient-text italic">Confirmée</span></h1>
+            <p className="text-text-muted font-medium leading-relaxed text-lg">
+              Merci {customerInfo.name} ! Votre commande a été enregistrée avec succès. <br />
+              Notre équipe vous contactera sous peu pour confirmer la livraison.
+            </p>
+            <div className="pt-8">
+              <Link href="/catalog" className="luxury-button px-12">
+                Continuer mes achats
+              </Link>
+            </div>
+          </motion.div>
+        </div>
+        <Footer />
+      </main>
+    );
+  }
 
   if (cart.length === 0) {
     return (
@@ -217,11 +243,11 @@ export default function Checkout() {
                 disabled={isOrdering}
                 className="w-full luxury-button py-6 relative z-10 scale-105 shadow-xl shadow-red-900/20"
               >
-                {isOrdering ? 'Traitement...' : 'Confirmer sur WhatsApp'}
+                {isOrdering ? 'Traitement...' : 'Confirmer la Commande'}
               </button>
               
               <p className="text-[8px] text-center text-text-muted uppercase tracking-widest font-black relative z-10">
-                En cliquant sur confirmer, vous serez redirigé vers notre conciergerie WhatsApp pour valider les détails.
+                En cliquant sur confirmer, votre commande sera enregistrée et envoyée à notre équipe logistique pour traitement.
               </p>
             </div>
           </div>
