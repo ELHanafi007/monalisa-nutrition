@@ -14,17 +14,20 @@ import { useCart } from '@/contexts/CartContext';
 export default function ProductDetail() {
   const { products, loading } = useProducts();
   const params = useParams();
+  const { addToCart } = useCart();
+  
   const slug = params.slug as string;
   const product = useMemo(() => products.find(p => p.slug === slug), [products, slug]);
-  const { addToCart } = useCart();
 
   const [quantity, setQuantity] = useState(1);
   const [activeTab, setActiveTab] = useState('description');
   const [activeImage, setActiveImage] = useState('');
 
+  // Update active image when product is found or changes
   useEffect(() => {
     if (product) {
       setActiveImage(product.image);
+      setQuantity(1);
     }
   }, [product]);
 
@@ -35,14 +38,6 @@ export default function ProductDetail() {
       </main>
     );
   }
-
-  // Reset active image when product changes (navigation)
-  useEffect(() => {
-    if (product) {
-      setActiveImage(product.image);
-      setQuantity(1);
-    }
-  }, [product]);
 
   if (!product) {
     return (

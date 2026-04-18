@@ -15,6 +15,7 @@ export interface Product {
     value: string;
   }[];
   isRupture?: boolean;
+  isSynced?: boolean; // New property to track if it's in DB
 }
 
 const defaultProducts: Product[] = [
@@ -329,20 +330,34 @@ export const getProducts = async (): Promise<Product[]> => {
     if (!data || data.length === 0) return defaultProducts;
 
     // Supabase returns old_price, we map it to oldPrice for our interface
-    const mappedData = data.map(p => ({
+    const mappedData: Product[] = data.map(p => ({
       ...p,
+      id: p.id.toString(), // Ensure ID is string
       oldPrice: p.old_price,
-      isRupture: p.is_rupture
+      isRupture: p.is_rupture,
+      isSynced: true // ALL products from DB are synced
     }));
 
-    // Merge default with dynamic from DB
+    // STRATEGY: If the database contains ANY products that look like our defaults 
+    // (IDs starting with 'p' or 'scraped'), we assume the database is the source of truth
+    // and we DON'T merge from the hardcoded defaultProducts array.
+    const hasBeenMigrated = mappedData.some(p => p.id.startsWith('p') || p.id.startsWith('scraped'));
+    
+    if (hasBeenMigrated) {
+      // In this mode, we only return what's in the DB.
+      // This allows the user to delete products permanently.
+      return mappedData;
+    }
+
+    // Fallback: Merge default with dynamic from DB for partial migrations
+    // Those from defaultProducts will have isSynced: undefined/false
     const merged = [...defaultProducts];
     mappedData.forEach(dyn => {
       const index = merged.findIndex(m => m.id === dyn.id);
       if (index !== -1) {
-        merged[index] = dyn;
+        merged[index] = { ...dyn, isSynced: true };
       } else {
-        merged.unshift(dyn); // New ones first
+        merged.unshift({ ...dyn, isSynced: true }); // New ones first
       }
     });
     return merged;

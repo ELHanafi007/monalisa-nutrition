@@ -82,9 +82,23 @@ export const getCategories = async (): Promise<Category[]> => {
     }
     if (!data || data.length === 0) return defaultCategories;
 
-    // Merge default with dynamic from DB - DB MUST OVERRIDE DEFAULT
+    // Supabase returns data
+    const mappedData: Category[] = data.map(c => ({
+      ...c,
+      id: c.id.toString()
+    }));
+
+    // Check if we've migrated defaults to DB (IDs starting with 'cat_')
+    const hasBeenMigrated = mappedData.some(c => c.id.startsWith('cat_'));
+    
+    if (hasBeenMigrated) {
+      // Return ONLY what is in the database to allow permanent deletions
+      return mappedData;
+    }
+
+    // Fallback: Merge for partial use cases
     const merged = [...defaultCategories];
-    data.forEach(dyn => {
+    mappedData.forEach(dyn => {
       // Match by ID OR by Slug (Slug is the ultimate source of truth for categories)
       const index = merged.findIndex(m => m.id === dyn.id || m.slug === dyn.slug);
       

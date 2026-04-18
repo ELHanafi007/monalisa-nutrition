@@ -28,6 +28,7 @@ import {
   ChevronRight,
   ClipboardList,
   CheckCircle2,
+  RefreshCcw,
   Clock,
   Truck as TruckIcon,
   ArrowUpRight,
@@ -105,6 +106,10 @@ export default function AdminDashboard() {
   };
 
   const startEdit = (product: Product) => {
+    if (!product.isSynced) {
+      alert("Modification impossible : ce produit est 'LOCAL'. Veuillez cliquer sur 'INITIALISER DB' pour le synchroniser avant de le modifier.");
+      return;
+    }
     setEditingProduct(product);
     setActiveTab('add-product');
   };
@@ -117,6 +122,11 @@ export default function AdminDashboard() {
   const toggleStock = async (productId: string) => {
     const product = currentProducts.find(p => p.id === productId);
     if (!product) return;
+
+    if (!product.isSynced) {
+      alert("Action impossible : ce produit est 'LOCAL'. Veuillez cliquer sur 'INITIALISER DB' pour permettre la gestion du stock.");
+      return;
+    }
 
     const { error } = await supabase
       .from('products')
@@ -132,6 +142,13 @@ export default function AdminDashboard() {
   };
 
   const deleteProduct = async (productId: string) => {
+    const product = currentProducts.find(p => p.id === productId);
+    
+    if (product && !product.isSynced) {
+      alert("Ce produit est actuellement 'LOCAL' (chargé depuis le code). Pour le supprimer, vous devez d'abord cliquer sur 'INITIALISER DB' en haut de la page pour le synchroniser avec la base de données.");
+      return;
+    }
+
     if (confirm('Êtes-vous sûr de vouloir supprimer ce produit de l\'archive ?')) {
       const { error } = await supabase
         .from('products')
@@ -139,7 +156,8 @@ export default function AdminDashboard() {
         .eq('id', productId);
 
       if (error) {
-        alert("Erreur lors de la suppression.");
+        console.error("Supabase Delete Error:", error);
+        alert(`Erreur lors de la suppression: ${error.message}`);
       } else {
         refreshData();
       }
@@ -166,7 +184,7 @@ export default function AdminDashboard() {
 
       if (error) {
         console.error("Supabase Error:", error);
-        alert("Erreur lors de la suppression de la catégorie.");
+        alert(`Erreur lors de la suppression de la catégorie: ${error.message}`);
       } else {
         refreshData();
       }
@@ -181,7 +199,8 @@ export default function AdminDashboard() {
         .eq('id', orderId);
 
       if (error) {
-        alert("Erreur lors de la suppression de la commande.");
+        console.error("Supabase Error:", error);
+        alert(`Erreur lors de la suppression de la commande: ${error.message}`);
       } else {
         refreshData();
       }
@@ -198,6 +217,56 @@ export default function AdminDashboard() {
       alert("Erreur lors de la mise à jour du statut.");
     } else {
       refreshData();
+    }
+  };
+
+  const initializeDatabase = async () => {
+    if (confirm('Voulez-vous synchroniser tous les produits et catégories par défaut vers Supabase ? Cela permettra de les supprimer ou les modifier définitivement.')) {
+      setIsLoading(true);
+      try {
+        // Prepare products for Supabase
+        const productsToInsert = currentProducts.map(p => ({
+          id: p.id,
+          name: p.name,
+          slug: p.slug,
+          brand: p.brand,
+          price: p.price,
+          category: p.category,
+          image: p.image,
+          images: p.images || [],
+          description: p.description,
+          benefits: p.benefits,
+          specs: p.specs,
+          old_price: p.oldPrice || null,
+          is_rupture: p.isRupture || false
+        }));
+
+        const { error: pError } = await supabase.from('products').upsert(productsToInsert);
+        
+        // Prepare categories
+        const categoriesToInsert = currentCategories.map(c => ({
+          id: c.id,
+          name: c.name,
+          slug: c.slug,
+          description: c.description,
+          image: c.image
+        }));
+        
+        const { error: cError } = await supabase.from('categories').upsert(categoriesToInsert);
+
+        if (pError || cError) {
+          console.error("Initialization Error:", pError || cError);
+          alert(`Erreur lors de la synchronisation: ${(pError || cError)?.message}`);
+        } else {
+          alert("Synchronisation réussie ! Vous pouvez maintenant gérer tous les produits depuis le dashboard.");
+          refreshData();
+        }
+      } catch (err) {
+        console.error("System Error:", err);
+        alert("Erreur système lors de la synchronisation.");
+      } finally {
+        setIsLoading(false);
+      }
     }
   };
 
@@ -333,6 +402,14 @@ export default function AdminDashboard() {
           
           <div className="flex items-center gap-10">
             <div className="hidden lg:flex gap-4">
+               <button 
+                 onClick={initializeDatabase}
+                 className="flex items-center gap-3 px-6 h-12 rounded-xl bg-luxury-red/10 border border-luxury-red/20 hover:bg-luxury-red/20 hover:border-luxury-red/40 transition-all group"
+                 title="Synchroniser les produits par défaut vers la base de données"
+               >
+                  <RefreshCcw size={16} className="text-luxury-red group-hover:rotate-180 transition-transform duration-700" />
+                  <span className="text-[10px] font-black uppercase tracking-widest text-luxury-red">Initialiser DB</span>
+               </button>
                <button 
                  onClick={exportDatabase}
                  className="flex items-center gap-3 px-6 h-12 rounded-xl bg-white/5 border border-white/5 hover:border-luxury-red/30 transition-all group"
@@ -738,6 +815,20 @@ function ProductsArchive({ products, onToggleStock, onEdit, onDelete }: Products
             {product.isRupture && (
               <div className="absolute top-6 left-6 z-20 bg-luxury-red text-white text-[7px] px-3 py-1.5 font-black uppercase tracking-widest rounded-lg flex items-center gap-2 shadow-lg shadow-red-900/40">
                 <AlertTriangle size={10} /> RUPTURE DE STOCK
+              </div>
+            )}
+
+            {!product.isSynced && (
+              <div className="absolute top-6 right-6 z-20 bg-white/10 backdrop-blur-md text-white/40 text-[7px] px-3 py-1.5 font-black uppercase tracking-widest rounded-lg flex items-center gap-2 border border-white/10">
+                <div className="w-1.5 h-1.5 rounded-full bg-yellow-500 animate-pulse" />
+                DÉFAUT / LOCAL
+              </div>
+            )}
+
+            {product.isSynced && (
+              <div className="absolute top-6 right-6 z-20 bg-green-500/10 backdrop-blur-md text-green-500 text-[7px] px-3 py-1.5 font-black uppercase tracking-widest rounded-lg flex items-center gap-2 border border-green-500/20">
+                <div className="w-1.5 h-1.5 rounded-full bg-green-500" />
+                SYNCHRONISÉ
               </div>
             )}
             
