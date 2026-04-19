@@ -24,9 +24,9 @@ export default function RootLayout({
         <ThemeProvider>
           <CartProvider>
             {/* <Preloader /> */}
-            <PageTransition>
+            {/* <PageTransition> */}
               {children}
-            </PageTransition>
+            {/* </PageTransition> */}
             <Toast />
             <NewsletterModal />
             <MobileNav />

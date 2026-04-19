@@ -6,7 +6,7 @@ const poolConfig = {
   password: process.env.MYSQL_PASSWORD!,
   database: process.env.MYSQL_DATABASE!,
   waitForConnections: true,
-  connectionLimit: 5, // Reduced to be safer on Hostinger
+  connectionLimit: 2, // Ultra-stable for Hostinger
   queueLimit: 0,
   enableKeepAlive: true,
   keepAliveInitialDelay: 10000,
