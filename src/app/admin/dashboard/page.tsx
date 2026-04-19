@@ -744,11 +744,11 @@ function AddProductTab({ categories, editingProduct, onComplete }: AddProductTab
     price: '',
     oldPrice: '',
     category: '',
-    description: '',
-    benefits: ['', ''],
-    specs: [{ label: 'Poids', value: '' }],
-    image: '',
-    images: [] as string[]
+    description: editingProduct ? editingProduct.description : '',
+    benefits: editingProduct ? (editingProduct.benefits && editingProduct.benefits.length > 0 ? editingProduct.benefits : ['', '']) : ['', ''],
+    specs: editingProduct ? (editingProduct.specs && editingProduct.specs.length > 0 ? editingProduct.specs : [{ label: 'Poids', value: '' }]) : [{ label: 'Poids', value: '' }],
+    image: editingProduct ? editingProduct.image : '',
+    images: editingProduct ? (editingProduct.images && editingProduct.images.length > 0 ? editingProduct.images : [editingProduct.image]) : [] as string[]
   });
   const fileInputRef = useRef<HTMLInputElement>(null);
 
@@ -764,7 +764,7 @@ function AddProductTab({ categories, editingProduct, onComplete }: AddProductTab
         benefits: editingProduct.benefits.length > 0 ? editingProduct.benefits : ['', ''],
         specs: editingProduct.specs.length > 0 ? editingProduct.specs : [{ label: 'Poids', value: '' }],
         image: editingProduct.image,
-        images: editingProduct.images || [editingProduct.image]
+        images: editingProduct.images && editingProduct.images.length > 0 ? editingProduct.images : [editingProduct.image]
       });
     }
   }, [editingProduct]);
