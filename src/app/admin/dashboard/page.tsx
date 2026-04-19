@@ -88,10 +88,11 @@ export default function AdminDashboard() {
   }, []);
 
   const refreshData = async () => {
+    const timestamp = Date.now();
     const [pRes, cRes, oRes] = await Promise.all([
-      fetch('/api/products', { cache: 'no-store' }),
-      fetch('/api/categories', { cache: 'no-store' }),
-      fetch('/api/orders', { cache: 'no-store' }),
+      fetch(`/api/products?t=${timestamp}`, { cache: 'no-store' }),
+      fetch(`/api/categories?t=${timestamp}`, { cache: 'no-store' }),
+      fetch(`/api/orders?t=${timestamp}`, { cache: 'no-store' }),
     ]);
     if (pRes.ok) setCurrentProducts(await pRes.json());
     if (cRes.ok) setCurrentCategories(await cRes.json());
