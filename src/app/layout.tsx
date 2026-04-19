@@ -23,12 +23,8 @@ export default function RootLayout({
       <body>
         <ThemeProvider>
           <CartProvider>
-            <Preloader />
-            <PageTransition>
-              {children}
-            </PageTransition>
+            {children}
             <Toast />
-            <NewsletterModal />
             <MobileNav />
           </CartProvider>
         </ThemeProvider>
