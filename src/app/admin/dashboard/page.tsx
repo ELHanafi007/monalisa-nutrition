@@ -50,6 +50,8 @@ import {
   upsertProductAction,
   upsertCategoryAction
 } from '@/app/actions/db';
+import { Product } from '@/data/products';
+import { Category } from '@/data/categories';
 import Image from 'next/image';
 
 // Utility to compress images before saving to localStorage
