@@ -7,15 +7,30 @@ export async function GET() {
       'SELECT * FROM products ORDER BY created_at DESC'
     ) as any[];
 
-    const products = (rows as any[]).map((p) => ({
-      ...p,
-      id: p.id.toString(),
-      oldPrice: p.old_price ?? undefined,
-      isRupture: Boolean(p.is_rupture),
-      benefits: typeof p.benefits === 'string' ? JSON.parse(p.benefits) : (p.benefits ?? []),
-      specs: typeof p.specs === 'string' ? JSON.parse(p.specs) : (p.specs ?? []),
-      images: typeof p.images === 'string' ? JSON.parse(p.images) : (p.images ?? []),
-    }));
+    const products = (rows as any[]).map((p) => {
+      let benefits = [];
+      let specs = [];
+      let images = [];
+      
+      try { benefits = typeof p.benefits === 'string' ? JSON.parse(p.benefits) : (p.benefits ?? []); } catch (e) {}
+      try { specs = typeof p.specs === 'string' ? JSON.parse(p.specs) : (p.specs ?? []); } catch (e) {}
+      try { images = typeof p.images === 'string' ? JSON.parse(p.images) : (p.images ?? []); } catch (e) {}
+
+      // Handle double stringified JSON from MySQL
+      if (typeof benefits === 'string') { try { benefits = JSON.parse(benefits); } catch (e) { benefits = []; } }
+      if (typeof specs === 'string') { try { specs = JSON.parse(specs); } catch (e) { specs = []; } }
+      if (typeof images === 'string') { try { images = JSON.parse(images); } catch (e) { images = []; } }
+
+      return {
+        ...p,
+        id: p.id.toString(),
+        oldPrice: p.old_price ?? undefined,
+        isRupture: Boolean(p.is_rupture),
+        benefits: Array.isArray(benefits) ? benefits : [],
+        specs: Array.isArray(specs) ? specs : [],
+        images: Array.isArray(images) ? images : [],
+      };
+    });
 
     return NextResponse.json(products);
   } catch (error) {
