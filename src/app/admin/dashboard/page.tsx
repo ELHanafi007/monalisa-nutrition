@@ -28,7 +28,6 @@ import {
   ChevronRight,
   ClipboardList,
   CheckCircle2,
-  RefreshCcw,
   Clock,
   Truck as TruckIcon,
   ArrowUpRight,
@@ -37,9 +36,8 @@ import {
   AlertTriangle
 } from 'lucide-react';
 import { motion, AnimatePresence } from 'framer-motion';
-import { getProducts, Product } from '@/data/products';
-import { getCategories, Category } from '@/data/categories';
-import { supabase } from '@/lib/supabase';
+import { Product } from '@/data/products';
+import { Category } from '@/data/categories';
 import Image from 'next/image';
 
 // Utility to compress images before saving to localStorage
@@ -90,14 +88,14 @@ export default function AdminDashboard() {
   }, []);
 
   const refreshData = async () => {
-    const [p, c, o] = await Promise.all([
-      getProducts(), 
-      getCategories(),
-      supabase.from('orders').select('*').order('created_at', { ascending: false })
+    const [pRes, cRes, oRes] = await Promise.all([
+      fetch('/api/products', { cache: 'no-store' }),
+      fetch('/api/categories', { cache: 'no-store' }),
+      fetch('/api/orders', { cache: 'no-store' }),
     ]);
-    setCurrentProducts(p);
-    setCurrentCategories(c);
-    if (o.data) setCurrentOrders(o.data);
+    if (pRes.ok) setCurrentProducts(await pRes.json());
+    if (cRes.ok) setCurrentCategories(await cRes.json());
+    if (oRes.ok) setCurrentOrders(await oRes.json());
   };
 
   const handleLogout = () => {
@@ -106,10 +104,6 @@ export default function AdminDashboard() {
   };
 
   const startEdit = (product: Product) => {
-    if (!product.isSynced) {
-      alert("Modification impossible : ce produit est 'LOCAL'. Veuillez cliquer sur 'INITIALISER DB' pour le synchroniser avant de le modifier.");
-      return;
-    }
     setEditingProduct(product);
     setActiveTab('add-product');
   };
@@ -122,160 +116,65 @@ export default function AdminDashboard() {
   const toggleStock = async (productId: string) => {
     const product = currentProducts.find(p => p.id === productId);
     if (!product) return;
-
-    if (!product.isSynced) {
-      alert("Action impossible : ce produit est 'LOCAL'. Veuillez cliquer sur 'INITIALISER DB' pour permettre la gestion du stock.");
-      return;
-    }
-
-    const { error } = await supabase
-      .from('products')
-      .update({ is_rupture: !product.isRupture })
-      .eq('id', productId);
-
-    if (error) {
-      console.error("Supabase Error:", error);
-      alert("Erreur lors de la mise à jour du stock.");
-    } else {
-      refreshData();
-    }
+    const res = await fetch(`/api/products/${productId}`, {
+      method: 'PATCH',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ is_rupture: product.isRupture ? 0 : 1 }),
+    });
+    if (!res.ok) alert('Erreur lors de la mise à jour du stock.');
+    else refreshData();
   };
 
   const deleteProduct = async (productId: string) => {
-    const product = currentProducts.find(p => p.id === productId);
-    
-    if (product && !product.isSynced) {
-      alert("Ce produit est actuellement 'LOCAL' (chargé depuis le code). Pour le supprimer, vous devez d'abord cliquer sur 'INITIALISER DB' en haut de la page pour le synchroniser avec la base de données.");
-      return;
-    }
-
     if (confirm('Êtes-vous sûr de vouloir supprimer ce produit de l\'archive ?')) {
-      const { error } = await supabase
-        .from('products')
-        .delete()
-        .eq('id', productId);
-
-      if (error) {
-        console.error("Supabase Delete Error:", error);
-        alert(`Erreur lors de la suppression: ${error.message}`);
-      } else {
-        refreshData();
-      }
+      const res = await fetch(`/api/products/${productId}`, { method: 'DELETE' });
+      if (!res.ok) alert('Erreur lors de la suppression.');
+      else refreshData();
     }
   };
 
   const deleteCategory = async (categoryId: string) => {
-    // Audit: Check if category has products
     const category = currentCategories.find(c => c.id === categoryId);
     if (!category) return;
-
     const productsInCategory = currentProducts.filter(p => p.category === category.slug);
-
     if (productsInCategory.length > 0) {
-      alert(`Impossible de supprimer : ce pilier contient encore ${productsInCategory.length} produits. Veuillez les réassigner ou les supprimer d'abord.`);
+      alert(`Impossible de supprimer : ce pilier contient encore ${productsInCategory.length} produits.`);
       return;
     }
-
     if (confirm('Êtes-vous sûr de vouloir supprimer cette catégorie ?')) {
-      const { error } = await supabase
-        .from('categories')
-        .delete()
-        .eq('id', categoryId);
-
-      if (error) {
-        console.error("Supabase Error:", error);
-        alert(`Erreur lors de la suppression de la catégorie: ${error.message}`);
-      } else {
-        refreshData();
-      }
+      const res = await fetch(`/api/categories/${categoryId}`, { method: 'DELETE' });
+      if (!res.ok) alert('Erreur lors de la suppression.');
+      else refreshData();
     }
   };
 
   const deleteOrder = async (orderId: number) => {
     if (confirm('Supprimer définitivement cette commande de l\'archive ?')) {
-      const { error } = await supabase
-        .from('orders')
-        .delete()
-        .eq('id', orderId);
-
-      if (error) {
-        console.error("Supabase Error:", error);
-        alert(`Erreur lors de la suppression de la commande: ${error.message}`);
-      } else {
-        refreshData();
-      }
+      const res = await fetch(`/api/orders/${orderId}`, { method: 'DELETE' });
+      if (!res.ok) alert('Erreur lors de la suppression.');
+      else refreshData();
     }
   };
 
   const updateOrderStatus = async (orderId: number, status: string) => {
-    const { error } = await supabase
-      .from('orders')
-      .update({ status })
-      .eq('id', orderId);
-
-    if (error) {
-      alert("Erreur lors de la mise à jour du statut.");
-    } else {
-      refreshData();
-    }
-  };
-
-  const initializeDatabase = async () => {
-    if (confirm('Voulez-vous synchroniser tous les produits et catégories par défaut vers Supabase ? Cela permettra de les supprimer ou les modifier définitivement.')) {
-      setIsLoading(true);
-      try {
-        // Prepare products for Supabase
-        const productsToInsert = currentProducts.map(p => ({
-          id: p.id,
-          name: p.name,
-          slug: p.slug,
-          brand: p.brand,
-          price: p.price,
-          category: p.category,
-          image: p.image,
-          images: p.images || [],
-          description: p.description,
-          benefits: p.benefits,
-          specs: p.specs,
-          old_price: p.oldPrice || null,
-          is_rupture: p.isRupture || false
-        }));
-
-        const { error: pError } = await supabase.from('products').upsert(productsToInsert);
-        
-        // Prepare categories
-        const categoriesToInsert = currentCategories.map(c => ({
-          id: c.id,
-          name: c.name,
-          slug: c.slug,
-          description: c.description,
-          image: c.image
-        }));
-        
-        const { error: cError } = await supabase.from('categories').upsert(categoriesToInsert);
-
-        if (pError || cError) {
-          console.error("Initialization Error:", pError || cError);
-          alert(`Erreur lors de la synchronisation: ${(pError || cError)?.message}`);
-        } else {
-          alert("Synchronisation réussie ! Vous pouvez maintenant gérer tous les produits depuis le dashboard.");
-          refreshData();
-        }
-      } catch (err) {
-        console.error("System Error:", err);
-        alert("Erreur système lors de la synchronisation.");
-      } finally {
-        setIsLoading(false);
-      }
-    }
+    const res = await fetch(`/api/orders/${orderId}`, {
+      method: 'PATCH',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ status }),
+    });
+    if (!res.ok) alert('Erreur lors de la mise à jour du statut.');
+    else refreshData();
   };
 
   const exportDatabase = async () => {
-    const [p, c] = await Promise.all([getProducts(), getCategories()]);
+    const [pRes, cRes] = await Promise.all([
+      fetch('/api/products', { cache: 'no-store' }),
+      fetch('/api/categories', { cache: 'no-store' }),
+    ]);
     const data = {
-      products: p,
-      categories: c,
-      exportedAt: new Date().toISOString()
+      products: pRes.ok ? await pRes.json() : [],
+      categories: cRes.ok ? await cRes.json() : [],
+      exportedAt: new Date().toISOString(),
     };
     const blob = new Blob([JSON.stringify(data, null, 2)], { type: 'application/json' });
     const url = URL.createObjectURL(blob);
@@ -284,31 +183,6 @@ export default function AdminDashboard() {
     a.download = `monalisa-backup-${new Date().toISOString().split('T')[0]}.json`;
     a.click();
     URL.revokeObjectURL(url);
-  };
-
-  const importDatabase = (e: React.ChangeEvent<HTMLInputElement>) => {
-    const file = e.target.files?.[0];
-    if (file) {
-      const reader = new FileReader();
-      reader.onload = (event) => {
-        try {
-          const data = JSON.parse(event.target?.result as string);
-          if (data.products && data.categories) {
-            if (confirm('L\'importation écrasera votre base de données locale actuelle. Continuer ?')) {
-              localStorage.setItem('monalisa_inventory_v1', JSON.stringify(data.products));
-              localStorage.setItem('monalisa_dynamic_categories', JSON.stringify(data.categories.filter((c: any) => c.id.startsWith('dc-'))));
-              refreshData();
-              alert('Base de données restaurée avec succès.');
-            }
-          } else {
-            alert('Format de fichier invalide.');
-          }
-        } catch (err) {
-          alert('Erreur lors de la lecture du fichier.');
-        }
-      };
-      reader.readAsText(file);
-    }
   };
   if (isLoading) return null;
 
@@ -403,14 +277,6 @@ export default function AdminDashboard() {
           <div className="flex items-center gap-10">
             <div className="hidden lg:flex gap-4">
                <button 
-                 onClick={initializeDatabase}
-                 className="flex items-center gap-3 px-6 h-12 rounded-xl bg-luxury-red/10 border border-luxury-red/20 hover:bg-luxury-red/20 hover:border-luxury-red/40 transition-all group"
-                 title="Synchroniser les produits par défaut vers la base de données"
-               >
-                  <RefreshCcw size={16} className="text-luxury-red group-hover:rotate-180 transition-transform duration-700" />
-                  <span className="text-[10px] font-black uppercase tracking-widest text-luxury-red">Initialiser DB</span>
-               </button>
-               <button 
                  onClick={exportDatabase}
                  className="flex items-center gap-3 px-6 h-12 rounded-xl bg-white/5 border border-white/5 hover:border-luxury-red/30 transition-all group"
                  title="Exporter la base de données"
@@ -418,11 +284,6 @@ export default function AdminDashboard() {
                   <Download size={16} className="text-luxury-red group-hover:scale-110 transition-transform" />
                   <span className="text-[10px] font-black uppercase tracking-widest text-white/40 group-hover:text-white">Backup</span>
                </button>
-               <label className="flex items-center gap-3 px-6 h-12 rounded-xl bg-white/5 border border-white/5 hover:border-gold/30 transition-all group cursor-pointer">
-                  <input type="file" className="hidden" accept=".json" onChange={importDatabase} />
-                  <Upload size={16} className="text-gold group-hover:scale-110 transition-transform" />
-                  <span className="text-[10px] font-black uppercase tracking-widest text-white/40 group-hover:text-white">Restore</span>
-               </label>
             </div>
             <div className="h-10 w-[1px] bg-white/5 hidden lg:block" />
             <div className="text-right hidden md:block">              <p className="text-xs font-black uppercase tracking-widest text-white/80">Othman Bennani</p>
@@ -818,19 +679,10 @@ function ProductsArchive({ products, onToggleStock, onEdit, onDelete }: Products
               </div>
             )}
 
-            {!product.isSynced && (
-              <div className="absolute top-6 right-6 z-20 bg-white/10 backdrop-blur-md text-white/40 text-[7px] px-3 py-1.5 font-black uppercase tracking-widest rounded-lg flex items-center gap-2 border border-white/10">
-                <div className="w-1.5 h-1.5 rounded-full bg-yellow-500 animate-pulse" />
-                DÉFAUT / LOCAL
-              </div>
-            )}
-
-            {product.isSynced && (
-              <div className="absolute top-6 right-6 z-20 bg-green-500/10 backdrop-blur-md text-green-500 text-[7px] px-3 py-1.5 font-black uppercase tracking-widest rounded-lg flex items-center gap-2 border border-green-500/20">
-                <div className="w-1.5 h-1.5 rounded-full bg-green-500" />
-                SYNCHRONISÉ
-              </div>
-            )}
+            <div className="absolute top-6 right-6 z-20 bg-green-500/10 backdrop-blur-md text-green-500 text-[7px] px-3 py-1.5 font-black uppercase tracking-widest rounded-lg flex items-center gap-2 border border-green-500/20">
+              <div className="w-1.5 h-1.5 rounded-full bg-green-500" />
+              DB
+            </div>
             
             <div className="aspect-square relative rounded-3xl overflow-hidden bg-black/40 p-6 mb-6">
               <Image 
@@ -890,6 +742,7 @@ function AddProductTab({ categories, editingProduct, onComplete }: AddProductTab
     name: '',
     brand: '',
     price: '',
+    oldPrice: '',
     category: '',
     description: '',
     benefits: ['', ''],
@@ -905,6 +758,7 @@ function AddProductTab({ categories, editingProduct, onComplete }: AddProductTab
         name: editingProduct.name,
         brand: editingProduct.brand,
         price: editingProduct.price.toString(),
+        oldPrice: (editingProduct.oldPrice ?? editingProduct.old_price ?? '').toString(),
         category: editingProduct.category,
         description: editingProduct.description,
         benefits: editingProduct.benefits.length > 0 ? editingProduct.benefits : ['', ''],
@@ -978,68 +832,43 @@ function AddProductTab({ categories, editingProduct, onComplete }: AddProductTab
       name: formData.name,
       brand: formData.brand,
       price: parseInt(formData.price),
+      old_price: formData.oldPrice ? parseInt(formData.oldPrice) : null,
       category: formData.category,
       image: formData.image,
       images: formData.images,
       description: formData.description,
       benefits: formData.benefits.filter(b => b.trim() !== ''),
-      specs: formData.specs
+      specs: formData.specs,
     };
 
     if (editingProduct) {
-      const { error } = await supabase
-        .from('products')
-        .update({
-          name: productData.name,
-          brand: productData.brand,
-          price: productData.price,
-          category: productData.category,
-          image: productData.image,
-          images: productData.images,
-          description: productData.description,
-          benefits: productData.benefits,
-          specs: productData.specs,
-          old_price: editingProduct.oldPrice || null,
-          is_rupture: editingProduct.isRupture || false
-        })
-        .eq('id', editingProduct.id);
-
-      if (error) {
-        console.error("Supabase Error:", error);
-        alert("Erreur lors de la mise à jour du produit.");
+      const res = await fetch(`/api/products/${editingProduct.id}`, {
+        method: 'PUT',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          ...productData,
+          slug: editingProduct.slug,
+          is_rupture: editingProduct.isRupture ? 1 : 0,
+        }),
+      });
+      if (!res.ok) {
+        alert('Erreur lors de la mise à jour du produit.');
       } else {
-        alert("Produit mis à jour avec succès.");
+        alert('Produit mis à jour avec succès.');
         onComplete();
       }
     } else {
-      const newProduct = {
-        id: `dp-${Date.now()}`,
-        name: productData.name,
-        slug: productData.name.toLowerCase().replace(/[^a-z0-9]/g, '-'),
-        brand: productData.brand,
-        price: productData.price,
-        category: productData.category,
-        image: productData.image,
-        images: productData.images,
-        description: productData.description,
-        benefits: productData.benefits,
-        specs: productData.specs,
-        is_rupture: false
-      };
-
-      const { error } = await supabase
-        .from('products')
-        .insert([newProduct]);
-
-      if (error) {
-        console.error("Supabase Error:", error);
-        if (error.code === '23505') {
-          alert("Erreur: Un produit avec ce nom existe déjà (conflit de slug).");
-        } else {
-          alert("Erreur lors du catalogage du produit.");
-        }
+      const id = `dp-${Date.now()}`;
+      const slug = formData.name.toLowerCase().replace(/[^a-z0-9]/g, '-');
+      const res = await fetch('/api/products', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ ...productData, id, slug, is_rupture: 0 }),
+      });
+      if (!res.ok) {
+        alert('Erreur lors du catalogage du produit.');
       } else {
-        alert("Produit catalogué avec succès.");
+        alert('Produit catalogué avec succès.');
         onComplete();
       }
     }
@@ -1112,15 +941,26 @@ function AddProductTab({ categories, editingProduct, onComplete }: AddProductTab
                 />
               </div>
               <div className="space-y-4">
-                <label className="text-[10px] uppercase tracking-[0.4em] text-luxury-red font-black ml-6">Poids / Specs</label>
+                <label className="text-[10px] uppercase tracking-[0.4em] text-luxury-red font-black ml-6">Ancien Prix (MAD)</label>
                 <input 
-                  required
-                  value={formData.specs[0].value}
-                  onChange={(e) => setFormData({...formData, specs: [{ label: 'Poids', value: e.target.value }]})}
-                  className="w-full bg-white/[0.03] border border-white/5 focus:border-luxury-red outline-none p-6 text-sm font-bold rounded-[1.5rem]" 
-                  placeholder="2.27KG" 
+                  type="number" 
+                  value={formData.oldPrice}
+                  onChange={(e) => setFormData({...formData, oldPrice: e.target.value})}
+                  className="w-full bg-white/[0.03] border border-white/5 focus:border-luxury-red outline-none p-6 text-sm font-bold transition-all rounded-[1.5rem]" 
+                  placeholder="1200 (optionnel)" 
                 />
               </div>
+            </div>
+
+            <div className="space-y-4">
+              <label className="text-[10px] uppercase tracking-[0.4em] text-luxury-red font-black ml-6">Poids / Specs</label>
+              <input 
+                required
+                value={formData.specs[0].value}
+                onChange={(e) => setFormData({...formData, specs: [{ label: 'Poids', value: e.target.value }]})}
+                className="w-full bg-white/[0.03] border border-white/5 focus:border-luxury-red outline-none p-6 text-sm font-bold rounded-[1.5rem]" 
+                placeholder="2.27KG" 
+              />
             </div>
           </div>
 
@@ -1347,50 +1187,34 @@ function AddCategoryTab({ editingCategory, onComplete }: { editingCategory: Cate
     }
 
     if (editingCategory) {
-      console.log("Attempting to UPSERT category:", editingCategory.id);
-      const updatedCategory = {
-        id: editingCategory.id,
-        name: formData.name,
-        description: formData.description,
-        image: formData.image,
-        slug: editingCategory.slug
-      };
-
-      const { data, error } = await supabase
-        .from('categories')
-        .upsert(updatedCategory)
-        .select();
-
-      if (error) {
-        console.error("Supabase UPSERT Error:", error);
-        alert("Erreur lors de la mise à jour de la catégorie.");
+      const res = await fetch(`/api/categories/${editingCategory.id}`, {
+        method: 'PUT',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          name: formData.name,
+          slug: editingCategory.slug,
+          description: formData.description,
+          image: formData.image,
+        }),
+      });
+      if (!res.ok) {
+        alert('Erreur lors de la mise à jour de la catégorie.');
       } else {
-        console.log("UPSERT Success. Returned data:", data);
-        alert("Pilier Architectural Mis à Jour.");
+        alert('Pilier Architectural Mis à Jour.');
         onComplete();
       }
     } else {
-      const newCategory = {
-        id: `dc-${Date.now()}`,
-        name: formData.name,
-        slug: formData.name.toLowerCase().replace(/[^a-z0-9]/g, '-'),
-        description: formData.description,
-        image: formData.image
-      };
-
-      const { error } = await supabase
-        .from('categories')
-        .insert([newCategory]);
-
-      if (error) {
-        console.error("Supabase Error:", error);
-        if (error.code === '23505') {
-          alert("Erreur: Une catégorie avec ce nom existe déjà.");
-        } else {
-          alert("Erreur lors de l'établissement de la catégorie.");
-        }
+      const id = `dc-${Date.now()}`;
+      const slug = formData.name.toLowerCase().replace(/[^a-z0-9]/g, '-');
+      const res = await fetch('/api/categories', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ id, name: formData.name, slug, description: formData.description, image: formData.image }),
+      });
+      if (!res.ok) {
+        alert("Erreur lors de l'établissement de la catégorie.");
       } else {
-        alert("Pilier Architectural Établi.");
+        alert('Pilier Architectural Établi.');
         onComplete();
       }
     }
