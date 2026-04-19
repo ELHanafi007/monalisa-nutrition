@@ -1,6 +1,5 @@
 "use client";
-export const dynamic = 'force-dynamic';
-export const revalidate = 0;
+
 import { useState, useMemo, use } from 'react';
 import { Header } from '@/components/landing/Header';
 import { Footer } from '@/components/landing/Footer';
