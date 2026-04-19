@@ -210,7 +210,7 @@ export default function Catalog() {
                     <X size={32} className="text-gray-200" />
                  </div>
                  <h3 className="text-2xl font-black uppercase tracking-tighter mb-4 text-gray-300">No results found</h3>
-                 <p className="text-gray-400 text-[10px] uppercase tracking-widest mb-12 italic">Try adjusting your filters or search terms</p>
+                 <p className="text-gray-400 text-[10px] uppercase tracking-widest mb-12 italic">L&apos;excellence à votre service. Try adjusting your filters or search terms</p>
               </div>
             )}
           </section>
