@@ -7,9 +7,12 @@ export const fetchCache = 'force-no-store';
 
 export async function GET() {
   try {
+    console.log('API: Fetching products from DB...');
     const [rows] = await pool.query(
       'SELECT * FROM products ORDER BY created_at DESC'
     ) as any[];
+    console.log(`API: Found ${rows?.length || 0} products in DB.`);
+
 
     const products = (rows as any[]).map((p) => {
       let benefits = [];
