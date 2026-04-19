@@ -7,7 +7,7 @@ export async function authenticateAdmin(username: string, pass: string) {
   const adminPass = process.env.ADMIN_PASSWORD || 'monalisa2026';
 
   if (username === adminUser && pass === adminPass) {
-    const cookieStore = await cookies();
+    const cookieStore = cookies();
     cookieStore.set('admin_session', 'true', {
       path: '/',
       maxAge: 86400,
