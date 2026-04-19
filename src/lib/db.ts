@@ -12,13 +12,10 @@ const poolConfig = {
   keepAliveInitialDelay: 10000,
 };
 
-/*
+// Singleton pattern to prevent multiple pools in Next.js
 const globalForPool = global as unknown as { pool: any };
 const pool = globalForPool.pool || mysql.createPool(poolConfig);
 
 if (process.env.NODE_ENV !== 'production') globalForPool.pool = pool;
 
 export default pool;
-*/
-
-export default {} as any; // Temporary fallback
