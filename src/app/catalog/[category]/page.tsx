@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useMemo, use } from 'react';
+import { useState, useMemo } from 'react';
 import { Header } from '@/components/landing/Header';
 import { Footer } from '@/components/landing/Footer';
 import { useProducts, Product } from '@/data/products';
@@ -12,14 +12,13 @@ import { QuickView } from '@/components/QuickView';
 import { ProductCard } from '@/components/ProductCard';
 
 interface PageProps {
-  params: Promise<{ category: string }>;
+  params: { category: string };
 }
 
 export default function CategoryPage({ params }: PageProps) {
   const { products, loading: productsLoading } = useProducts();
   const { categories, loading: categoriesLoading } = useCategories();
-  const resolvedParams = use(params);
-  const categorySlug = resolvedParams.category;
+  const categorySlug = params.category;
   const [selectedProduct, setSelectedProduct] = useState<Product | null>(null);
   const [searchQuery, setSearchQuery] = useState('');
   const [selectedBrand, setSelectedBrand] = useState<string | null>(null);

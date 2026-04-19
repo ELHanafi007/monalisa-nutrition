@@ -7,10 +7,10 @@ export const fetchCache = 'force-no-store';
 
 export async function GET(
   _request: Request,
-  { params }: { params: Promise<{ id: string }> }
+  { params }: { params: { id: string } }
 ) {
   try {
-    const { id } = await params;
+    const { id } = params;
     const [rows] = await pool.query(
       'SELECT * FROM products WHERE id = ?', [id]
     ) as any[];

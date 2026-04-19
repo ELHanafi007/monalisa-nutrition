@@ -3,10 +3,10 @@ import pool from '@/lib/db';
 
 export async function PATCH(
   request: Request,
-  { params }: { params: Promise<{ id: string }> }
+  { params }: { params: { id: string } }
 ) {
   try {
-    const { id } = await params;
+    const { id } = params;
     const body = await request.json();
     const { status } = body;
 
@@ -20,10 +20,10 @@ export async function PATCH(
 
 export async function DELETE(
   _request: Request,
-  { params }: { params: Promise<{ id: string }> }
+  { params }: { params: { id: string } }
 ) {
   try {
-    const { id } = await params;
+    const { id } = params;
     await pool.query('DELETE FROM orders WHERE id=?', [id]);
     return NextResponse.json({ success: true });
   } catch (error) {
