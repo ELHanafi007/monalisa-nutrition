@@ -4,13 +4,13 @@ const nextConfig: NextConfig = {
   images: {
     unoptimized: true,
   },
+  // Hostinger stability fixes
+  trailingSlash: true,
+  reactStrictMode: false, // Helps reduce memory usage on shared hosting
   eslint: {
-    // Warning: This allows production builds to successfully complete even if
-    // your project has ESLint errors. We'll fix these once the site is stable.
     ignoreDuringBuilds: true,
   },
   typescript: {
-    // Same for TypeScript - we want to get the site live first.
     ignoreBuildErrors: true,
   },
 };
