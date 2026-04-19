@@ -21,17 +21,12 @@ export default function RootLayout({
   return (
     <html lang="fr" suppressHydrationWarning>
       <body>
-        <ThemeProvider>
-          <CartProvider>
-            <Preloader />
-            <PageTransition>
-              {children}
-            </PageTransition>
-            <Toast />
-            <NewsletterModal />
-            <MobileNav />
-          </CartProvider>
-        </ThemeProvider>
+        <CartProvider>
+          {children}
+          <Toast />
+          <NewsletterModal />
+          <MobileNav />
+        </CartProvider>
       </body>
     </html>
   );
