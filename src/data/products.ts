@@ -19,38 +19,10 @@ export interface Product {
 }
 
 import { useState, useEffect } from 'react';
-import { supabase } from '@/lib/supabase';
+import { getProductsAction } from '@/app/actions/db';
 
 export const getProducts = async (): Promise<Product[]> => {
-  if (!supabase) return [];
-  try {
-    const { data, error } = await supabase
-      .from('products')
-      .select('*')
-      .order('created_at', { ascending: false });
-
-    if (error) {
-      console.warn("Supabase error:", error.message);
-      return [];
-    }
-
-    if (!data || data.length === 0) {
-      console.log("No products found in database.");
-      return [];
-    }
-
-    // If Supabase is connected, it is the EXCLUSIVE source of truth.
-    return (data || []).map(p => ({
-      ...p,
-      id: p.id.toString(),
-      oldPrice: p.old_price,
-      isRupture: p.is_rupture,
-      isSynced: true
-    }));
-  } catch (e) {
-    console.error("Failed to load products from Supabase:", e);
-    return [];
-  }
+  return await getProductsAction();
 };
 
 // Hook for reactive access to products
@@ -61,25 +33,15 @@ export const useProducts = () => {
   useEffect(() => {
     const load = async () => {
       setLoading(true);
-      const data = await getProducts();
+      const data = await getProductsAction();
       setProducts(data);
       setLoading(false);
     };
 
     load();
-
-    // Real-time subscription - Use a unique channel name per instance to avoid conflicts
-    const channelId = Math.random().toString(36).substring(7);
-    const channel = supabase
-      .channel(`products-db-changes-${channelId}`)
-      .on('postgres_changes', { event: '*', schema: 'public', table: 'products' }, () => {
-        load();
-      })
-      .subscribe();
-
-    return () => {
-      supabase.removeChannel(channel);
-    };
+    
+    // Note: Real-time subscriptions are removed in MySQL migration.
+    // If needed, implement polling or WebSockets.
   }, []);
 
   return { products, loading };

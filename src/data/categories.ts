@@ -66,58 +66,15 @@ const defaultCategories: Category[] = [
 ];
 
 import { useState, useEffect } from 'react';
-import { supabase } from '@/lib/supabase';
+import { getCategoriesAction } from '@/app/actions/db';
 
 export const getCategories = async (): Promise<Category[]> => {
-  if (!supabase) return defaultCategories;
   try {
-    const { data, error } = await supabase
-      .from('categories')
-      .select('*')
-      .order('created_at', { ascending: true });
-
-    if (error) {
-      console.warn("Supabase error, using defaults:", error.message);
-      return defaultCategories;
-    }
+    const data = await getCategoriesAction();
     if (!data || data.length === 0) return defaultCategories;
-
-    // Supabase returns data
-    const mappedData: Category[] = data.map(c => ({
-      ...c,
-      id: c.id.toString()
-    }));
-
-    // Check if we've migrated defaults to DB (IDs starting with 'cat_')
-    const hasBeenMigrated = mappedData.some(c => c.id.startsWith('cat_'));
-    
-    if (hasBeenMigrated) {
-      // Return ONLY what is in the database to allow permanent deletions
-      return mappedData;
-    }
-
-    // Fallback: Merge for partial use cases
-    const merged = [...defaultCategories];
-    mappedData.forEach(dyn => {
-      // Match by ID OR by Slug (Slug is the ultimate source of truth for categories)
-      const index = merged.findIndex(m => m.id === dyn.id || m.slug === dyn.slug);
-      
-      if (index !== -1) {
-        // We found a match in the factory defaults, overwrite it completely with DB data
-        merged[index] = {
-          ...merged[index],
-          ...dyn,
-          // Ensure the ID stays consistent with what the DB sent
-          id: dyn.id 
-        };
-      } else {
-        // This is a brand new category created by the user
-        merged.push(dyn);
-      }
-    });
-    return merged;
+    return data;
   } catch (e) {
-    console.error("Failed to load categories from Supabase:", e);
+    console.error("Failed to load categories from MySQL:", e);
     return defaultCategories;
   }
 };
@@ -136,19 +93,8 @@ export const useCategories = () => {
     };
 
     load();
-
-    // Real-time subscription - Use a unique channel name per instance to avoid conflicts
-    const channelId = Math.random().toString(36).substring(7);
-    const channel = supabase
-      .channel(`categories-db-changes-${channelId}`)
-      .on('postgres_changes', { event: '*', schema: 'public', table: 'categories' }, () => {
-        load();
-      })
-      .subscribe();
-
-    return () => {
-      supabase.removeChannel(channel);
-    };
+    
+    // Note: Real-time subscriptions are removed in MySQL migration.
   }, []);
 
   return { categories, loading };

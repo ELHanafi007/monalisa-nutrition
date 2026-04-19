@@ -1,6 +1,6 @@
 "use server";
 
-import { supabase } from '@/lib/supabase';
+import { createOrderAction } from '@/app/actions/db';
 
 export async function createOrder(orderData: {
   customer_name: string;
@@ -9,25 +9,5 @@ export async function createOrder(orderData: {
   items: any[];
   total_amount: number;
 }) {
-  try {
-    const { data, error } = await supabase
-      .from('orders')
-      .insert([
-        {
-          customer_name: orderData.customer_name,
-          customer_phone: orderData.customer_phone,
-          customer_address: orderData.customer_address,
-          items: orderData.items,
-          total_amount: orderData.total_amount,
-          status: 'en_attente'
-        }
-      ])
-      .select();
-
-    if (error) throw error;
-    return { success: true, data };
-  } catch (error) {
-    console.error('Database Order Error:', error);
-    return { success: false, error };
-  }
+  return await createOrderAction(orderData);
 }

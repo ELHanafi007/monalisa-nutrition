@@ -37,9 +37,19 @@ import {
   AlertTriangle
 } from 'lucide-react';
 import { motion, AnimatePresence } from 'framer-motion';
-import { getProducts, Product } from '@/data/products';
-import { getCategories, Category } from '@/data/categories';
-import { supabase } from '@/lib/supabase';
+import { 
+  getProductsAction, 
+  getCategoriesAction, 
+  getOrdersAction, 
+  toggleProductStockAction, 
+  deleteProductAction, 
+  deleteCategoryAction, 
+  deleteOrderAction, 
+  updateOrderStatusAction, 
+  initializeDatabaseAction,
+  upsertProductAction,
+  upsertCategoryAction
+} from '@/app/actions/db';
 import Image from 'next/image';
 
 // Utility to compress images before saving to localStorage
@@ -91,13 +101,13 @@ export default function AdminDashboard() {
 
   const refreshData = async () => {
     const [p, c, o] = await Promise.all([
-      getProducts(), 
-      getCategories(),
-      supabase.from('orders').select('*').order('created_at', { ascending: false })
+      getProductsAction(), 
+      getCategoriesAction(),
+      getOrdersAction()
     ]);
     setCurrentProducts(p);
     setCurrentCategories(c);
-    if (o.data) setCurrentOrders(o.data);
+    setCurrentOrders(o);
   };
 
   const handleLogout = () => {
@@ -128,13 +138,10 @@ export default function AdminDashboard() {
       return;
     }
 
-    const { error } = await supabase
-      .from('products')
-      .update({ is_rupture: !product.isRupture })
-      .eq('id', productId);
+    const result = await toggleProductStockAction(productId, !product.isRupture);
 
-    if (error) {
-      console.error("Supabase Error:", error);
+    if (!result.success) {
+      console.error("MySQL Error:", result.error);
       alert("Erreur lors de la mise à jour du stock.");
     } else {
       refreshData();
@@ -150,14 +157,11 @@ export default function AdminDashboard() {
     }
 
     if (confirm('Êtes-vous sûr de vouloir supprimer ce produit de l\'archive ?')) {
-      const { error } = await supabase
-        .from('products')
-        .delete()
-        .eq('id', productId);
+      const result = await deleteProductAction(productId);
 
-      if (error) {
-        console.error("Supabase Delete Error:", error);
-        alert(`Erreur lors de la suppression: ${error.message}`);
+      if (!result.success) {
+        console.error("MySQL Delete Error:", (result as any).error);
+        alert(`Erreur lors de la suppression.`);
       } else {
         refreshData();
       }
@@ -177,14 +181,11 @@ export default function AdminDashboard() {
     }
 
     if (confirm('Êtes-vous sûr de vouloir supprimer cette catégorie ?')) {
-      const { error } = await supabase
-        .from('categories')
-        .delete()
-        .eq('id', categoryId);
+      const result = await deleteCategoryAction(categoryId);
 
-      if (error) {
-        console.error("Supabase Error:", error);
-        alert(`Erreur lors de la suppression de la catégorie: ${error.message}`);
+      if (!result.success) {
+        console.error("MySQL Error:", (result as any).error);
+        alert(`Erreur lors de la suppression de la catégorie.`);
       } else {
         refreshData();
       }
@@ -193,14 +194,11 @@ export default function AdminDashboard() {
 
   const deleteOrder = async (orderId: number) => {
     if (confirm('Supprimer définitivement cette commande de l\'archive ?')) {
-      const { error } = await supabase
-        .from('orders')
-        .delete()
-        .eq('id', orderId);
+      const result = await deleteOrderAction(orderId);
 
-      if (error) {
-        console.error("Supabase Error:", error);
-        alert(`Erreur lors de la suppression de la commande: ${error.message}`);
+      if (!result.success) {
+        console.error("MySQL Error:", (result as any).error);
+        alert(`Erreur lors de la suppression de la commande.`);
       } else {
         refreshData();
       }
@@ -208,12 +206,9 @@ export default function AdminDashboard() {
   };
 
   const updateOrderStatus = async (orderId: number, status: string) => {
-    const { error } = await supabase
-      .from('orders')
-      .update({ status })
-      .eq('id', orderId);
+    const result = await updateOrderStatusAction(orderId, status);
 
-    if (error) {
+    if (!result.success) {
       alert("Erreur lors de la mise à jour du statut.");
     } else {
       refreshData();
@@ -221,42 +216,14 @@ export default function AdminDashboard() {
   };
 
   const initializeDatabase = async () => {
-    if (confirm('Voulez-vous synchroniser tous les produits et catégories par défaut vers Supabase ? Cela permettra de les supprimer ou les modifier définitivement.')) {
+    if (confirm('Voulez-vous synchroniser tous les produits et catégories par défaut vers MySQL ? Cela permettra de les supprimer ou les modifier définitivement.')) {
       setIsLoading(true);
       try {
-        // Prepare products for Supabase
-        const productsToInsert = currentProducts.map(p => ({
-          id: p.id,
-          name: p.name,
-          slug: p.slug,
-          brand: p.brand,
-          price: p.price,
-          category: p.category,
-          image: p.image,
-          images: p.images || [],
-          description: p.description,
-          benefits: p.benefits,
-          specs: p.specs,
-          old_price: p.oldPrice || null,
-          is_rupture: p.isRupture || false
-        }));
+        const result = await initializeDatabaseAction(currentProducts, currentCategories);
 
-        const { error: pError } = await supabase.from('products').upsert(productsToInsert);
-        
-        // Prepare categories
-        const categoriesToInsert = currentCategories.map(c => ({
-          id: c.id,
-          name: c.name,
-          slug: c.slug,
-          description: c.description,
-          image: c.image
-        }));
-        
-        const { error: cError } = await supabase.from('categories').upsert(categoriesToInsert);
-
-        if (pError || cError) {
-          console.error("Initialization Error:", pError || cError);
-          alert(`Erreur lors de la synchronisation: ${(pError || cError)?.message}`);
+        if (!result.success) {
+          console.error("Initialization Error:", (result as any).error);
+          alert(`Erreur lors de la synchronisation.`);
         } else {
           alert("Synchronisation réussie ! Vous pouvez maintenant gérer tous les produits depuis le dashboard.");
           refreshData();
@@ -271,7 +238,7 @@ export default function AdminDashboard() {
   };
 
   const exportDatabase = async () => {
-    const [p, c] = await Promise.all([getProducts(), getCategories()]);
+    const [p, c] = await Promise.all([getProductsAction(), getCategoriesAction()]);
     const data = {
       products: p,
       categories: c,
@@ -987,25 +954,15 @@ function AddProductTab({ categories, editingProduct, onComplete }: AddProductTab
     };
 
     if (editingProduct) {
-      const { error } = await supabase
-        .from('products')
-        .update({
-          name: productData.name,
-          brand: productData.brand,
-          price: productData.price,
-          category: productData.category,
-          image: productData.image,
-          images: productData.images,
-          description: productData.description,
-          benefits: productData.benefits,
-          specs: productData.specs,
-          old_price: editingProduct.oldPrice || null,
-          is_rupture: editingProduct.isRupture || false
-        })
-        .eq('id', editingProduct.id);
+      const result = await upsertProductAction({
+        ...productData,
+        id: editingProduct.id,
+        old_price: editingProduct.oldPrice || null,
+        is_rupture: editingProduct.isRupture || false
+      });
 
-      if (error) {
-        console.error("Supabase Error:", error);
+      if (!result.success) {
+        console.error("MySQL Error:", result.error);
         alert("Erreur lors de la mise à jour du produit.");
       } else {
         alert("Produit mis à jour avec succès.");
@@ -1014,30 +971,16 @@ function AddProductTab({ categories, editingProduct, onComplete }: AddProductTab
     } else {
       const newProduct = {
         id: `dp-${Date.now()}`,
-        name: productData.name,
+        ...productData,
         slug: productData.name.toLowerCase().replace(/[^a-z0-9]/g, '-'),
-        brand: productData.brand,
-        price: productData.price,
-        category: productData.category,
-        image: productData.image,
-        images: productData.images,
-        description: productData.description,
-        benefits: productData.benefits,
-        specs: productData.specs,
         is_rupture: false
       };
 
-      const { error } = await supabase
-        .from('products')
-        .insert([newProduct]);
+      const result = await upsertProductAction(newProduct);
 
-      if (error) {
-        console.error("Supabase Error:", error);
-        if (error.code === '23505') {
-          alert("Erreur: Un produit avec ce nom existe déjà (conflit de slug).");
-        } else {
-          alert("Erreur lors du catalogage du produit.");
-        }
+      if (!result.success) {
+        console.error("MySQL Error:", result.error);
+        alert("Erreur lors du catalogage du produit.");
       } else {
         alert("Produit catalogué avec succès.");
         onComplete();
@@ -1347,25 +1290,18 @@ function AddCategoryTab({ editingCategory, onComplete }: { editingCategory: Cate
     }
 
     if (editingCategory) {
-      console.log("Attempting to UPSERT category:", editingCategory.id);
-      const updatedCategory = {
+      const result = await upsertCategoryAction({
         id: editingCategory.id,
         name: formData.name,
         description: formData.description,
         image: formData.image,
         slug: editingCategory.slug
-      };
+      });
 
-      const { data, error } = await supabase
-        .from('categories')
-        .upsert(updatedCategory)
-        .select();
-
-      if (error) {
-        console.error("Supabase UPSERT Error:", error);
+      if (!result.success) {
+        console.error("MySQL UPSERT Error:", result.error);
         alert("Erreur lors de la mise à jour de la catégorie.");
       } else {
-        console.log("UPSERT Success. Returned data:", data);
         alert("Pilier Architectural Mis à Jour.");
         onComplete();
       }
@@ -1378,17 +1314,11 @@ function AddCategoryTab({ editingCategory, onComplete }: { editingCategory: Cate
         image: formData.image
       };
 
-      const { error } = await supabase
-        .from('categories')
-        .insert([newCategory]);
+      const result = await upsertCategoryAction(newCategory);
 
-      if (error) {
-        console.error("Supabase Error:", error);
-        if (error.code === '23505') {
-          alert("Erreur: Une catégorie avec ce nom existe déjà.");
-        } else {
-          alert("Erreur lors de l'établissement de la catégorie.");
-        }
+      if (!result.success) {
+        console.error("MySQL Error:", result.error);
+        alert("Erreur lors de l'établissement de la catégorie.");
       } else {
         alert("Pilier Architectural Établi.");
         onComplete();
