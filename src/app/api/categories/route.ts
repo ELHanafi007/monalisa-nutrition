@@ -15,9 +15,13 @@ export async function GET() {
     }));
 
     return NextResponse.json(categories);
-  } catch (error) {
+  } catch (error: any) {
     console.error('API /api/categories GET error:', error);
-    return NextResponse.json({ error: 'Database error' }, { status: 500 });
+    return NextResponse.json({ 
+      error: 'Database error', 
+      message: error.message,
+      code: error.code 
+    }, { status: 500 });
   }
 }
 
