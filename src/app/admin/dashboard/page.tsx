@@ -325,6 +325,7 @@ export default function AdminDashboard() {
               )}
               {activeTab === 'add-product' && (
                 <AddProductTab 
+                  key={editingProduct?.id || 'new'}
                   categories={currentCategories} 
                   editingProduct={editingProduct}
                   onComplete={() => {
@@ -343,6 +344,7 @@ export default function AdminDashboard() {
               )}
               {activeTab === 'add-category' && (
                 <AddCategoryTab 
+                  key={editingCategory?.id || 'new'}
                   editingCategory={editingCategory}
                   onComplete={() => {
                     setEditingCategory(null);
