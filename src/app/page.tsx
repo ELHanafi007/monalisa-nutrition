@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useMemo } from 'react';
+import { useState, useMemo, useEffect } from 'react';
 import { Header } from '@/components/landing/Header';
 import { InfoBar } from '@/components/landing/InfoBar';
 import { HeroSlider } from '@/components/landing/HeroSlider';
@@ -13,8 +13,19 @@ import { QuickView } from '@/components/QuickView';
 import { useProducts, Product } from '@/data/products';
 
 export default function Home() {
-  const { products } = useProducts();
+  const { products, loading, error } = useProducts();
   const [selectedProduct, setSelectedProduct] = useState<Product | null>(null);
+
+  // Show connection status
+  useEffect(() => {
+    if (!loading) {
+      if (error) {
+        alert("❌ Database Connection Failed: " + error);
+      } else {
+        alert("✅ Connected to Remote Database (MySQL @ Hostinger)");
+      }
+    }
+  }, [loading, error]);
 
   // Filter products with a better variety
   const promoPacks = useMemo(() => {

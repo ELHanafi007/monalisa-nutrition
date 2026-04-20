@@ -24,15 +24,19 @@ import { useState, useEffect } from 'react';
 export const useProducts = () => {
   const [products, setProducts] = useState<Product[]>([]);
   const [loading, setLoading] = useState(true);
+  const [error, setError] = useState<string | null>(null);
 
   const load = async () => {
     setLoading(true);
+    setError(null);
     try {
       const res = await fetch('/api/products', { cache: 'no-store' });
       if (!res.ok) throw new Error('API error');
-      setProducts(await res.json());
+      const data = await res.json();
+      setProducts(data);
     } catch (e) {
       console.error('useProducts fetch error:', e);
+      setError(e instanceof Error ? e.message : 'Unknown error');
       setProducts([]);
     } finally {
       setLoading(false);
@@ -41,7 +45,7 @@ export const useProducts = () => {
 
   useEffect(() => { load(); }, []);
 
-  return { products, loading, refresh: load };
+  return { products, loading, error, refresh: load };
 };
 
 export const products: Product[] = [];
