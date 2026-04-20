@@ -31,7 +31,17 @@ export const useProducts = () => {
     setError(null);
     try {
       const res = await fetch('/api/products', { cache: 'no-store' });
-      if (!res.ok) throw new Error('API error');
+      if (!res.ok) {
+        // Try to parse the backend error response
+        let errorDetails = "Unknown API error";
+        try {
+          const errData = await res.json();
+          errorDetails = errData.message ? `[${errData.code || 'ERROR'}] ${errData.message}` : JSON.stringify(errData);
+        } catch (_) {
+          errorDetails = `HTTP Status: ${res.status} ${res.statusText}`;
+        }
+        throw new Error(errorDetails);
+      }
       const data = await res.json();
       setProducts(data);
     } catch (e) {
