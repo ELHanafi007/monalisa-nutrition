@@ -1,6 +1,6 @@
 "use server";
 
-import { supabase } from '@/lib/supabase';
+import pool from '@/lib/db';
 
 export async function createOrder(orderData: {
   customer_name: string;
@@ -10,24 +10,22 @@ export async function createOrder(orderData: {
   total_amount: number;
 }) {
   try {
-    const { data, error } = await supabase
-      .from('orders')
-      .insert({
-        customer_name: orderData.customer_name,
-        customer_phone: orderData.customer_phone,
-        customer_address: orderData.customer_address,
-        items: orderData.items,
-        total_amount: orderData.total_amount,
-        status: 'en_attente'
-      })
-      .select('id')
-      .single();
+    const [result]: any = await pool.query(
+      `INSERT INTO orders (customer_name, customer_phone, customer_address, items, total_amount, status)
+       VALUES (?, ?, ?, ?, ?, ?)`,
+      [
+        orderData.customer_name,
+        orderData.customer_phone,
+        orderData.customer_address,
+        JSON.stringify(orderData.items),
+        orderData.total_amount,
+        'en_attente'
+      ]
+    );
 
-    if (error) throw error;
-
-    return { success: true, data: { id: data?.id } };
+    return { success: true, data: { id: result.insertId } };
   } catch (error) {
-    console.error('Supabase Order Error:', error);
+    console.error('MySQL Order Error:', error);
     return { success: false, error };
   }
 }

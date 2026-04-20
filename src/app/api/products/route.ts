@@ -1,5 +1,5 @@
 import { NextResponse } from 'next/server';
-import { supabase } from '@/lib/supabase';
+import pool from '@/lib/db';
 
 export const dynamic = 'force-dynamic';
 export const revalidate = 0;
@@ -7,14 +7,9 @@ export const fetchCache = 'force-no-store';
 
 export async function GET() {
   try {
-    const { data: rows, error } = await supabase
-      .from('products')
-      .select('*')
-      .order('created_at', { ascending: false });
+    const [rows]: any = await pool.query('SELECT * FROM products ORDER BY id DESC');
 
-    if (error) throw error;
-
-    const products = (rows || []).map((p) => {
+    const products = (rows || []).map((p: any) => {
       let benefits = [];
       let specs = [];
       let images = [];
@@ -22,10 +17,6 @@ export async function GET() {
       try { benefits = typeof p.benefits === 'string' ? JSON.parse(p.benefits) : (p.benefits ?? []); } catch (e) {}
       try { specs = typeof p.specs === 'string' ? JSON.parse(p.specs) : (p.specs ?? []); } catch (e) {}
       try { images = typeof p.images === 'string' ? JSON.parse(p.images) : (p.images ?? []); } catch (e) {}
-
-      if (typeof benefits === 'string') { try { benefits = JSON.parse(benefits); } catch (e) { benefits = []; } }
-      if (typeof specs === 'string') { try { specs = JSON.parse(specs); } catch (e) { specs = []; } }
-      if (typeof images === 'string') { try { images = JSON.parse(images); } catch (e) { images = []; } }
 
       return {
         ...p,
@@ -57,18 +48,23 @@ export async function POST(request: Request) {
       image, images, description, benefits, specs, is_rupture
     } = body;
 
-    const { error } = await supabase
-      .from('products')
-      .upsert({
-        id, name, slug, brand, price, old_price: old_price ?? null, category, image,
-        images: images ?? [],
+    const [result] = await pool.query(
+      `INSERT INTO products (id, name, slug, brand, price, old_price, category, image, images, description, benefits, specs, is_rupture)
+       VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
+       ON DUPLICATE KEY UPDATE 
+       name=VALUES(name), slug=VALUES(slug), brand=VALUES(brand), price=VALUES(price), 
+       old_price=VALUES(old_price), category=VALUES(category), image=VALUES(image), 
+       images=VALUES(images), description=VALUES(description), benefits=VALUES(benefits), 
+       specs=VALUES(specs), is_rupture=VALUES(is_rupture)`,
+      [
+        id, name, slug, brand, price, old_price ?? null, category, image,
+        JSON.stringify(images ?? []),
         description,
-        benefits: benefits ?? [],
-        specs: specs ?? [],
-        is_rupture: is_rupture ? true : false
-      });
-
-    if (error) throw error;
+        JSON.stringify(benefits ?? []),
+        JSON.stringify(specs ?? []),
+        is_rupture ? 1 : 0
+      ]
+    );
 
     return NextResponse.json({ success: true });
   } catch (error: any) {

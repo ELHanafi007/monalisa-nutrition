@@ -1,18 +1,13 @@
 import { NextResponse } from 'next/server';
-import { supabase } from '@/lib/supabase';
+import pool from '@/lib/db';
 
 export const dynamic = 'force-dynamic';
 
 export async function GET() {
   try {
-    const { data: rows, error } = await supabase
-      .from('categories')
-      .select('*')
-      .order('created_at', { ascending: true });
+    const [rows]: any = await pool.query('SELECT * FROM categories ORDER BY name ASC');
 
-    if (error) throw error;
-
-    const categories = (rows || []).map((c) => ({
+    const categories = (rows || []).map((c: any) => ({
       ...c,
       id: c.id.toString(),
     }));
@@ -33,15 +28,17 @@ export async function POST(request: Request) {
     const body = await request.json();
     const { id, name, slug, description, image } = body;
 
-    const { error } = await supabase
-      .from('categories')
-      .upsert({ id, name, slug, description, image });
-
-    if (error) throw error;
+    const [result] = await pool.query(
+      `INSERT INTO categories (id, name, slug, description, image)
+       VALUES (?, ?, ?, ?, ?)
+       ON DUPLICATE KEY UPDATE 
+       name=VALUES(name), slug=VALUES(slug), description=VALUES(description), image=VALUES(image)`,
+      [id, name, slug, description, image]
+    );
 
     return NextResponse.json({ success: true });
-  } catch (error) {
+  } catch (error: any) {
     console.error('API /api/categories POST error:', error);
-    return NextResponse.json({ error: 'Database error' }, { status: 500 });
+    return NextResponse.json({ error: 'Database error', message: error.message }, { status: 500 });
   }
 }

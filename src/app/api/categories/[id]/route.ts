@@ -1,5 +1,5 @@
 import { NextResponse } from 'next/server';
-import { supabase } from '@/lib/supabase';
+import pool from '@/lib/db';
 
 export const dynamic = 'force-dynamic';
 
@@ -12,17 +12,15 @@ export async function PUT(
     const body = await request.json();
     const { name, slug, description, image } = body;
 
-    const { error } = await supabase
-      .from('categories')
-      .update({ name, slug, description, image })
-      .eq('id', id);
-
-    if (error) throw error;
+    await pool.query(
+      'UPDATE categories SET name = ?, slug = ?, description = ?, image = ? WHERE id = ?',
+      [name, slug, description, image, id]
+    );
 
     return NextResponse.json({ success: true });
-  } catch (error) {
+  } catch (error: any) {
     console.error('API /api/categories/[id] PUT error:', error);
-    return NextResponse.json({ error: 'Database error' }, { status: 500 });
+    return NextResponse.json({ error: 'Database error', message: error.message }, { status: 500 });
   }
 }
 
@@ -32,11 +30,10 @@ export async function DELETE(
 ) {
   try {
     const { id } = params;
-    const { error } = await supabase.from('categories').delete().eq('id', id);
-    if (error) throw error;
+    await pool.query('DELETE FROM categories WHERE id = ?', [id]);
     return NextResponse.json({ success: true });
-  } catch (error) {
+  } catch (error: any) {
     console.error('API /api/categories/[id] DELETE error:', error);
-    return NextResponse.json({ error: 'Database error' }, { status: 500 });
+    return NextResponse.json({ error: 'Database error', message: error.message }, { status: 500 });
   }
 }

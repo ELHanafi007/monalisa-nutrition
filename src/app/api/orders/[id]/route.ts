@@ -1,5 +1,5 @@
 import { NextResponse } from 'next/server';
-import { supabase } from '@/lib/supabase';
+import pool from '@/lib/db';
 
 export async function PATCH(
   request: Request,
@@ -10,17 +10,12 @@ export async function PATCH(
     const body = await request.json();
     const { status } = body;
 
-    const { error } = await supabase
-      .from('orders')
-      .update({ status })
-      .eq('id', id);
-
-    if (error) throw error;
+    await pool.query('UPDATE orders SET status = ? WHERE id = ?', [status, id]);
 
     return NextResponse.json({ success: true });
-  } catch (error) {
+  } catch (error: any) {
     console.error('API /api/orders/[id] PATCH error:', error);
-    return NextResponse.json({ error: 'Database error' }, { status: 500 });
+    return NextResponse.json({ error: 'Database error', message: error.message }, { status: 500 });
   }
 }
 
@@ -30,11 +25,10 @@ export async function DELETE(
 ) {
   try {
     const { id } = params;
-    const { error } = await supabase.from('orders').delete().eq('id', id);
-    if (error) throw error;
+    await pool.query('DELETE FROM orders WHERE id = ?', [id]);
     return NextResponse.json({ success: true });
-  } catch (error) {
+  } catch (error: any) {
     console.error('API /api/orders/[id] DELETE error:', error);
-    return NextResponse.json({ error: 'Database error' }, { status: 500 });
+    return NextResponse.json({ error: 'Database error', message: error.message }, { status: 500 });
   }
 }
