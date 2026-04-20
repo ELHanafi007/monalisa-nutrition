@@ -1,3 +1,10 @@
-// Supabase has been replaced by MySQL (see src/lib/db.ts).
-// This file is kept only to prevent import errors in legacy code.
-export const supabase = null;
+import { createClient } from '@supabase/supabase-js';
+
+const supabaseUrl = process.env.NEXT_PUBLIC_SUPABASE_URL || '';
+const supabaseKey = process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY || '';
+
+if (!supabaseUrl || !supabaseKey) {
+  console.warn('⚠️ Missing Supabase environment variables. Please check .env.local');
+}
+
+export const supabase = createClient(supabaseUrl, supabaseKey);

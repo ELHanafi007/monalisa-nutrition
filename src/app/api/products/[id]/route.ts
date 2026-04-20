@@ -1,5 +1,5 @@
 import { NextResponse } from 'next/server';
-import pool from '@/lib/db';
+import { supabase } from '@/lib/supabase';
 
 export const dynamic = 'force-dynamic';
 export const revalidate = 0;
@@ -11,15 +11,18 @@ export async function GET(
 ) {
   try {
     const { id } = params;
-    const [rows] = await pool.query(
-      'SELECT * FROM products WHERE id = ?', [id]
-    ) as any[];
+    const { data: rows, error } = await supabase
+      .from('products')
+      .select('*')
+      .eq('id', id);
 
-    if (!(rows as any[]).length) {
+    if (error) throw error;
+    
+    if (!rows || rows.length === 0) {
       return NextResponse.json({ error: 'Not found' }, { status: 404 });
     }
 
-    const p = (rows as any[])[0];
+    const p = rows[0];
     let benefits = [];
     let specs = [];
     let images = [];
@@ -28,7 +31,6 @@ export async function GET(
     try { specs = typeof p.specs === 'string' ? JSON.parse(p.specs) : (p.specs ?? []); } catch (e) {}
     try { images = typeof p.images === 'string' ? JSON.parse(p.images) : (p.images ?? []); } catch (e) {}
 
-    // Handle double stringified JSON from MySQL
     if (typeof benefits === 'string') { try { benefits = JSON.parse(benefits); } catch (e) { benefits = []; } }
     if (typeof specs === 'string') { try { specs = JSON.parse(specs); } catch (e) { specs = []; } }
     if (typeof images === 'string') { try { images = JSON.parse(images); } catch (e) { images = []; } }
@@ -60,22 +62,17 @@ export async function PUT(
       image, images, description, benefits, specs, is_rupture
     } = body;
 
-    await pool.query(
-      `UPDATE products SET
-        name=?, slug=?, brand=?, price=?, old_price=?, category=?,
-        image=?, images=?, description=?, benefits=?, specs=?, is_rupture=?
-       WHERE id=?`,
-      [
-        name, slug, brand, price, old_price ?? null, category,
-        image,
-        JSON.stringify(images ?? []),
-        description,
-        JSON.stringify(benefits ?? []),
-        JSON.stringify(specs ?? []),
-        is_rupture ? 1 : 0,
-        id
-      ]
-    );
+    const { error } = await supabase
+      .from('products')
+      .update({
+        name, slug, brand, price, old_price: old_price ?? null, category,
+        image, images: images ?? [], description,
+        benefits: benefits ?? [], specs: specs ?? [],
+        is_rupture: is_rupture ? true : false
+      })
+      .eq('id', id);
+
+    if (error) throw error;
 
     return NextResponse.json({ success: true });
   } catch (error) {
@@ -90,7 +87,8 @@ export async function DELETE(
 ) {
   try {
     const { id } = params;
-    await pool.query('DELETE FROM products WHERE id = ?', [id]);
+    const { error } = await supabase.from('products').delete().eq('id', id);
+    if (error) throw error;
     return NextResponse.json({ success: true });
   } catch (error) {
     console.error('API /api/products/[id] DELETE error:', error);
@@ -106,15 +104,12 @@ export async function PATCH(
     const { id } = params;
     const body = await request.json();
 
-    const fields = Object.keys(body);
-    const values = Object.values(body);
+    const { error } = await supabase
+      .from('products')
+      .update(body)
+      .eq('id', id);
 
-    if (fields.length === 0) {
-      return NextResponse.json({ error: 'No fields to update' }, { status: 400 });
-    }
-
-    const setClause = fields.map(f => `${f}=?`).join(', ');
-    await pool.query(`UPDATE products SET ${setClause} WHERE id=?`, [...values, id]);
+    if (error) throw error;
 
     return NextResponse.json({ success: true });
   } catch (error) {

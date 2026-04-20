@@ -1,15 +1,18 @@
 import { NextResponse } from 'next/server';
-import pool from '@/lib/db';
+import { supabase } from '@/lib/supabase';
 
 export const dynamic = 'force-dynamic';
 
 export async function GET() {
   try {
-    const [rows] = await pool.query(
-      'SELECT * FROM categories ORDER BY created_at ASC'
-    ) as any[];
+    const { data: rows, error } = await supabase
+      .from('categories')
+      .select('*')
+      .order('created_at', { ascending: true });
 
-    const categories = (rows as any[]).map((c) => ({
+    if (error) throw error;
+
+    const categories = (rows || []).map((c) => ({
       ...c,
       id: c.id.toString(),
     }));
@@ -30,14 +33,11 @@ export async function POST(request: Request) {
     const body = await request.json();
     const { id, name, slug, description, image } = body;
 
-    await pool.query(
-      `INSERT INTO categories (id, name, slug, description, image)
-       VALUES (?, ?, ?, ?, ?)
-       ON DUPLICATE KEY UPDATE
-        name=VALUES(name), slug=VALUES(slug),
-        description=VALUES(description), image=VALUES(image)`,
-      [id, name, slug, description, image]
-    );
+    const { error } = await supabase
+      .from('categories')
+      .upsert({ id, name, slug, description, image });
+
+    if (error) throw error;
 
     return NextResponse.json({ success: true });
   } catch (error) {

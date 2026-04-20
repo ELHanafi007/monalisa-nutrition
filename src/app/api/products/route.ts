@@ -1,5 +1,5 @@
 import { NextResponse } from 'next/server';
-import pool from '@/lib/db';
+import { supabase } from '@/lib/supabase';
 
 export const dynamic = 'force-dynamic';
 export const revalidate = 0;
@@ -7,14 +7,14 @@ export const fetchCache = 'force-no-store';
 
 export async function GET() {
   try {
-    console.log('API: Fetching products from DB...');
-    const [rows] = await pool.query(
-      'SELECT * FROM products ORDER BY created_at DESC'
-    ) as any[];
-    console.log(`API: Found ${rows?.length || 0} products in DB.`);
+    const { data: rows, error } = await supabase
+      .from('products')
+      .select('*')
+      .order('created_at', { ascending: false });
 
+    if (error) throw error;
 
-    const products = (rows as any[]).map((p) => {
+    const products = (rows || []).map((p) => {
       let benefits = [];
       let specs = [];
       let images = [];
@@ -23,7 +23,6 @@ export async function GET() {
       try { specs = typeof p.specs === 'string' ? JSON.parse(p.specs) : (p.specs ?? []); } catch (e) {}
       try { images = typeof p.images === 'string' ? JSON.parse(p.images) : (p.images ?? []); } catch (e) {}
 
-      // Handle double stringified JSON from MySQL
       if (typeof benefits === 'string') { try { benefits = JSON.parse(benefits); } catch (e) { benefits = []; } }
       if (typeof specs === 'string') { try { specs = JSON.parse(specs); } catch (e) { specs = []; } }
       if (typeof images === 'string') { try { images = JSON.parse(images); } catch (e) { images = []; } }
@@ -58,29 +57,22 @@ export async function POST(request: Request) {
       image, images, description, benefits, specs, is_rupture
     } = body;
 
-    await pool.query(
-      `INSERT INTO products 
-        (id, name, slug, brand, price, old_price, category, image, images, description, benefits, specs, is_rupture)
-       VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
-       ON DUPLICATE KEY UPDATE
-        name=VALUES(name), slug=VALUES(slug), brand=VALUES(brand),
-        price=VALUES(price), old_price=VALUES(old_price), category=VALUES(category),
-        image=VALUES(image), images=VALUES(images), description=VALUES(description),
-        benefits=VALUES(benefits), specs=VALUES(specs), is_rupture=VALUES(is_rupture)`,
-      [
-        id, name, slug, brand, price, old_price ?? null,
-        category, image,
-        JSON.stringify(images ?? []),
+    const { error } = await supabase
+      .from('products')
+      .upsert({
+        id, name, slug, brand, price, old_price: old_price ?? null, category, image,
+        images: images ?? [],
         description,
-        JSON.stringify(benefits ?? []),
-        JSON.stringify(specs ?? []),
-        is_rupture ? 1 : 0
-      ]
-    );
+        benefits: benefits ?? [],
+        specs: specs ?? [],
+        is_rupture: is_rupture ? true : false
+      });
+
+    if (error) throw error;
 
     return NextResponse.json({ success: true });
   } catch (error: any) {
-    console.error('API /api/categories GET error:', error);
+    console.error('API /api/products POST error:', error);
     return NextResponse.json({ 
       error: 'Database error', 
       message: error.message,

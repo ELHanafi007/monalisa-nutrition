@@ -1,5 +1,5 @@
 import { NextResponse } from 'next/server';
-import pool from '@/lib/db';
+import { supabase } from '@/lib/supabase';
 
 export async function PATCH(
   request: Request,
@@ -10,7 +10,13 @@ export async function PATCH(
     const body = await request.json();
     const { status } = body;
 
-    await pool.query('UPDATE orders SET status=? WHERE id=?', [status, id]);
+    const { error } = await supabase
+      .from('orders')
+      .update({ status })
+      .eq('id', id);
+
+    if (error) throw error;
+
     return NextResponse.json({ success: true });
   } catch (error) {
     console.error('API /api/orders/[id] PATCH error:', error);
@@ -24,7 +30,8 @@ export async function DELETE(
 ) {
   try {
     const { id } = params;
-    await pool.query('DELETE FROM orders WHERE id=?', [id]);
+    const { error } = await supabase.from('orders').delete().eq('id', id);
+    if (error) throw error;
     return NextResponse.json({ success: true });
   } catch (error) {
     console.error('API /api/orders/[id] DELETE error:', error);

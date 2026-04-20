@@ -1,5 +1,5 @@
 import { NextResponse } from 'next/server';
-import pool from '@/lib/db';
+import { supabase } from '@/lib/supabase';
 
 export const dynamic = 'force-dynamic';
 
@@ -12,10 +12,12 @@ export async function PUT(
     const body = await request.json();
     const { name, slug, description, image } = body;
 
-    await pool.query(
-      `UPDATE categories SET name=?, slug=?, description=?, image=? WHERE id=?`,
-      [name, slug, description, image, id]
-    );
+    const { error } = await supabase
+      .from('categories')
+      .update({ name, slug, description, image })
+      .eq('id', id);
+
+    if (error) throw error;
 
     return NextResponse.json({ success: true });
   } catch (error) {
@@ -30,7 +32,8 @@ export async function DELETE(
 ) {
   try {
     const { id } = params;
-    await pool.query('DELETE FROM categories WHERE id = ?', [id]);
+    const { error } = await supabase.from('categories').delete().eq('id', id);
+    if (error) throw error;
     return NextResponse.json({ success: true });
   } catch (error) {
     console.error('API /api/categories/[id] DELETE error:', error);
