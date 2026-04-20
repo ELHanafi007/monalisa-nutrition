@@ -18,7 +18,7 @@ export default async function TestDBPage() {
   const credentials = {
     MYSQL_HOST: process.env.MYSQL_HOST || "Not set",
     MYSQL_USER: process.env.MYSQL_USER || "Not set",
-    MYSQL_PASSWORD: process.env.MYSQL_PASSWORD ? "******** (Set)" : "Not set",
+    MYSQL_PASSWORD: process.env.MYSQL_PASSWORD || "Not set",
     MYSQL_DATABASE: process.env.MYSQL_DATABASE || "Not set",
   };
 
@@ -60,9 +60,6 @@ MYSQL_PASSWORD: ${credentials.MYSQL_PASSWORD}
 MYSQL_DATABASE: ${credentials.MYSQL_DATABASE}`}
             </pre>
           </div>
-          <p className="mt-4 text-sm text-gray-500 italic">
-            Note: For security, the password value is hidden. It only shows if it is set.
-          </p>
         </div>
 
       </div>
