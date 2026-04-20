@@ -44,15 +44,20 @@ export default function Home() {
 
   return (
     <main className="min-h-screen bg-white text-black">
-      {/* DB Connection Status Badge */}
-      <div className="fixed top-0 left-0 right-0 z-[9999] flex justify-center pointer-events-none">
-        <div className={`mt-2 px-4 py-1 rounded-full text-[10px] font-bold uppercase tracking-widest shadow-lg ${
-          loading ? 'bg-gray-200 text-gray-500' : 
-          error ? 'bg-red-500 text-white' : 'bg-green-500 text-white'
-        }`}>
-          {loading ? 'Testing DB Connection...' : error ? 'DB Offline' : 'DB Online (Hostinger)'}
+      {/* Detailed DB Connection Status Block */}
+      {!loading && (
+        <div className="pt-32 pb-10 px-4 max-w-4xl mx-auto z-50 relative">
+          <div className={`p-8 border-2 rounded-xl ${error ? 'bg-red-50 border-red-500 text-red-900' : 'bg-green-50 border-green-500 text-green-900'}`}>
+            <h2 className="text-2xl font-bold mb-4 uppercase flex items-center gap-3">
+              {error ? '❌ Database Connection Failed' : '✅ Database Connection Successful'}
+            </h2>
+            <div className="font-mono text-sm bg-white p-4 rounded border overflow-x-auto whitespace-pre-wrap">
+              <p className="font-bold mb-2 text-gray-700">Detailed Status Message:</p>
+              {error ? error : "Connected to remote Hostinger MySQL Database (u356188292_monalisaDb)."}
+            </div>
+          </div>
         </div>
-      </div>
+      )}
 
       {/* 1. HEADER (TOP BAR) */}
       <Header />
