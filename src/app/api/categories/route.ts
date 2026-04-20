@@ -1,17 +1,12 @@
 import { NextResponse } from 'next/server';
 import pool from '@/lib/db';
+import { getCategories } from '@/lib/server-data';
 
 export const dynamic = 'force-dynamic';
 
 export async function GET() {
   try {
-    const [rows]: any = await pool.query('SELECT * FROM categories ORDER BY name ASC');
-
-    const categories = (rows || []).map((c: any) => ({
-      ...c,
-      id: c.id.toString(),
-    }));
-
+    const categories = await getCategories();
     return NextResponse.json(categories);
   } catch (error: any) {
     console.error('API /api/categories GET error:', error);

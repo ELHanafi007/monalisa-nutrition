@@ -22,7 +22,14 @@ export async function getProducts(): Promise<Product[]> {
       return {
         ...p,
         id: p.id.toString(),
-        oldPrice: p.old_price ?? undefined,
+        name: p.name || 'Sans nom',
+        slug: p.slug || 'sans-slug',
+        brand: p.brand || 'Monaliza',
+        price: Number(p.price) || 0,
+        oldPrice: p.old_price ? Number(p.old_price) : undefined,
+        image: p.image || '/images/placeholder.jpg',
+        category: p.category || 'vitamines',
+        description: p.description || '',
         isRupture: Boolean(p.is_rupture),
         benefits: Array.isArray(benefits) ? benefits : [],
         specs: Array.isArray(specs) ? specs : [],
@@ -42,6 +49,10 @@ export async function getCategories(): Promise<Category[]> {
     return rows.map((c: any) => ({
       ...c,
       id: c.id.toString(),
+      name: c.name || 'Sans catégorie',
+      slug: c.slug || 'sans-slug',
+      image: c.image || '/images/placeholder-cat.jpg',
+      description: c.description || '',
     }));
   } catch (e) {
     console.error('MySQL: Failed to load categories:', e);
