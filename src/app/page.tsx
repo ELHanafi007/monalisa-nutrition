@@ -16,19 +16,7 @@ export default function Home() {
   const { products, loading, error } = useProducts();
   const [selectedProduct, setSelectedProduct] = useState<Product | null>(null);
 
-  // Show connection status
-  useEffect(() => {
-    console.log("Connection check - Loading:", loading, "Error:", error);
-    if (!loading) {
-      if (error) {
-        console.error("DB Connection Failed:", error);
-        alert("❌ Database Connection Failed: " + error);
-      } else {
-        console.log("DB Connected Successfully");
-        alert("✅ Connected to Remote Database (MySQL @ Hostinger)");
-      }
-    }
-  }, [loading, error]);
+
 
   // Filter products with a better variety
   const promoPacks = useMemo(() => {
@@ -44,20 +32,7 @@ export default function Home() {
 
   return (
     <main className="min-h-screen bg-white text-black">
-      {/* Detailed DB Connection Status Block */}
-      {!loading && (
-        <div className="pt-32 pb-10 px-4 max-w-4xl mx-auto z-50 relative">
-          <div className={`p-8 border-2 rounded-xl ${error ? 'bg-red-50 border-red-500 text-red-900' : 'bg-green-50 border-green-500 text-green-900'}`}>
-            <h2 className="text-2xl font-bold mb-4 uppercase flex items-center gap-3">
-              {error ? '❌ Database Connection Failed' : '✅ Database Connection Successful'}
-            </h2>
-            <div className="font-mono text-sm bg-white p-4 rounded border overflow-x-auto whitespace-pre-wrap">
-              <p className="font-bold mb-2 text-gray-700">Detailed Status Message:</p>
-              {error ? error : "Connected to remote Hostinger MySQL Database (u356188292_monalisaDb)."}
-            </div>
-          </div>
-        </div>
-      )}
+
 
       {/* 1. HEADER (TOP BAR) */}
       <Header />
