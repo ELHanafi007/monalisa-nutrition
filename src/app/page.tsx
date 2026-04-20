@@ -18,10 +18,13 @@ export default function Home() {
 
   // Show connection status
   useEffect(() => {
+    console.log("Connection check - Loading:", loading, "Error:", error);
     if (!loading) {
       if (error) {
+        console.error("DB Connection Failed:", error);
         alert("❌ Database Connection Failed: " + error);
       } else {
+        console.log("DB Connected Successfully");
         alert("✅ Connected to Remote Database (MySQL @ Hostinger)");
       }
     }
@@ -41,6 +44,16 @@ export default function Home() {
 
   return (
     <main className="min-h-screen bg-white text-black">
+      {/* DB Connection Status Badge */}
+      <div className="fixed top-0 left-0 right-0 z-[9999] flex justify-center pointer-events-none">
+        <div className={`mt-2 px-4 py-1 rounded-full text-[10px] font-bold uppercase tracking-widest shadow-lg ${
+          loading ? 'bg-gray-200 text-gray-500' : 
+          error ? 'bg-red-500 text-white' : 'bg-green-500 text-white'
+        }`}>
+          {loading ? 'Testing DB Connection...' : error ? 'DB Offline' : 'DB Online (Hostinger)'}
+        </div>
+      </div>
+
       {/* 1. HEADER (TOP BAR) */}
       <Header />
 
