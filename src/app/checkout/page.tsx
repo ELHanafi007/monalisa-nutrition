@@ -35,7 +35,7 @@ export default function Checkout() {
     setIsOrdering(true);
     
     try {
-      // 1. Save to Supabase (Database Backup)
+      // 1. Save to MySQL (Centralized Database)
       await createOrder({
         customer_name: customerInfo.name,
         customer_phone: customerInfo.phone,
