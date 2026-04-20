@@ -7,17 +7,17 @@ import { ChevronLeft, ChevronRight } from 'lucide-react';
 
 const slides = [
   {
-    image: "/tt/man&girlworkingout.webp",
+    image: "/tt/hero-performance.jpg",
     title: "Performance Elite",
     subtitle: "Exprimez votre potentiel maximum avec notre sélection exclusive de suppléments."
   },
   {
-    image: "/tt/healthy-eating-and-exercising-concept.webp",
+    image: "/tt/hero-products.jpg",
     title: "Nutrition Pure",
     subtitle: "Une alimentation saine et des suppléments de qualité pour un équilibre parfait."
   },
   {
-    image: "/tt/allproducts.webp",
+    image: "/tt/hero-nutrition.jpg",
     title: "Gamme Complète",
     subtitle: "Protéines, gainers, créatine, collagène et bien plus encore pour vos objectifs."
   }
