@@ -77,7 +77,7 @@ export default function ProductDetail() {
                   animate={{ opacity: 1 }}
                   exit={{ opacity: 0 }}
                   transition={{ duration: 0.4 }}
-                  className="w-full h-full flex items-center justify-center p-12"
+                  className="relative w-full h-full flex items-center justify-center p-12"
                 >
                   <Image 
                     src={activeImage || product.image} 
