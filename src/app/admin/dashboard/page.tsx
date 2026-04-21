@@ -236,7 +236,7 @@ export default function AdminDashboard() {
             icon={editingProduct ? Edit3 : Plus} 
             label={editingProduct ? "Modifier Produit" : "Cataloguer"} 
             active={activeTab === 'add-product'} 
-            onClick={() => {setActiveTab('add-product'); setEditingCategory(null);}} 
+            onClick={() => {setActiveTab('add-product'); setEditingProduct(null); setEditingCategory(null);}} 
           />
           <NavItem 
             icon={Layers} 
@@ -248,7 +248,7 @@ export default function AdminDashboard() {
             icon={editingCategory ? Edit3 : Plus} 
             label={editingCategory ? "Modifier Pilier" : "Nouveau Pilier"} 
             active={activeTab === 'add-category'} 
-            onClick={() => {setActiveTab('add-category'); setEditingProduct(null);}} 
+            onClick={() => {setActiveTab('add-category'); setEditingProduct(null); setEditingCategory(null);}} 
           />
         </nav>
 
