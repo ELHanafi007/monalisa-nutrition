@@ -24,8 +24,8 @@ export async function createOrder(orderData: {
     );
 
     return { success: true, data: { id: result.insertId } };
-  } catch (error) {
+  } catch (error: any) {
     console.error('MySQL Order Error:', error);
-    return { success: false, error };
+    return { success: false, error: error.message || 'Database connection failed' };
   }
 }

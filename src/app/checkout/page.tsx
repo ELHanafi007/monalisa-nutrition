@@ -36,7 +36,7 @@ export default function Checkout() {
     
     try {
       // 1. Save to MySQL (Centralized Database)
-      await createOrder({
+      const dbResult = await createOrder({
         customer_name: customerInfo.name,
         customer_phone: customerInfo.phone,
         customer_address: customerInfo.address,
@@ -44,15 +44,21 @@ export default function Checkout() {
         total_amount: grandTotal
       });
 
+      if (!dbResult.success) {
+        throw new Error(dbResult.error as string || 'Erreur base de données');
+      }
+
       // 2. Send Email via Resend
-      await sendOrderEmail(customerInfo, cart, grandTotal);
+      const emailResult = await sendOrderEmail(customerInfo, cart, grandTotal);
+      if (!emailResult.success) {
+        console.warn('Email notification failed but order saved:', emailResult.error);
+      }
 
       // 3. Success State
       setIsSuccess(true);
-      // Optional: You might want to clear the cart here if your CartContext supports it
-    } catch (error) {
+    } catch (error: any) {
       console.error('Order Error:', error);
-      alert('Une erreur est survenue lors de la commande. Veuillez réessayer.');
+      alert(`Une erreur est survenue: ${error.message || 'Veuillez réessayer.'}`);
     } finally {
       setIsOrdering(false);
     }

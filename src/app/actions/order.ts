@@ -37,12 +37,12 @@ export async function sendOrderEmail(customerInfo: { name: string; phone: string
 
     if (error) {
       console.error('Resend Error:', error);
-      return { success: false, error };
+      return { success: false, error: error.message || 'Email service failure' };
     }
 
     return { success: true, data };
-  } catch (error) {
+  } catch (error: any) {
     console.error('Order Email Error:', error);
-    return { success: false, error };
+    return { success: false, error: error.message || 'System email failure' };
   }
 }

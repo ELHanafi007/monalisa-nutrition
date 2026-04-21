@@ -68,7 +68,7 @@ export default function Catalog() {
             transition={{ delay: 0.1 }}
             className="text-6xl md:text-9xl font-black text-white uppercase tracking-tighter mb-8 leading-none"
           >
-            Monalisa <br />
+            Monaliza <br />
             <span className="gold-gradient-text italic font-serif">Catalogue.</span>
           </motion.h1>
           <motion.p 

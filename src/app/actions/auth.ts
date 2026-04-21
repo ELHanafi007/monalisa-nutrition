@@ -4,7 +4,7 @@ import { cookies } from 'next/headers';
 
 export async function authenticateAdmin(username: string, pass: string) {
   const adminUser = process.env.ADMIN_USERNAME || 'admin';
-  const adminPass = process.env.ADMIN_PASSWORD || 'monalisa2026';
+  const adminPass = process.env.ADMIN_PASSWORD || 'monaliza2026';
 
   if (username === adminUser && pass === adminPass) {
     const cookieStore = cookies();

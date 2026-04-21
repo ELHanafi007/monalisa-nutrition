@@ -9,7 +9,7 @@ import { PageTransition } from "@/components/PageTransition";
 import { ThemeProvider } from "@/providers/ThemeProvider";
 
 export const metadata: Metadata = {
-  title: "Monalisa Nutrition | The Standard of Excellence",
+  title: "Monaliza Nutrition | The Standard of Excellence",
   description: "The premier destination for luxury sports nutrition in the Kingdom of Morocco. Elevating performance through purity.",
 };
 

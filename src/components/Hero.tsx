@@ -70,7 +70,7 @@ export const Hero = () => {
               transition={{ duration: 1, delay: 1 }}
               className="text-base md:text-xl text-text-muted mb-16 max-w-xl font-light leading-relaxed tracking-wide px-1 md:px-0"
             >
-              Monalisa is more than nutrition. It is a philosophy of excellence, 
+              Monaliza is more than nutrition. It is a philosophy of excellence, 
               curating only the world's most potent isolates for the Moroccan athlete.
             </motion.p>
             

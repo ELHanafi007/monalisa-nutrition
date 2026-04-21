@@ -86,7 +86,7 @@ export const Footer = () => {
         <div className="border-t border-border pt-10 flex flex-col md:flex-row justify-between items-center gap-4 text-xs text-text-muted font-medium">
           <p>© 2026 Monaliza House Nutrition. Tous droits réservés.</p>
           <div className="flex gap-8">
-            <span>Powered by Monalisa Tech</span>
+            <span>Powered by Monaliza Tech</span>
             <div className="flex items-center gap-4">
               <span className="text-[8px] uppercase font-black">Paiement à la livraison</span>
               <div className="w-10 h-6 bg-surface-hover rounded border border-border flex items-center justify-center text-[10px] font-black text-luxury-red">COD</div>

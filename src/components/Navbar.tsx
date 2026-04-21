@@ -32,11 +32,11 @@ export const Navbar = () => {
               src="/images/logo.jpeg" 
               alt="Monalisa Nutrition" 
               fill
-              className="object-cover"
-            />
-          </div>
-          <div className="flex flex-col">
-            <span className="text-xl font-serif tracking-[0.3em] uppercase leading-none">Monalisa</span>
+              alt="Monaliza Nutrition"
+              />
+              </div>
+              <div className="flex flex-col">
+              <span className="text-xl font-serif tracking-[0.3em] uppercase leading-none">Monaliza</span>
             <span className="text-[8px] tracking-[0.5em] uppercase text-gold">Nutrition</span>
           </div>
         </Link>
