@@ -26,6 +26,7 @@ import {
   Trash2,
   Edit3,
   ChevronRight,
+  ChevronDown,
   ClipboardList,
   CheckCircle2,
   Clock,
@@ -307,7 +308,7 @@ export default function AdminDashboard() {
               exit={{ opacity: 0, y: -10 }}
               transition={{ duration: 0.4 }}
             >
-              {activeTab === 'dashboard' && <DashboardOverview products={currentProducts} orders={currentOrders} />}
+              {activeTab === 'dashboard' && <DashboardOverview products={currentProducts} orders={currentOrders} categories={currentCategories} />}
               {activeTab === 'orders' && (
                 <OrdersTab 
                   orders={currentOrders} 
@@ -318,6 +319,7 @@ export default function AdminDashboard() {
               {activeTab === 'products' && (
                 <ProductsArchive 
                   products={currentProducts} 
+                  categories={currentCategories}
                   onToggleStock={toggleStock} 
                   onEdit={startEdit} 
                   onDelete={deleteProduct} 
@@ -404,7 +406,7 @@ function NavItem({ icon: Icon, label, active, onClick, badge }: any) {
   );
 }
 
-function DashboardOverview({ products, orders }: { products: Product[], orders: any[] }) {
+function DashboardOverview({ products, orders, categories: currentCategories }: { products: Product[], orders: any[], categories: any[] }) {
   const totalRevenue = orders.reduce((acc, curr) => acc + (curr.total_amount || 0), 0);
   const criticalStock = products.filter(p => p.isRupture).length;
 
@@ -412,7 +414,7 @@ function DashboardOverview({ products, orders }: { products: Product[], orders: 
     { label: 'Revenu Archive', value: `${totalRevenue.toLocaleString()} MAD`, icon: DollarSign, trend: 'LIVE', isUp: true },
     { label: 'Flux Commandes', value: orders.length.toString(), icon: ShoppingCart, trend: 'LIVE', isUp: true },
     { label: 'Unités Rupture', value: criticalStock.toString(), icon: Package, trend: 'ALERT', isUp: criticalStock > 0 ? false : true },
-    { label: 'Piliers Actifs', value: '8', icon: Users, trend: 'ALPHA', isUp: true },
+    { label: 'Piliers Actifs', value: currentCategories.length.toString(), icon: Users, trend: 'ALPHA', isUp: true },
   ];
 
   return (
@@ -635,18 +637,22 @@ function OrdersTab({ orders, onDelete, onUpdateStatus }: { orders: any[], onDele
 
 interface ProductsArchiveProps {
   products: Product[];
+  categories: Category[];
   onToggleStock: (id: string) => void;
   onEdit: (product: Product) => void;
   onDelete: (id: string) => void;
 }
 
-function ProductsArchive({ products, onToggleStock, onEdit, onDelete }: ProductsArchiveProps) {
+function ProductsArchive({ products, categories, onToggleStock, onEdit, onDelete }: ProductsArchiveProps) {
   const [search, setSearch] = useState('');
+  const [selectedCategory, setSelectedCategory] = useState('all');
   
-  const filtered = products.filter(p => 
-    p.name.toLowerCase().includes(search.toLowerCase()) || 
-    p.brand.toLowerCase().includes(search.toLowerCase())
-  );
+  const filtered = products.filter(p => {
+    const matchesSearch = p.name.toLowerCase().includes(search.toLowerCase()) || 
+                         p.brand.toLowerCase().includes(search.toLowerCase());
+    const matchesCategory = selectedCategory === 'all' || p.category === selectedCategory;
+    return matchesSearch && matchesCategory;
+  });
 
   return (
     <div className="space-y-12">
@@ -655,15 +661,33 @@ function ProductsArchive({ products, onToggleStock, onEdit, onDelete }: Products
           <h2 className="text-5xl font-black uppercase tracking-tighter mb-4">Archives <span className="red-gradient-text italic">Inventaire.</span></h2>
           <p className="text-white/40 text-[10px] uppercase tracking-[0.5em] font-black">Indexation des {products.length} Unités Cataloguées</p>
         </div>
-        <div className="relative">
-          <Search size={16} className="absolute left-5 top-1/2 -translate-y-1/2 text-white/20" />
-          <input 
-            type="text" 
-            placeholder="RECHERCHER DANS L'ARCHIVE..." 
-            value={search}
-            onChange={(e) => setSearch(e.target.value)}
-            className="bg-white/5 border border-white/10 rounded-2xl py-4 pl-12 pr-6 text-[10px] font-black uppercase tracking-widest outline-none focus:border-luxury-red transition-all w-80 shadow-2xl" 
-          />
+        <div className="flex flex-col md:flex-row gap-4 items-center">
+          <div className="relative">
+            <Filter size={16} className="absolute left-5 top-1/2 -translate-y-1/2 text-white/20" />
+            <select 
+              value={selectedCategory}
+              onChange={(e) => setSelectedCategory(e.target.value)}
+              className="bg-white/5 border border-white/10 rounded-2xl py-4 pl-12 pr-12 text-[10px] font-black uppercase tracking-widest outline-none focus:border-luxury-red transition-all w-60 appearance-none cursor-pointer"
+            >
+              <option value="all" className="bg-[#0a0a0a]">TOUS LES DEPTS</option>
+              {categories.map(cat => (
+                <option key={cat.id} value={cat.slug} className="bg-[#0a0a0a]">{cat.name}</option>
+              ))}
+            </select>
+            <div className="absolute right-5 top-1/2 -translate-y-1/2 pointer-events-none text-white/20 group-hover:text-luxury-red transition-colors">
+              <ChevronDown size={14} />
+            </div>
+          </div>
+          <div className="relative">
+            <Search size={16} className="absolute left-5 top-1/2 -translate-y-1/2 text-white/20" />
+            <input 
+              type="text" 
+              placeholder="RECHERCHER DANS L'ARCHIVE..." 
+              value={search}
+              onChange={(e) => setSearch(e.target.value)}
+              className="bg-white/5 border border-white/10 rounded-2xl py-4 pl-12 pr-6 text-[10px] font-black uppercase tracking-widest outline-none focus:border-luxury-red transition-all w-80 shadow-2xl" 
+            />
+          </div>
         </div>
       </div>
 
@@ -915,20 +939,36 @@ function AddProductTab({ categories, editingProduct, onComplete }: AddProductTab
                    placeholder="DYMATIZE" 
                  />
                </div>
-               <div className="space-y-4">
-                 <label className="text-[10px] uppercase tracking-[0.4em] text-luxury-red font-black ml-6">Classification</label>
-                 <select 
-                   required
-                   value={formData.category}
-                   onChange={(e) => setFormData({...formData, category: e.target.value})}
-                   className="w-full bg-white/[0.03] border border-white/5 focus:border-luxury-red outline-none p-6 text-[10px] uppercase tracking-widest font-black transition-all appearance-none rounded-[1.5rem]"
-                 >
-                   <option value="" className="bg-black text-white">SELECT DEPT</option>
-                   {categories.map(cat => (
-                     <option key={cat.id} value={cat.slug} className="bg-black text-white">{cat.name}</option>
-                   ))}
-                 </select>
-               </div>
+                <div className="space-y-4">
+                  <label className="text-[10px] uppercase tracking-[0.4em] text-luxury-red font-black ml-6">Classification</label>
+                  <div className="relative group">
+                    <select 
+                      required
+                      value={formData.category}
+                      onChange={(e) => setFormData({...formData, category: e.target.value})}
+                      className={`w-full bg-white/[0.03] border ${categories.length === 0 ? 'border-luxury-red/50' : 'border-white/5'} focus:border-luxury-red outline-none p-6 text-[10px] uppercase tracking-widest font-black transition-all rounded-[1.5rem] cursor-pointer appearance-none pr-12`}
+                    >
+                      {categories.length === 0 ? (
+                        <option value="" className="bg-[#0a0a0a] text-luxury-red">AUCUN DEPT TROUVÉ</option>
+                      ) : (
+                        <>
+                          <option value="" className="bg-[#0a0a0a] text-white">SELECT DEPT</option>
+                          {categories.map(cat => (
+                            <option key={cat.id} value={cat.slug} className="bg-[#0a0a0a] text-white">{cat.name}</option>
+                          ))}
+                        </>
+                      )}
+                    </select>
+                    <div className="absolute right-6 top-1/2 -translate-y-1/2 pointer-events-none text-white/20 group-hover:text-luxury-red transition-colors">
+                      <ChevronDown size={16} />
+                    </div>
+                  </div>
+                  {categories.length === 0 && (
+                    <p className="text-[8px] text-luxury-red font-bold uppercase tracking-widest ml-6">
+                      Veuillez d'abord créer un Pilier de Section dans l'onglet Architecture.
+                    </p>
+                  )}
+                </div>
             </div>
 
             <div className="grid grid-cols-2 gap-8">
