@@ -90,14 +90,32 @@ export default function AdminDashboard() {
 
   const refreshData = async () => {
     const timestamp = Date.now();
-    const [pRes, cRes, oRes] = await Promise.all([
-      fetch(`/api/products?t=${timestamp}`, { cache: 'no-store' }),
-      fetch(`/api/categories?t=${timestamp}`, { cache: 'no-store' }),
-      fetch(`/api/orders?t=${timestamp}`, { cache: 'no-store' }),
-    ]);
-    if (pRes.ok) setCurrentProducts(await pRes.json());
-    if (cRes.ok) setCurrentCategories(await cRes.json());
-    if (oRes.ok) setCurrentOrders(await oRes.json());
+    try {
+      const [pRes, cRes, oRes] = await Promise.all([
+        fetch(`/api/products?t=${timestamp}`, { cache: 'no-store' }),
+        fetch(`/api/categories?t=${timestamp}`, { cache: 'no-store' }),
+        fetch(`/api/orders?t=${timestamp}`, { cache: 'no-store' }),
+      ]);
+      
+      if (pRes.ok) setCurrentProducts(await pRes.json());
+      else console.error('Failed to fetch products');
+
+      if (cRes.ok) {
+        const cats = await cRes.json();
+        console.log('Fetched categories:', cats);
+        setCurrentCategories(cats);
+      } else {
+        const err = await cRes.json().catch(() => ({}));
+        console.error('Failed to fetch categories:', err);
+        alert(`Erreur de chargement des sections: ${err.message || cRes.statusText}`);
+      }
+
+      if (oRes.ok) setCurrentOrders(await oRes.json());
+      else console.error('Failed to fetch orders');
+    } catch (error: any) {
+      console.error('refreshData error:', error);
+      alert(`Erreur de connexion au serveur: ${error.message}`);
+    }
   };
 
   const handleLogout = () => {
@@ -765,6 +783,9 @@ interface AddProductTabProps {
 }
 
 function AddProductTab({ categories, editingProduct, onComplete }: AddProductTabProps) {
+  useEffect(() => {
+    console.log('AddProductTab categories:', categories);
+  }, [categories]);
   const [formData, setFormData] = useState({
     name: '',
     brand: '',
@@ -908,7 +929,8 @@ function AddProductTab({ categories, editingProduct, onComplete }: AddProductTab
           {editingProduct ? "Modifier le" : "Cataloguer un"} <span className="red-gradient-text italic">Produit.</span>
         </h2>
         <p className="text-white/40 text-[10px] uppercase tracking-[0.5em] font-black">
-          {editingProduct ? `PROTOCOLE DE MODIFICATION : ${editingProduct.id}` : "Protocole d'expansion d'inventaire stratégique"}
+          {editingProduct ? `PROTOCOLE DE MODIFICATION : ${editingProduct.id}` : "Protocole d'expansion d'inventaire stratégique"} 
+          <span className="ml-4 text-luxury-red/40">({categories.length} sections chargées)</span>
         </p>
       </div>
 
@@ -940,27 +962,37 @@ function AddProductTab({ categories, editingProduct, onComplete }: AddProductTab
                  />
                </div>
                 <div className="space-y-4">
-                  <label className="text-[10px] uppercase tracking-[0.4em] text-luxury-red font-black ml-6">Classification</label>
-                  <div className="relative group">
+                  <label className="text-[10px] uppercase tracking-[0.4em] text-luxury-red font-black ml-6">Département</label>
+                  
+                  {/* Debug: List available slugs */}
+                  {categories.length > 0 && (
+                    <div className="flex flex-wrap gap-2 px-6 mb-2">
+                      {categories.map(cat => (
+                        <span key={cat.id} className="text-[8px] text-white/20 uppercase tracking-widest">{cat.slug}</span>
+                      ))}
+                    </div>
+                  )}
+
+                  <div className="relative">
                     <select 
                       required
                       value={formData.category}
                       onChange={(e) => setFormData({...formData, category: e.target.value})}
-                      className={`w-full bg-white/[0.03] border ${categories.length === 0 ? 'border-luxury-red/50' : 'border-white/5'} focus:border-luxury-red outline-none p-6 text-[10px] uppercase tracking-widest font-black transition-all rounded-[1.5rem] cursor-pointer appearance-none pr-12`}
+                      className={`w-full bg-black/40 border ${categories.length === 0 ? 'border-luxury-red/50' : 'border-white/10'} focus:border-luxury-red outline-none p-6 text-xs font-bold transition-all rounded-2xl cursor-pointer appearance-none pr-12 relative z-10`}
                     >
                       {categories.length === 0 ? (
-                        <option value="" className="bg-[#0a0a0a] text-luxury-red">AUCUN DEPT TROUVÉ</option>
+                        <option value="">AUCUN DEPT TROUVÉ</option>
                       ) : (
                         <>
-                          <option value="" className="bg-[#0a0a0a] text-white">SELECT DEPT</option>
+                          <option value="">SELECT DEPT</option>
                           {categories.map(cat => (
-                            <option key={cat.id} value={cat.slug} className="bg-[#0a0a0a] text-white">{cat.name}</option>
+                            <option key={cat.id} value={cat.slug}>{cat.name}</option>
                           ))}
                         </>
                       )}
                     </select>
-                    <div className="absolute right-6 top-1/2 -translate-y-1/2 pointer-events-none text-white/20 group-hover:text-luxury-red transition-colors">
-                      <ChevronDown size={16} />
+                    <div className="absolute right-6 top-1/2 -translate-y-1/2 pointer-events-none text-white/20 z-20">
+                      <ChevronDown size={18} />
                     </div>
                   </div>
                   {categories.length === 0 && (
