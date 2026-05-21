@@ -101,7 +101,7 @@ export const LocationSection = () => {
 
               <div className="mt-12 pt-8 border-t border-gold/10 relative z-10">
                 <a 
-                  href="https://maps.app.goo.gl/f9G2QVpDVVXDqVPPA" 
+                href="https://www.google.com/maps?q=34.019470,-4.979992" 
                   target="_blank" 
                   rel="noopener noreferrer"
                   className="w-full luxury-button-outline text-[10px] py-4 flex items-center justify-center tracking-[0.2em]"
@@ -122,7 +122,7 @@ export const LocationSection = () => {
           >
             <div className="relative h-[400px] lg:h-full min-h-[400px] w-full overflow-hidden border border-white/10 grayscale-[0.8] contrast-[1.2] brightness-[0.8] hover:grayscale-0 hover:brightness-100 transition-all duration-1000 shadow-2xl">
                <iframe 
-                src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d3307.2744555661125!2d-4.984183499999999!3d34.011165399999996!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0xd9f9bd08980b6a1%3A0x98e5ef89cacdfce!2sMonalizaHouse!5e0!3m2!1sar!2s!4v1775603177608!5m2!1sar!2s" 
+                src="https://www.google.com/maps?q=34.019470,-4.979992&output=embed" 
                 width="100%" 
                 height="100%" 
                 style={{ border: 0, filter: 'invert(90%) hue-rotate(180deg) brightness(0.9) contrast(1.1)' }} 
