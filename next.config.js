@@ -12,7 +12,7 @@ const nextConfig = {
     ignoreBuildErrors: true,
   },
   experimental: {
-    serverComponentsExternalPackages: ['mysql2'],
+    serverComponentsExternalPackages: ['mysql2', 'mysql2/promise'],
   },
   // Prevent ChunkLoadErrors on every deploy by controlling caching correctly:
   // - HTML pages: never cache (no-store) so users always get the latest HTML with correct JS chunk names
