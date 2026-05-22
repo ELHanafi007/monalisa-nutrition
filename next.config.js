@@ -11,6 +11,9 @@ const nextConfig = {
   typescript: {
     ignoreBuildErrors: true,
   },
+  experimental: {
+    serverComponentsExternalPackages: ['mysql2'],
+  },
   // Prevent ChunkLoadErrors on every deploy by controlling caching correctly:
   // - HTML pages: never cache (no-store) so users always get the latest HTML with correct JS chunk names
   // - Static assets (_next/static): cache forever (immutable) because they use content-hash filenames
