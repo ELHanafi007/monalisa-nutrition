@@ -2,12 +2,14 @@
 
 import Link from 'next/link';
 import Image from 'next/image';
-import { useCategories } from '@/data/categories';
+import type { Category } from '@/data/categories';
 
-export const CategoryCircles = () => {
-  const { categories, loading } = useCategories();
+interface CategoryCirclesProps {
+  categories: Category[];
+}
 
-  if (loading || categories.length === 0) return null;
+export const CategoryCircles = ({ categories }: CategoryCirclesProps) => {
+  if (!categories || categories.length === 0) return null;
 
   return (
     <section className="py-12 bg-white">

@@ -17,17 +17,23 @@ export const QuickView = ({ product, onClose }: QuickViewProps) => {
   const [quantity, setQuantity] = useState(1);
   const [activeImage, setActiveImage] = useState('');
 
-  // Reset active image when product changes and handle body scroll lock
+  // Reset active image when product changes and handle body scroll lock + Escape key
   useEffect(() => {
     if (product) {
       setActiveImage(product.image);
       setQuantity(1);
       document.body.style.overflow = 'hidden';
+      
+      const handleKeyDown = (e: KeyboardEvent) => {
+        if (e.key === 'Escape') onClose();
+      };
+      window.addEventListener('keydown', handleKeyDown);
+      return () => {
+        document.body.style.overflow = 'unset';
+        window.removeEventListener('keydown', handleKeyDown);
+      };
     }
-    return () => {
-      document.body.style.overflow = 'unset';
-    };
-  }, [product]);
+  }, [product, onClose]);
 
   if (!product) return null;
 
@@ -51,13 +57,18 @@ export const QuickView = ({ product, onClose }: QuickViewProps) => {
             transition={{ type: "spring", damping: 25, stiffness: 300 }}
             className="fixed inset-0 z-[121] flex items-center justify-center p-4 md:p-12 pointer-events-none"
           >
-            <div className="bg-white border border-gray-100 w-full max-w-5xl pointer-events-auto relative rounded-3xl overflow-hidden flex flex-col md:flex-row max-h-full md:max-h-[90vh] overflow-y-auto shadow-2xl">
+            <div 
+              role="dialog" 
+              aria-modal="true" 
+              aria-labelledby="quick-view-title" 
+              className="bg-white dark:bg-zinc-900 border border-gray-100 dark:border-zinc-800 w-full max-w-5xl pointer-events-auto relative rounded-3xl overflow-hidden flex flex-col md:flex-row max-h-full md:max-h-[90vh] overflow-y-auto shadow-2xl"
+            >
               {/* Product Visual */}
-              <div className="flex-1 bg-gray-50 p-12 relative flex flex-col items-center justify-center border-b md:border-b-0 md:border-r border-gray-100">
+              <div className="flex-1 bg-gray-50 dark:bg-zinc-950 p-12 relative flex flex-col items-center justify-center border-b md:border-b-0 md:border-r border-gray-100 dark:border-zinc-800">
                 <div className="absolute top-8 left-8 z-10 flex gap-2">
-                  <div className="bg-white border border-border px-3 py-1.5 rounded-xl shadow-sm flex items-center gap-2">
+                  <div className="bg-white dark:bg-zinc-900 border border-border dark:border-zinc-800 px-3 py-1.5 rounded-xl shadow-sm flex items-center gap-2">
                     <Shield size={14} className="text-luxury-red" />
-                    <span className="text-[10px] font-black uppercase tracking-widest">100% Original</span>
+                    <span className="text-[10px] font-black uppercase tracking-widest text-text-main">100% Original</span>
                   </div>
                 </div>
                 
@@ -89,9 +100,10 @@ export const QuickView = ({ product, onClose }: QuickViewProps) => {
                       <button
                         key={i}
                         onClick={() => setActiveImage(img)}
-                        className={`aspect-square relative rounded-xl overflow-hidden border-2 transition-all ${activeImage === img ? 'border-luxury-red' : 'border-white hover:border-gray-200'}`}
+                        className={`aspect-square relative rounded-xl overflow-hidden border-2 transition-all ${activeImage === img ? 'border-luxury-red' : 'border-white dark:border-zinc-900 hover:border-gray-200'}`}
+                        aria-label={`Afficher l'image ${i + 1}`}
                       >
-                        <Image src={img} alt={`${product.name} ${i}`} fill unoptimized className="object-contain p-1" />
+                        <Image src={img} alt={`${product.name} - image ${i + 1}`} fill unoptimized className="object-contain p-1" />
                       </button>
                     ))}
                   </div>
@@ -99,10 +111,11 @@ export const QuickView = ({ product, onClose }: QuickViewProps) => {
               </div>
 
               {/* Product Info */}
-              <div className="flex-1 p-12 flex flex-col justify-between text-black">
+              <div className="flex-1 p-12 flex flex-col justify-between text-text-main">
                 <button 
                   onClick={onClose}
-                  className="absolute top-8 right-8 text-gray-400 hover:text-black transition-colors"
+                  className="absolute top-8 right-8 text-gray-400 hover:text-text-main transition-colors"
+                  aria-label="Fermer la vue rapide"
                 >
                   <X size={24} />
                 </button>
@@ -110,13 +123,13 @@ export const QuickView = ({ product, onClose }: QuickViewProps) => {
                 <div className="space-y-8">
                   <div className="space-y-4">
                     <span className="text-luxury-red uppercase tracking-widest text-[10px] font-black">{product.brand}</span>
-                    <h2 className="text-3xl md:text-4xl font-black uppercase tracking-tight leading-tight">{product.name}</h2>
-                    <p className="text-3xl font-black text-black">{product.price} <span className="text-sm text-luxury-red">MAD</span></p>
+                    <h2 id="quick-view-title" className="text-3xl md:text-4xl font-black uppercase tracking-tight leading-tight text-text-main">{product.name}</h2>
+                    <p className="text-3xl font-black text-text-main">{product.price} <span className="text-sm text-luxury-red">MAD</span></p>
                   </div>
 
                   <div className="w-16 h-1.5 bg-luxury-red rounded-full" />
 
-                  <p className="text-sm text-gray-600 font-medium leading-relaxed">
+                  <p className="text-sm text-text-muted font-medium leading-relaxed">
                     {product.description}
                   </p>
 
@@ -124,7 +137,7 @@ export const QuickView = ({ product, onClose }: QuickViewProps) => {
                     {product.benefits.slice(0, 4).map((benefit, i) => (
                       <div key={i} className="flex items-center gap-3">
                         <div className="w-2 h-2 bg-luxury-red rounded-full shadow-sm" />
-                        <span className="text-[10px] uppercase tracking-widest text-gray-800 font-black">{benefit}</span>
+                        <span className="text-[10px] uppercase tracking-widest text-text-muted font-black">{benefit}</span>
                       </div>
                     ))}
                   </div>
@@ -132,10 +145,10 @@ export const QuickView = ({ product, onClose }: QuickViewProps) => {
 
                 <div className="pt-12 space-y-8">
                   <div className="flex items-center gap-6">
-                    <div className="flex items-center border border-gray-100 rounded-2xl px-4 py-3 bg-gray-50 shadow-inner">
-                      <button onClick={() => setQuantity(Math.max(1, quantity - 1))} className="p-2 hover:text-luxury-red transition-colors"><Minus size={14} /></button>
-                      <span className="w-10 text-center text-sm font-black">{quantity}</span>
-                      <button onClick={() => setQuantity(quantity + 1)} className="p-2 hover:text-luxury-red transition-colors"><Plus size={14} /></button>
+                    <div className="flex items-center border border-gray-100 dark:border-zinc-800 rounded-2xl px-4 py-3 bg-gray-50 dark:bg-zinc-950 shadow-inner">
+                      <button onClick={() => setQuantity(Math.max(1, quantity - 1))} className="p-2 hover:text-luxury-red transition-colors text-text-muted" aria-label="Diminuer la quantité"><Minus size={14} /></button>
+                      <span className="w-10 text-center text-sm font-black text-text-main">{quantity}</span>
+                      <button onClick={() => setQuantity(quantity + 1)} className="p-2 hover:text-luxury-red transition-colors text-text-muted" aria-label="Augmenter la quantité"><Plus size={14} /></button>
                     </div>
                     <button 
                       onClick={() => {

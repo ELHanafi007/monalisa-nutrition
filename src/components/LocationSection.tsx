@@ -1,3 +1,5 @@
+"use client";
+
 import { motion, useScroll, useTransform } from 'framer-motion';
 import { MapPin, Phone, Mail, Clock, Compass } from 'lucide-react';
 import { useRef } from 'react';
@@ -104,7 +106,7 @@ export const LocationSection = () => {
                 href="https://www.google.com/maps?q=34.019470,-4.979992" 
                   target="_blank" 
                   rel="noopener noreferrer"
-                  className="w-full luxury-button-outline text-[10px] py-4 flex items-center justify-center tracking-[0.2em]"
+                  className="w-full border border-gold/30 text-gold hover:bg-gold hover:text-black font-black uppercase text-[10px] py-4 flex items-center justify-center tracking-[0.2em] rounded-full transition-all duration-300"
                 >
                   Ouvrir dans Google Maps
                 </a>
@@ -130,6 +132,7 @@ export const LocationSection = () => {
                 loading="lazy" 
                 referrerPolicy="no-referrer-when-downgrade"
                 className="absolute inset-0"
+                title="Boutique Monaliza House Fès Google Maps"
               />
               
               {/* Floating Badge */}

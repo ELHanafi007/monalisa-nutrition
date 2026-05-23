@@ -20,12 +20,15 @@ export const NewsletterModal = () => {
   useEffect(() => {
     if (isOpen) {
       document.body.style.overflow = 'hidden';
-    } else {
-      document.body.style.overflow = 'unset';
+      const handleKeyDown = (e: KeyboardEvent) => {
+        if (e.key === 'Escape') handleClose();
+      };
+      window.addEventListener('keydown', handleKeyDown);
+      return () => {
+        document.body.style.overflow = 'unset';
+        window.removeEventListener('keydown', handleKeyDown);
+      };
     }
-    return () => {
-      document.body.style.overflow = 'unset';
-    };
   }, [isOpen]);
 
   const handleClose = () => {
@@ -51,46 +54,56 @@ export const NewsletterModal = () => {
             exit={{ opacity: 0, scale: 0.9, y: 20 }}
             className="fixed inset-0 z-[111] flex items-center justify-center p-6 pointer-events-none"
           >
-            <div className="bg-white border border-gray-100 w-full max-w-2xl pointer-events-auto relative overflow-hidden flex flex-col md:flex-row rounded-[2.5rem] shadow-2xl">
+            <div 
+              role="dialog"
+              aria-modal="true"
+              aria-labelledby="newsletter-modal-title"
+              className="bg-white dark:bg-zinc-900 border border-gray-100 dark:border-zinc-800 w-full max-w-2xl pointer-events-auto relative overflow-hidden flex flex-col md:flex-row rounded-[2.5rem] shadow-2xl text-text-main"
+            >
               <div className="flex-1 p-10 md:p-12 space-y-8">
                 <div className="flex items-center gap-3">
                    <Sparkles className="text-luxury-red" size={18} />
                    <span className="text-[10px] uppercase tracking-[0.5em] font-black text-luxury-red">Accès Exclusif</span>
                 </div>
-                <h2 className="text-4xl font-black uppercase tracking-tighter leading-[0.9]">Rejoignez le Cercle <span className="red-gradient-text italic">Elite.</span></h2>
-                <p className="text-sm text-gray-500 font-medium leading-relaxed">
+                <h2 id="newsletter-modal-title" className="text-4xl font-black uppercase tracking-tighter leading-[0.9] text-text-main">
+                  Rejoignez le Cercle <span className="red-gradient-text italic">Elite.</span>
+                </h2>
+                <p className="text-sm text-text-muted font-medium leading-relaxed">
                   Confiez-nous vos coordonnées pour recevoir en priorité les notifications sur nos arrivages limités et nos protocoles de performance avancés.
                 </p>
                 <div className="space-y-4">
                   <input 
                     type="email" 
                     placeholder="VOTRE ADRESSE EMAIL" 
-                    className="w-full bg-gray-50 border border-gray-100 rounded-2xl p-5 text-[10px] font-black tracking-widest outline-none focus:border-luxury-red transition-all"
+                    aria-label="Votre adresse email"
+                    className="w-full bg-gray-50 dark:bg-zinc-950 border border-gray-100 dark:border-zinc-850 rounded-2xl p-5 text-[10px] font-black tracking-widest outline-none focus:border-luxury-red transition-all text-text-main"
                   />
-                  <button onClick={handleClose} className="w-full luxury-button py-5 rounded-2xl shadow-xl shadow-red-100">
+                  <button onClick={handleClose} className="w-full luxury-button py-5 rounded-2xl shadow-xl shadow-red-100" aria-label="Demander l'adhésion">
                     Demander l'Adhésion
                   </button>
                 </div>
                 <button 
                   onClick={handleClose}
-                  className="text-[8px] uppercase tracking-[0.3em] text-gray-400 hover:text-luxury-red font-black transition-colors block mx-auto pt-4"
+                  className="text-[8px] uppercase tracking-[0.3em] text-text-muted hover:text-luxury-red font-black transition-colors block mx-auto pt-4"
+                  aria-label="Je préfère le parcours standard"
                 >
                   Je préfère le parcours standard
                 </button>
               </div>
               
-              <div className="hidden md:block w-1/3 bg-gray-50 relative overflow-hidden border-l border-gray-100">
+              <div className="hidden md:block w-1/3 bg-gray-50 dark:bg-zinc-950 relative overflow-hidden border-l border-gray-100 dark:border-zinc-800">
                 <div className="absolute inset-0 opacity-10">
-                   <div className="absolute top-0 left-0 w-full h-full bg-gradient-to-b from-luxury-red to-transparent" />
+                    <div className="absolute top-0 left-0 w-full h-full bg-gradient-to-b from-luxury-red to-transparent" />
                 </div>
                 <div className="absolute inset-0 flex items-center justify-center">
                    <span className="text-luxury-red/10 font-black text-9xl italic rotate-90 opacity-20">M</span>
                 </div>
               </div>
-
+ 
               <button 
                 onClick={handleClose}
                 className="absolute top-8 right-8 text-gray-300 hover:text-luxury-red transition-colors"
+                aria-label="Fermer la fenêtre d'inscription"
               >
                 <X size={24} />
               </button>

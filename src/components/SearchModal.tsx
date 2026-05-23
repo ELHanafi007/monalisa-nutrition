@@ -23,13 +23,16 @@ export const SearchModal = ({ isOpen, onClose }: { isOpen: boolean; onClose: () 
   useEffect(() => {
     if (isOpen) {
       document.body.style.overflow = 'hidden';
-    } else {
-      document.body.style.overflow = 'unset';
+      const handleKeyDown = (e: KeyboardEvent) => {
+        if (e.key === 'Escape') onClose();
+      };
+      window.addEventListener('keydown', handleKeyDown);
+      return () => {
+        document.body.style.overflow = 'unset';
+        window.removeEventListener('keydown', handleKeyDown);
+      };
     }
-    return () => {
-      document.body.style.overflow = 'unset';
-    };
-  }, [isOpen]);
+  }, [isOpen, onClose]);
 
   return (
     <AnimatePresence>
@@ -40,7 +43,7 @@ export const SearchModal = ({ isOpen, onClose }: { isOpen: boolean; onClose: () 
             animate={{ opacity: 1 }}
             exit={{ opacity: 0 }}
             onClick={onClose}
-            className="fixed inset-0 bg-white/95 backdrop-blur-sm z-[100]"
+            className="fixed inset-0 bg-white/95 dark:bg-black/95 backdrop-blur-sm z-[100]"
           />
           <motion.div
             initial={{ opacity: 0, y: -20 }}
@@ -48,22 +51,32 @@ export const SearchModal = ({ isOpen, onClose }: { isOpen: boolean; onClose: () 
             exit={{ opacity: 0, y: -20 }}
             className="fixed inset-0 z-[101] flex flex-col items-center pt-20 px-8 pointer-events-none"
           >
-            <div className="w-full max-w-4xl pointer-events-auto bg-white p-8 md:p-12 rounded-3xl shadow-2xl border border-gray-100">
+            <div 
+              role="dialog"
+              aria-modal="true"
+              aria-label="Recherche de produits"
+              className="w-full max-w-4xl pointer-events-auto bg-white dark:bg-zinc-900 p-8 md:p-12 rounded-3xl shadow-2xl border border-gray-100 dark:border-zinc-800 text-text-main"
+            >
               <div className="flex items-center justify-between mb-8 border-b-2 border-luxury-red pb-4">
                 <Search className="text-luxury-red" size={32} />
                 <input
                   autoFocus
                   type="text"
                   placeholder="Rechercher un produit..."
-                  className="bg-transparent border-none outline-none text-2xl md:text-4xl font-black w-full px-8 placeholder:text-gray-100 uppercase tracking-tighter"
+                  aria-label="Rechercher un produit"
+                  className="bg-transparent border-none outline-none text-2xl md:text-4xl font-black w-full px-8 placeholder:text-gray-300 dark:placeholder:text-zinc-700 uppercase tracking-tighter text-text-main"
                   value={query}
                   onChange={(e) => setQuery(e.target.value)}
                 />
-                <button onClick={onClose} className="hover:rotate-90 hover:text-luxury-red transition-all duration-300">
+                <button 
+                  onClick={onClose} 
+                  className="hover:rotate-90 hover:text-luxury-red transition-all duration-300 text-text-muted hover:text-text-main"
+                  aria-label="Fermer la recherche"
+                >
                   <X size={32} />
                 </button>
               </div>
-
+ 
               <div className="space-y-12 max-h-[60vh] overflow-y-auto pr-4">
                 {results.length > 0 ? (
                   <div>
@@ -74,18 +87,19 @@ export const SearchModal = ({ isOpen, onClose }: { isOpen: boolean; onClose: () 
                           key={product.id} 
                           href={`/product/${product.slug}`}
                           onClick={onClose}
-                          className="flex items-center justify-between group p-4 hover:bg-red-50/30 rounded-2xl transition-all border border-transparent hover:border-red-100"
+                          className="flex items-center justify-between group p-4 hover:bg-red-50/30 dark:hover:bg-red-950/10 rounded-2xl transition-all border border-transparent hover:border-red-100 dark:hover:border-red-900/50"
                         >
                           <div className="flex items-center gap-6">
-                            <div className="w-16 h-16 bg-gray-50 rounded-xl overflow-hidden p-2 relative group-hover:bg-white transition-colors">
-                               <Image src={product.image} alt={product.name} fill unoptimized className="object-contain p-2" />                            </div>
+                            <div className="w-16 h-16 bg-gray-50 dark:bg-zinc-950 rounded-xl overflow-hidden p-2 relative group-hover:bg-white dark:group-hover:bg-zinc-900 transition-colors">
+                              <Image src={product.image} alt={product.name} fill unoptimized className="object-contain p-2" />
+                            </div>
                             <div>
                               <p className="text-[10px] text-luxury-red uppercase font-black tracking-widest mb-1">{product.brand}</p>
-                              <h3 className="text-lg font-black uppercase tracking-tight">{product.name}</h3>
+                              <h3 className="text-lg font-black uppercase tracking-tight text-text-main">{product.name}</h3>
                             </div>
                           </div>
                           <div className="flex items-center gap-4">
-                             <span className="font-black text-black">{product.price} <span className="text-xs text-luxury-red">MAD</span></span>
+                             <span className="font-black text-text-main">{product.price} <span className="text-xs text-luxury-red">MAD</span></span>
                              <ArrowRight className="text-luxury-red opacity-0 group-hover:opacity-100 group-hover:translate-x-2 transition-all" />
                           </div>
                         </Link>
@@ -93,12 +107,12 @@ export const SearchModal = ({ isOpen, onClose }: { isOpen: boolean; onClose: () 
                     </div>
                   </div>
                 ) : query.length > 1 ? (
-                   <p className="text-center text-gray-400 font-bold py-20 uppercase tracking-widest">Aucun produit trouvé.</p>
+                    <p className="text-center text-text-muted font-bold py-20 uppercase tracking-widest">Aucun produit trouvé.</p>
                 ) : (
                   <div className="grid grid-cols-1 md:grid-cols-2 gap-12 py-8">
                     <div>
                        <span className="text-[10px] uppercase tracking-widest text-luxury-red font-black mb-6 block">Catégories Populaires</span>
-                       <div className="space-y-4 text-xl font-black uppercase tracking-tighter">
+                       <div className="space-y-4 text-xl font-black uppercase tracking-tighter text-text-main">
                          <Link href="/catalog/whey-proteine" onClick={onClose} className="block hover:text-luxury-red hover:translate-x-2 transition-all">Proteines</Link>
                          <Link href="/catalog/gainers" onClick={onClose} className="block hover:text-luxury-red hover:translate-x-2 transition-all">Gainers</Link>
                          <Link href="/catalog/creatine" onClick={onClose} className="block hover:text-luxury-red hover:translate-x-2 transition-all">Creatine</Link>
@@ -112,7 +126,7 @@ export const SearchModal = ({ isOpen, onClose }: { isOpen: boolean; onClose: () 
                            <button 
                              key={s} 
                              onClick={() => setQuery(s)}
-                             className="px-4 py-2 bg-gray-50 rounded-xl hover:bg-luxury-red hover:text-white transition-all text-xs font-black uppercase tracking-widest"
+                             className="px-4 py-2 bg-gray-50 dark:bg-zinc-950 rounded-xl hover:bg-luxury-red hover:text-white dark:hover:text-white transition-all text-xs font-black uppercase tracking-widest text-text-main"
                            >
                              {s}
                            </button>

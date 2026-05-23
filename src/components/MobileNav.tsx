@@ -18,19 +18,19 @@ export const MobileNav = () => {
   ];
 
   return (
-    <div className="md:hidden fixed bottom-6 left-1/2 -translate-x-1/2 w-[90%] max-w-sm z-[100]">
-      {/* Light Modern Dock Container */}
-      <div className="bg-white/80 backdrop-blur-xl border border-gray-100 rounded-3xl px-6 py-4 shadow-[0_10px_30px_rgba(0,0,0,0.1)] relative overflow-hidden group">
+    <nav className="md:hidden fixed bottom-6 left-1/2 -translate-x-1/2 w-[90%] max-w-sm z-[100]" aria-label="Navigation mobile">
+      {/* Light/Dark Modern Dock Container */}
+      <div className="bg-white/80 dark:bg-black/80 backdrop-blur-xl border border-gray-100 dark:border-zinc-800 rounded-3xl px-6 py-4 shadow-[0_10px_30px_rgba(0,0,0,0.1)] relative overflow-hidden group">
         <div className="flex justify-between items-center relative z-10">
           {navItems.map((item) => {
             const isActive = pathname === item.path;
             
             if (item.special) {
               return (
-                <Link key={item.path} href={item.path} className="relative -top-2">
+                <Link key={item.path} href={item.path} className="relative -top-2" aria-current={isActive ? "page" : undefined}>
                   <motion.div
                     whileTap={{ scale: 0.9, y: 5 }}
-                    className="w-14 h-14 bg-luxury-red rounded-full flex items-center justify-center shadow-[0_10px_20px_rgba(139,0,0,0.2)] border-4 border-white group/special"
+                    className="w-14 h-14 bg-luxury-red rounded-full flex items-center justify-center shadow-[0_10px_20px_rgba(139,0,0,0.2)] border-4 border-white dark:border-black group/special"
                   >
                     <Crown size={24} className="text-white" />
                     
@@ -49,10 +49,10 @@ export const MobileNav = () => {
             }
 
             return (
-              <Link key={item.path} href={item.path} className="relative flex flex-col items-center gap-1">
+              <Link key={item.path} href={item.path} className="relative flex flex-col items-center gap-1" aria-current={isActive ? "page" : undefined}>
                 <motion.div
                   whileTap={{ scale: 0.8 }}
-                  className={`${isActive ? 'text-luxury-red' : 'text-gray-400'} transition-all duration-300`}
+                  className={`${isActive ? 'text-luxury-red' : 'text-gray-400 dark:text-gray-500'} transition-all duration-300`}
                 >
                   <item.icon size={20} strokeWidth={isActive ? 3 : 2} />
                   
@@ -63,12 +63,12 @@ export const MobileNav = () => {
                     />
                   )}
                 </motion.div>
-                <span className={`text-[8px] uppercase tracking-widest font-black ${isActive ? 'text-luxury-red' : 'text-gray-400'} transition-colors duration-300`}>
+                <span className={`text-[8px] uppercase tracking-widest font-black ${isActive ? 'text-luxury-red' : 'text-gray-400 dark:text-gray-500'} transition-colors duration-300`}>
                   {item.label}
                 </span>
                 
                 {item.label === 'Boutique' && totalItems > 0 && (
-                  <span className="absolute -top-2 -right-2 bg-luxury-red text-white text-[7px] w-4 h-4 rounded-full flex items-center justify-center font-black border-2 border-white">
+                  <span className="absolute -top-2 -right-2 bg-luxury-red text-white text-[9px] w-5 h-5 rounded-full flex items-center justify-center font-black border-2 border-white dark:border-black">
                     {totalItems}
                   </span>
                 )}
@@ -77,6 +77,6 @@ export const MobileNav = () => {
           })}
         </div>
       </div>
-    </div>
+    </nav>
   );
 };

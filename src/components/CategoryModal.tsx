@@ -13,13 +13,16 @@ export const CategoryModal = ({ isOpen, onClose }: { isOpen: boolean; onClose: (
   useEffect(() => {
     if (isOpen) {
       document.body.style.overflow = 'hidden';
-    } else {
-      document.body.style.overflow = 'unset';
+      const handleKeyDown = (e: KeyboardEvent) => {
+        if (e.key === 'Escape') onClose();
+      };
+      window.addEventListener('keydown', handleKeyDown);
+      return () => {
+        document.body.style.overflow = 'unset';
+        window.removeEventListener('keydown', handleKeyDown);
+      };
     }
-    return () => {
-      document.body.style.overflow = 'unset';
-    };
-  }, [isOpen]);
+  }, [isOpen, onClose]);
 
   return (
     <AnimatePresence>
@@ -30,7 +33,7 @@ export const CategoryModal = ({ isOpen, onClose }: { isOpen: boolean; onClose: (
             animate={{ opacity: 1 }}
             exit={{ opacity: 0 }}
             onClick={onClose}
-            className="fixed inset-0 bg-white/95 backdrop-blur-md z-[110]"
+            className="fixed inset-0 bg-white/95 dark:bg-black/95 backdrop-blur-md z-[110]"
           />
           <motion.div
             initial={{ opacity: 0, scale: 0.95 }}
@@ -38,34 +41,40 @@ export const CategoryModal = ({ isOpen, onClose }: { isOpen: boolean; onClose: (
             exit={{ opacity: 0, scale: 0.95 }}
             className="fixed inset-0 z-[111] flex items-center justify-center p-4 md:p-8 pointer-events-none"
           >
-            <div className="w-full max-w-6xl pointer-events-auto bg-white p-6 md:p-12 rounded-[2rem] shadow-2xl border border-gray-100 max-h-[90vh] flex flex-col overflow-hidden">
-              <div className="flex items-center justify-between mb-8 pb-6 border-b border-gray-100">
+            <div 
+              role="dialog"
+              aria-modal="true"
+              aria-labelledby="category-modal-title"
+              className="w-full max-w-6xl pointer-events-auto bg-white dark:bg-zinc-900 p-6 md:p-12 rounded-[2rem] shadow-2xl border border-gray-100 dark:border-zinc-800 max-h-[90vh] flex flex-col overflow-hidden text-text-main"
+            >
+              <div className="flex items-center justify-between mb-8 pb-6 border-b border-gray-100 dark:border-zinc-800">
                 <div className="flex items-center gap-4">
                   <div className="w-12 h-12 bg-luxury-red/10 rounded-2xl flex items-center justify-center text-luxury-red">
                     <LayoutGrid size={24} />
                   </div>
                   <div>
-                    <h2 className="text-2xl md:text-3xl font-black uppercase tracking-tighter">Nos Catégories</h2>
-                    <p className="text-[10px] uppercase tracking-widest text-gray-400 font-bold">Découvrez tout notre univers nutrition</p>
+                    <h2 id="category-modal-title" className="text-2xl md:text-3xl font-black uppercase tracking-tighter">Nos Catégories</h2>
+                    <p className="text-[10px] uppercase tracking-widest text-text-muted font-bold">Découvrez tout notre univers nutrition</p>
                   </div>
                 </div>
                 <button 
                   onClick={onClose} 
-                  className="w-12 h-12 rounded-full hover:bg-gray-100 flex items-center justify-center transition-all duration-300 hover:rotate-90 group"
+                  className="w-12 h-12 rounded-full hover:bg-gray-100 dark:hover:bg-zinc-800 flex items-center justify-center transition-all duration-300 hover:rotate-90 group"
+                  aria-label="Fermer les catégories"
                 >
-                  <X size={24} className="group-hover:text-luxury-red transition-colors" />
+                  <X size={24} className="group-hover:text-luxury-red transition-colors text-text-muted" />
                 </button>
               </div>
-
+ 
               <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 overflow-y-auto pr-4 pb-6">
                 {categories.map((category) => (
                   <Link 
                     key={category.id} 
                     href={`/catalog/${category.slug}`}
                     onClick={onClose}
-                    className="group flex items-center gap-4 p-4 rounded-2xl bg-gray-50 hover:bg-white hover:shadow-xl hover:shadow-red-100 transition-all border border-transparent hover:border-red-100"
+                    className="group flex items-center gap-4 p-4 rounded-2xl bg-gray-50 dark:bg-zinc-950 hover:bg-white dark:hover:bg-zinc-900 hover:shadow-xl hover:shadow-red-100 dark:hover:shadow-none transition-all border border-transparent hover:border-red-100 dark:hover:border-red-900/50"
                   >
-                    <div className="w-20 h-20 bg-white rounded-xl overflow-hidden p-2 relative flex-shrink-0 border border-gray-100 group-hover:border-red-50 transition-colors">
+                    <div className="w-20 h-20 bg-white dark:bg-zinc-900 rounded-xl overflow-hidden p-2 relative flex-shrink-0 border border-gray-100 dark:border-zinc-800 group-hover:border-red-50 transition-colors">
                        <Image 
                          src={category.image} 
                          alt={category.name} 
@@ -75,30 +84,30 @@ export const CategoryModal = ({ isOpen, onClose }: { isOpen: boolean; onClose: (
                        />
                     </div>
                     <div className="flex-1 min-w-0">
-                      <h3 className="text-sm font-black uppercase tracking-tight truncate group-hover:text-luxury-red transition-colors">
+                       <h3 className="text-sm font-black uppercase tracking-tight truncate group-hover:text-luxury-red transition-colors text-text-main">
                         {category.name}
-                      </h3>
-                      <p className="text-[10px] text-gray-500 line-clamp-2 mt-1 leading-relaxed">
+                       </h3>
+                       <p className="text-[10px] text-text-muted line-clamp-2 mt-1 leading-relaxed">
                         {category.description}
-                      </p>
+                       </p>
                     </div>
-                    <div className="w-8 h-8 rounded-full bg-white flex items-center justify-center text-gray-300 group-hover:text-luxury-red group-hover:bg-red-50 transition-all opacity-0 group-hover:opacity-100 -translate-x-2 group-hover:translate-x-0">
+                    <div className="w-8 h-8 rounded-full bg-white dark:bg-zinc-900 flex items-center justify-center text-gray-300 group-hover:text-luxury-red group-hover:bg-red-50 transition-all opacity-0 group-hover:opacity-100 -translate-x-2 group-hover:translate-x-0">
                       <ArrowRight size={16} />
                     </div>
                   </Link>
                 ))}
               </div>
-
-              <div className="mt-8 pt-6 border-t border-gray-100 flex flex-col md:flex-row items-center justify-between gap-4">
-                 <p className="text-[10px] uppercase tracking-widest text-gray-400 font-bold">Plus de 100+ produits sélectionnés avec soin</p>
-                 <Link 
-                   href="/catalog" 
-                   onClick={onClose}
-                   className="px-8 py-3 bg-black text-white rounded-full text-[10px] font-black uppercase tracking-widest hover:bg-luxury-red transition-all flex items-center gap-3 group"
-                 >
-                   Voir tout le catalogue
-                   <ArrowRight size={14} className="group-hover:translate-x-1 transition-transform" />
-                 </Link>
+ 
+              <div className="mt-8 pt-6 border-t border-gray-100 dark:border-zinc-800 flex flex-col md:flex-row items-center justify-between gap-4">
+                  <p className="text-[10px] uppercase tracking-widest text-text-muted font-bold">Plus de 100+ produits sélectionnés avec soin</p>
+                  <Link 
+                    href="/catalog" 
+                    onClick={onClose}
+                    className="px-8 py-3 bg-black dark:bg-zinc-800 text-white rounded-full text-[10px] font-black uppercase tracking-widest hover:bg-luxury-red transition-all flex items-center gap-3 group"
+                  >
+                    Voir tout le catalogue
+                    <ArrowRight size={14} className="group-hover:translate-x-1 transition-transform" />
+                  </Link>
               </div>
             </div>
           </motion.div>

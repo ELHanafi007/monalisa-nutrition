@@ -51,7 +51,7 @@ export const HeroSlider = () => {
             src={slides[current].image}
             alt={slides[current].title}
             fill
-            priority
+            priority={current === 0}
             className="object-cover brightness-[0.85]"
           />
           
@@ -77,7 +77,7 @@ export const HeroSlider = () => {
                   {slides[current].subtitle}
                 </p>
                 <div className="flex gap-4">
-                   <button className="luxury-button">
+                   <button className="luxury-button" aria-label="Découvrir la gamme de nutrition">
                       Découvrir la gamme
                    </button>
                 </div>
@@ -86,23 +86,25 @@ export const HeroSlider = () => {
           </div>
         </motion.div>
       </AnimatePresence>
-
+ 
       {/* Navigation Arrows */}
       <div className="absolute bottom-12 right-12 flex gap-4 z-10">
         <button 
           onClick={prevSlide}
           className="p-4 rounded-full border border-white/20 text-white hover:bg-white hover:text-black transition-all backdrop-blur-md"
+          aria-label="Image précédente"
         >
           <ChevronLeft size={24} />
         </button>
         <button 
           onClick={nextSlide}
           className="p-4 rounded-full border border-white/20 text-white hover:bg-white hover:text-black transition-all backdrop-blur-md"
+          aria-label="Image suivante"
         >
           <ChevronRight size={24} />
         </button>
       </div>
-
+ 
       {/* Indicators */}
       <div className="absolute bottom-12 left-12 flex gap-2 z-10">
         {slides.map((_, i) => (
@@ -110,6 +112,8 @@ export const HeroSlider = () => {
             key={i}
             onClick={() => setCurrent(i)}
             className={`h-1 transition-all duration-500 rounded-full ${current === i ? 'w-12 bg-luxury-red' : 'w-6 bg-white/30 hover:bg-white/50'}`}
+            aria-label={`Aller à la diapositive ${i + 1}`}
+            aria-current={current === i ? "true" : "false"}
           />
         ))}
       </div>
