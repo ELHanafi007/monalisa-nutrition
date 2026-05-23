@@ -21,8 +21,10 @@ export default async function Home() {
       <Header />
       <InfoBar />
       <HeroSlider />
-      <CategoryCircles categories={categories} />
-      <HomeClient products={products} />
+      <div className="[content-visibility:auto]">
+        <CategoryCircles categories={categories} />
+        <HomeClient products={products} />
+      </div>
       <Brands />
       <LocationSection />
       <Footer />

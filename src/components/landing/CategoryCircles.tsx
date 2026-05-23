@@ -12,7 +12,7 @@ export const CategoryCircles = ({ categories }: CategoryCirclesProps) => {
   if (!categories?.length) return null;
 
   return (
-    <section className="py-12 bg-white">
+    <section className="py-12 bg-white [content-visibility:auto]">
       <div className="container mx-auto px-4 overflow-x-auto pb-4 no-scrollbar">
         <div className="flex justify-between md:justify-center gap-6 md:gap-12 min-w-max md:min-w-0">
           {categories.map((cat) => (
@@ -30,6 +30,7 @@ export const CategoryCircles = ({ categories }: CategoryCirclesProps) => {
                     unoptimized
                     sizes="(max-width: 768px) 96px, 160px"
                     loading="lazy"
+                    fetchPriority="low"
                     className="object-contain p-4 group-hover:scale-110 transition-transform duration-700"
                   />
                 </div>

@@ -12,11 +12,7 @@ interface ProductCardProps {
   onQuickView: (product: Product) => void;
 }
 
-export const ProductCard = ({
-  product,
-  onQuickView,
-  priority = false,
-}: ProductCardProps & { priority?: boolean }) => {
+export const ProductCard = ({ product, onQuickView }: ProductCardProps) => {
   const { addToCart } = useCart();
   const discount = product.oldPrice ? Math.round(((product.oldPrice - product.price) / product.oldPrice) * 100) : 0;
 
@@ -36,9 +32,9 @@ export const ProductCard = ({
           alt={product.name} 
           fill
           unoptimized={product.image.startsWith('/api/')}
-          sizes="(max-width: 768px) 50vw, 25vw"
-          priority={priority}
-          loading={priority ? undefined : 'lazy'}
+          sizes="(max-width: 768px) 50vw, 20vw"
+          loading="lazy"
+          fetchPriority="low"
           className="object-contain p-4 group-hover:scale-110 transition-transform duration-700"
         />
         
@@ -93,7 +89,7 @@ interface ProductSectionProps {
 
 export const ProductSection = ({ title, products, onQuickView }: ProductSectionProps) => {
   return (
-    <section className="py-20 bg-white">
+    <section className="py-20 bg-white [content-visibility:auto]">
       <div className="container mx-auto px-4">
         <div className="flex items-center justify-between mb-12">
           <h2 className="text-3xl md:text-4xl font-black text-black uppercase tracking-tighter relative">
@@ -115,11 +111,7 @@ export const ProductSection = ({ title, products, onQuickView }: ProductSectionP
               transition={{ duration: 0.5, delay: index * 0.1 }}
               viewport={{ once: true }}
             >
-              <ProductCard
-                product={product}
-                onQuickView={onQuickView}
-                priority={index < 4}
-              />
+              <ProductCard product={product} onQuickView={onQuickView} />
             </motion.div>
           ))}
         </div>
