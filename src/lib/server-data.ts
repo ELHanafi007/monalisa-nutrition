@@ -48,40 +48,56 @@ export function sanitizeProduct(p: Product, options: SanitizeOptions = {}): Prod
 
 export function sanitizeCategory(c: Category, rawImages = false): Category {
   return {
-    ...c,
+    id: c.id,
+    name: c.name,
+    slug: c.slug,
+    description: c.description || '',
     image: rawImages ? c.image : categoryImageUrl(c.id, c.image),
+  };
+}
+
+function mapProductRow(p: any, includeHeavyFields: boolean): Product {
+  let benefits: Product['benefits'] = [];
+  let specs: Product['specs'] = [];
+  let images: string[] = [];
+
+  if (includeHeavyFields) {
+    try { benefits = typeof p.benefits === 'string' ? JSON.parse(p.benefits) : (p.benefits ?? []); } catch (e) {}
+    try { specs = typeof p.specs === 'string' ? JSON.parse(p.specs) : (p.specs ?? []); } catch (e) {}
+    try { images = typeof p.images === 'string' ? JSON.parse(p.images) : (p.images ?? []); } catch (e) {}
+  }
+
+  return {
+    id: p.id.toString(),
+    name: p.name || 'Sans nom',
+    slug: p.slug || 'sans-slug',
+    brand: p.brand || 'Monaliza',
+    price: Number(p.price) || 0,
+    oldPrice: p.old_price ? Number(p.old_price) : undefined,
+    image: includeHeavyFields ? (p.image || '/images/placeholder.jpg') : productImageUrl(p.id.toString(), null),
+    category: p.category || 'vitamines',
+    description: includeHeavyFields ? (p.description || '') : '',
+    isRupture: Boolean(p.is_rupture),
+    benefits: Array.isArray(benefits) ? benefits : [],
+    specs: Array.isArray(specs) ? specs : [],
+    images: Array.isArray(images) ? images : [],
   };
 }
 
 export async function getProducts(options: SanitizeOptions = {}): Promise<Product[]> {
   try {
-    const [rows]: any = await pool.query('SELECT * FROM products ORDER BY id DESC');
+    const { listing = false, rawImages = false } = options;
+    const includeHeavyFields = !listing || rawImages;
+
+    const query = includeHeavyFields
+      ? 'SELECT * FROM products ORDER BY id DESC'
+      : `SELECT id, name, slug, brand, price, old_price, category, is_rupture
+         FROM products ORDER BY id DESC`;
+
+    const [rows]: any = await pool.query(query);
 
     return rows.map((p: any) => {
-      let benefits = [];
-      let specs = [];
-      let images = [];
-      
-      try { benefits = typeof p.benefits === 'string' ? JSON.parse(p.benefits) : (p.benefits ?? []); } catch (e) {}
-      try { specs = typeof p.specs === 'string' ? JSON.parse(p.specs) : (p.specs ?? []); } catch (e) {}
-      try { images = typeof p.images === 'string' ? JSON.parse(p.images) : (p.images ?? []); } catch (e) {}
-
-      const product: Product = {
-        ...p,
-        id: p.id.toString(),
-        name: p.name || 'Sans nom',
-        slug: p.slug || 'sans-slug',
-        brand: p.brand || 'Monaliza',
-        price: Number(p.price) || 0,
-        oldPrice: p.old_price ? Number(p.old_price) : undefined,
-        image: p.image || '/images/placeholder.jpg',
-        category: p.category || 'vitamines',
-        description: p.description || '',
-        isRupture: Boolean(p.is_rupture),
-        benefits: Array.isArray(benefits) ? benefits : [],
-        specs: Array.isArray(specs) ? specs : [],
-        images: Array.isArray(images) ? images : [],
-      };
+      const product = mapProductRow(p, includeHeavyFields);
       return sanitizeProduct(product, options);
     });
   } catch (e) {
@@ -107,22 +123,10 @@ export async function getProductBySlug(
     try { specs = typeof p.specs === 'string' ? JSON.parse(p.specs) : (p.specs ?? []); } catch (e) {}
     try { images = typeof p.images === 'string' ? JSON.parse(p.images) : (p.images ?? []); } catch (e) {}
 
-    const product: Product = {
-      ...p,
-      id: p.id.toString(),
-      name: p.name || 'Sans nom',
-      slug: p.slug || 'sans-slug',
-      brand: p.brand || 'Monaliza',
-      price: Number(p.price) || 0,
-      oldPrice: p.old_price ? Number(p.old_price) : undefined,
-      image: p.image || '/images/placeholder.jpg',
-      category: p.category || 'vitamines',
-      description: p.description || '',
-      isRupture: Boolean(p.is_rupture),
-      benefits: Array.isArray(benefits) ? benefits : [],
-      specs: Array.isArray(specs) ? specs : [],
-      images: Array.isArray(images) ? images : [],
-    };
+    const product = mapProductRow(p, true);
+    product.benefits = Array.isArray(benefits) ? benefits : [];
+    product.specs = Array.isArray(specs) ? specs : [];
+    product.images = Array.isArray(images) ? images : [];
 
     return sanitizeProduct(product, options);
   } catch (e) {
@@ -133,15 +137,18 @@ export async function getProductBySlug(
 
 export async function getCategories(rawImages = false): Promise<Category[]> {
   try {
-    const [rows]: any = await pool.query('SELECT * FROM categories ORDER BY name ASC');
+    const query = rawImages
+      ? 'SELECT * FROM categories ORDER BY name ASC'
+      : 'SELECT id, name, slug, description FROM categories ORDER BY name ASC';
+
+    const [rows]: any = await pool.query(query);
 
     return rows.map((c: any) =>
       sanitizeCategory({
-        ...c,
         id: c.id.toString(),
         name: c.name || 'Sans catégorie',
         slug: c.slug || 'sans-slug',
-        image: c.image || '/images/placeholder-cat.jpg',
+        image: rawImages ? (c.image || '/images/placeholder-cat.jpg') : '',
         description: c.description || '',
       }, rawImages)
     );
