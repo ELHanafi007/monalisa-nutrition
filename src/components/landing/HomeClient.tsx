@@ -1,37 +1,16 @@
 "use client";
 
-import { useState, useMemo, useEffect } from 'react';
+import { useState, useMemo } from 'react';
 import { ProductSection } from '@/components/landing/ProductSection';
 import { QuickView } from '@/components/QuickView';
 import type { Product } from '@/data/products';
 
-function ProductSectionsSkeleton() {
-  return (
-    <div className="py-20 bg-white">
-      <div className="container mx-auto px-4">
-        <div className="h-10 w-64 bg-gray-100 rounded-lg mb-12 animate-pulse" />
-        <div className="grid grid-cols-2 md:grid-cols-4 gap-4 md:gap-8">
-          {Array.from({ length: 4 }).map((_, i) => (
-            <div key={i} className="aspect-square bg-gray-100 rounded-xl animate-pulse" />
-          ))}
-        </div>
-      </div>
-    </div>
-  );
+interface HomeClientProps {
+  products: Product[];
 }
 
-export const HomeClient = () => {
-  const [products, setProducts] = useState<Product[]>([]);
-  const [loading, setLoading] = useState(true);
+export const HomeClient = ({ products }: HomeClientProps) => {
   const [selectedProduct, setSelectedProduct] = useState<Product | null>(null);
-
-  useEffect(() => {
-    fetch('/api/products')
-      .then((r) => (r.ok ? r.json() : []))
-      .then((data: Product[]) => setProducts(data))
-      .catch(() => setProducts([]))
-      .finally(() => setLoading(false));
-  }, []);
 
   const promoPacks = useMemo(() => {
     return products
@@ -43,15 +22,6 @@ export const HomeClient = () => {
     const nonPacks = products.filter((p) => p.category !== 'packs');
     return [...nonPacks].reverse().slice(0, 8);
   }, [products]);
-
-  if (loading) {
-    return (
-      <>
-        <ProductSectionsSkeleton />
-        <ProductSectionsSkeleton />
-      </>
-    );
-  }
 
   if (products.length === 0) {
     return (

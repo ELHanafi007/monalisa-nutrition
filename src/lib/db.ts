@@ -7,11 +7,11 @@ const pool = mysql.createPool({
   database: process.env.MYSQL_DATABASE,
   port: parseInt(process.env.MYSQL_PORT || '3306'),
   waitForConnections: true,
-  connectionLimit: 50,
-  queueLimit: 0,
-  connectTimeout: 20000,
+  connectionLimit: 5,
+  queueLimit: 10,
+  connectTimeout: 10000,
   enableKeepAlive: true,
-  keepAliveInitialDelay: 0
+  keepAliveInitialDelay: 0,
 });
 
 const promisePool = pool.promise();

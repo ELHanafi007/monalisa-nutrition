@@ -1,21 +1,15 @@
 "use client";
 
-import { useEffect, useState } from 'react';
 import Link from 'next/link';
 import Image from 'next/image';
 import type { Category } from '@/data/categories';
 
-export const CategoryCircles = () => {
-  const [categories, setCategories] = useState<Category[]>([]);
+interface CategoryCirclesProps {
+  categories: Category[];
+}
 
-  useEffect(() => {
-    fetch('/api/categories')
-      .then((r) => (r.ok ? r.json() : []))
-      .then((data: Category[]) => setCategories(data))
-      .catch(() => setCategories([]));
-  }, []);
-
-  if (categories.length === 0) return null;
+export const CategoryCircles = ({ categories }: CategoryCirclesProps) => {
+  if (!categories?.length) return null;
 
   return (
     <section className="py-12 bg-white">
@@ -33,6 +27,7 @@ export const CategoryCircles = () => {
                     src={cat.image}
                     alt={cat.name}
                     fill
+                    unoptimized
                     sizes="(max-width: 768px) 96px, 160px"
                     loading="lazy"
                     className="object-contain p-4 group-hover:scale-110 transition-transform duration-700"

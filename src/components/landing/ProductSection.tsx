@@ -35,6 +35,7 @@ export const ProductCard = ({
           src={product.image} 
           alt={product.name} 
           fill
+          unoptimized={product.image.startsWith('/api/')}
           sizes="(max-width: 768px) 50vw, 25vw"
           priority={priority}
           loading={priority ? undefined : 'lazy'}

@@ -40,6 +40,7 @@ export const ProductCard = ({ product, onQuickView }: ProductCardProps) => {
           src={product.image} 
           alt={product.name} 
           fill
+          unoptimized={product.image.startsWith('/api/')}
           sizes="(max-width: 768px) 50vw, 25vw"
           loading="lazy"
           className={`object-contain p-4 transition-transform duration-700 group-hover:scale-110 ${product.isRupture ? 'grayscale' : ''}`}
