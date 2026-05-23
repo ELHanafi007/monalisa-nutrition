@@ -6,9 +6,13 @@ export const dynamic = 'force-dynamic';
 export const revalidate = 0;
 export const fetchCache = 'force-no-store';
 
-export async function GET() {
+export async function GET(request: Request) {
   try {
-    const products = await getProducts();
+    const { searchParams } = new URL(request.url);
+    const full = searchParams.get('full') === '1';
+    const products = await getProducts(
+      full ? { rawImages: true } : { listing: true }
+    );
     return NextResponse.json(products);
   } catch (error: any) {
     console.error('API /api/products GET error:', error);

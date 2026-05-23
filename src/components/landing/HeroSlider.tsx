@@ -44,7 +44,7 @@ export const HeroSlider = () => {
           initial={{ opacity: 0, scale: 1.05 }}
           animate={{ opacity: 1, scale: 1 }}
           exit={{ opacity: 0 }}
-          transition={{ duration: 1.2, ease: [0.4, 0, 0.2, 1] }}
+          transition={{ duration: 0.6, ease: [0.4, 0, 0.2, 1] }}
           className="absolute inset-0"
         >
           <Image
@@ -52,6 +52,9 @@ export const HeroSlider = () => {
             alt={slides[current].title}
             fill
             priority={current === 0}
+            fetchPriority={current === 0 ? 'high' : 'auto'}
+            sizes="100vw"
+            quality={75}
             className="object-cover brightness-[0.85]"
           />
           

@@ -92,8 +92,8 @@ export default function AdminDashboard() {
     const timestamp = Date.now();
     try {
       const [pRes, cRes, oRes] = await Promise.all([
-        fetch(`/api/products?t=${timestamp}`, { cache: 'no-store' }),
-        fetch(`/api/categories?t=${timestamp}`, { cache: 'no-store' }),
+        fetch(`/api/products?full=1&t=${timestamp}`, { cache: 'no-store' }),
+        fetch(`/api/categories?full=1&t=${timestamp}`, { cache: 'no-store' }),
         fetch(`/api/orders?t=${timestamp}`, { cache: 'no-store' }),
       ]);
       
@@ -188,8 +188,8 @@ export default function AdminDashboard() {
 
   const exportDatabase = async () => {
     const [pRes, cRes] = await Promise.all([
-      fetch('/api/products', { cache: 'no-store' }),
-      fetch('/api/categories', { cache: 'no-store' }),
+      fetch('/api/products?full=1', { cache: 'no-store' }),
+      fetch('/api/categories?full=1', { cache: 'no-store' }),
     ]);
     const data = {
       products: pRes.ok ? await pRes.json() : [],

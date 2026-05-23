@@ -40,7 +40,8 @@ export const ProductCard = ({ product, onQuickView }: ProductCardProps) => {
           src={product.image} 
           alt={product.name} 
           fill
-          unoptimized
+          sizes="(max-width: 768px) 50vw, 25vw"
+          loading="lazy"
           className={`object-contain p-4 transition-transform duration-700 group-hover:scale-110 ${product.isRupture ? 'grayscale' : ''}`}
         />
         <div className="absolute inset-0 bg-black/5 opacity-0 group-hover:opacity-100 transition-opacity flex items-center justify-center gap-2">

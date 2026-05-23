@@ -1,7 +1,7 @@
 "use client";
 
 import { useParams } from 'next/navigation';
-import { useProducts, Product } from '@/data/products';
+import type { Product } from '@/data/products';
 import { Header } from '@/components/landing/Header';
 import { Footer } from '@/components/landing/Footer';
 import { ShoppingCart, Heart, Shield, Truck, RotateCcw, Plus, Minus, Star, Award, CheckCircle } from 'lucide-react';
@@ -12,12 +12,39 @@ import Image from 'next/image';
 import { useCart } from '@/contexts/CartContext';
 
 export default function ProductDetail() {
-  const { products, loading } = useProducts();
   const params = useParams();
   const { addToCart } = useCart();
-  
   const slug = params.slug as string;
-  const product = useMemo(() => products.find(p => p.slug === slug), [products, slug]);
+
+  const [product, setProduct] = useState<Product | null>(null);
+  const [related, setRelated] = useState<Product[]>([]);
+  const [loading, setLoading] = useState(true);
+
+  useEffect(() => {
+    let cancelled = false;
+    setLoading(true);
+
+    Promise.all([
+      fetch(`/api/products/by-slug/${slug}`).then((r) => (r.ok ? r.json() : null)),
+      fetch('/api/products').then((r) => (r.ok ? r.json() : [])),
+    ])
+      .then(([detail, listing]: [Product | null, Product[]]) => {
+        if (cancelled) return;
+        setProduct(detail);
+        setRelated(
+          (listing as Product[])
+            .filter((p) => p.slug !== slug)
+            .slice(0, 4)
+        );
+      })
+      .finally(() => {
+        if (!cancelled) setLoading(false);
+      });
+
+    return () => {
+      cancelled = true;
+    };
+  }, [slug]);
 
   const [quantity, setQuantity] = useState(1);
   const [activeTab, setActiveTab] = useState('description');
@@ -83,7 +110,8 @@ export default function ProductDetail() {
                     src={activeImage || product.image} 
                     alt={product.name} 
                     fill
-                    unoptimized
+                    sizes="(max-width: 768px) 100vw, 50vw"
+                    priority
                     className={`object-contain p-12 drop-shadow-2xl ${product.isRupture ? 'grayscale' : ''}`}
                   />
                 </motion.div>
@@ -104,7 +132,7 @@ export default function ProductDetail() {
                     onClick={() => setActiveImage(img)}
                     className={`aspect-square relative rounded-xl overflow-hidden border-2 transition-all ${activeImage === img ? 'border-luxury-red' : 'border-gray-100 hover:border-gray-200'}`}
                   >
-                    <Image src={img} alt={`${product.name} ${i}`} fill unoptimized className="object-contain p-2" />
+                    <Image src={img} alt={`${product.name} ${i}`} fill sizes="80px" loading="lazy" className="object-contain p-2" />
                   </button>
                 ))}
               </div>
@@ -294,14 +322,15 @@ export default function ProductDetail() {
           <span className="text-luxury-red uppercase tracking-widest text-[10px] font-black mb-6 block">Vous aimerez aussi</span>
           <h2 className="text-4xl md:text-5xl font-black uppercase tracking-tighter mb-12">Produits <span className="red-gradient-text italic">Complémentaires</span></h2>
           <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-8">
-            {products.slice(0, 4).map((p) => (
+            {related.map((p) => (
               <Link href={`/product/${p.slug}`} key={p.id} className="group flex flex-col items-center">
                 <div className="aspect-square w-full bg-gray-50 border border-gray-100 rounded-3xl p-8 mb-6 group-hover:border-luxury-red transition-all overflow-hidden relative shadow-sm hover:shadow-xl">
                   <Image 
                     src={p.image} 
                     alt={p.name} 
                     fill
-                    unoptimized
+                    sizes="(max-width: 768px) 50vw, 20vw"
+                    loading="lazy"
                     className={`object-contain transition-all duration-700 p-8 group-hover:scale-110 ${p.isRupture ? 'grayscale' : ''}`}
                   />
                 </div>

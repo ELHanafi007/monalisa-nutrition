@@ -79,7 +79,8 @@ export const CategoryModal = ({ isOpen, onClose }: { isOpen: boolean; onClose: (
                          src={category.image} 
                          alt={category.name} 
                          fill 
-                         unoptimized
+                         sizes="64px"
+                         loading="lazy"
                          className="object-contain p-2 group-hover:scale-110 transition-transform duration-500" 
                        />
                     </div>

@@ -8,11 +8,11 @@ import { LocationSection } from '@/components/LocationSection';
 import { Footer } from '@/components/landing/Footer';
 import { getProducts, getCategories } from '@/lib/server-data';
 
-export const revalidate = 60; // Revalidate page every 60 seconds (ISR)
+export const revalidate = 60;
 
 export default async function Home() {
   const [products, categories] = await Promise.all([
-    getProducts(),
+    getProducts({ listing: true }),
     getCategories(),
   ]);
 

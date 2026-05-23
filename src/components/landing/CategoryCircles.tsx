@@ -26,8 +26,9 @@ export const CategoryCircles = ({ categories }: CategoryCirclesProps) => {
                    <Image 
                      src={cat.image} 
                      alt={cat.name} 
-                     fill 
-                     unoptimized
+                     fill
+                     sizes="(max-width: 768px) 96px, 160px"
+                     loading="lazy"
                      className="object-contain p-4 group-hover:scale-110 transition-transform duration-700"
                    />
                 </div>

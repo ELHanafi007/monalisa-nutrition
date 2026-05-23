@@ -68,7 +68,8 @@ export default function Collections() {
                      src={category.image} 
                      alt={category.name} 
                      fill
-                     unoptimized
+                     sizes="(max-width: 768px) 100vw, 50vw"
+                     loading="lazy"
                      className="object-contain p-12 group-hover:scale-110 transition-all duration-1000"
                    />
                    <div className="absolute inset-0 flex items-end justify-start p-12 z-20 pointer-events-none">

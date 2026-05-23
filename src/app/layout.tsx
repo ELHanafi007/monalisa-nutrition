@@ -35,6 +35,7 @@ export default function RootLayout({
   return (
     <html lang="fr" className={`${inter.variable} ${playfair.variable}`} suppressHydrationWarning>
       <head>
+        <link rel="preload" as="image" href="/tt/hero-performance.jpg" fetchPriority="high" />
         <script
           dangerouslySetInnerHTML={{
             __html: `

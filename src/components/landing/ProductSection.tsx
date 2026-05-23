@@ -12,7 +12,11 @@ interface ProductCardProps {
   onQuickView: (product: Product) => void;
 }
 
-export const ProductCard = ({ product, onQuickView }: ProductCardProps) => {
+export const ProductCard = ({
+  product,
+  onQuickView,
+  priority = false,
+}: ProductCardProps & { priority?: boolean }) => {
   const { addToCart } = useCart();
   const discount = product.oldPrice ? Math.round(((product.oldPrice - product.price) / product.oldPrice) * 100) : 0;
 
@@ -30,7 +34,10 @@ export const ProductCard = ({ product, onQuickView }: ProductCardProps) => {
         <Image 
           src={product.image} 
           alt={product.name} 
-          fill 
+          fill
+          sizes="(max-width: 768px) 50vw, 25vw"
+          priority={priority}
+          loading={priority ? undefined : 'lazy'}
           className="object-contain p-4 group-hover:scale-110 transition-transform duration-700"
         />
         
@@ -107,7 +114,11 @@ export const ProductSection = ({ title, products, onQuickView }: ProductSectionP
               transition={{ duration: 0.5, delay: index * 0.1 }}
               viewport={{ once: true }}
             >
-              <ProductCard product={product} onQuickView={onQuickView} />
+              <ProductCard
+                product={product}
+                onQuickView={onQuickView}
+                priority={index < 4}
+              />
             </motion.div>
           ))}
         </div>

@@ -20,7 +20,7 @@ export const HomeClient = ({ products }: HomeClientProps) => {
 
   const bestSellers = useMemo(() => {
     const nonPacks = products.filter(p => p.category !== 'packs');
-    return [...nonPacks].reverse().slice(0, 20);
+    return [...nonPacks].reverse().slice(0, 8);
   }, [products]);
 
   return (

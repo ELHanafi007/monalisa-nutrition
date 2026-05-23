@@ -106,7 +106,8 @@ const CategoryCard = ({ category, index }: { category: any, index: number }) => 
           src={category.image}
           alt={category.name}
           fill
-          unoptimized
+          sizes="(max-width: 768px) 50vw, 25vw"
+          loading="lazy"
           className="object-cover brightness-50 group-hover:scale-110 group-hover:brightness-40 transition-all duration-[2s] ease-out"
         />
         

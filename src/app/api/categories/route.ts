@@ -4,9 +4,11 @@ import { getCategories } from '@/lib/server-data';
 
 export const dynamic = 'force-dynamic';
 
-export async function GET() {
+export async function GET(request: Request) {
   try {
-    const categories = await getCategories();
+    const { searchParams } = new URL(request.url);
+    const full = searchParams.get('full') === '1';
+    const categories = await getCategories(full);
     return NextResponse.json(categories);
   } catch (error: any) {
     console.error('API /api/categories GET error:', error);
