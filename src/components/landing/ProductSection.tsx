@@ -32,9 +32,8 @@ export const ProductCard = ({ product, onQuickView }: ProductCardProps) => {
           alt={product.name} 
           fill
           unoptimized={product.image.startsWith('/api/')}
-          sizes="(max-width: 768px) 50vw, 20vw"
+          sizes="(max-width: 768px) 50vw, 25vw"
           loading="lazy"
-          fetchPriority="low"
           className="object-contain p-4 group-hover:scale-110 transition-transform duration-700"
         />
         
@@ -89,7 +88,7 @@ interface ProductSectionProps {
 
 export const ProductSection = ({ title, products, onQuickView }: ProductSectionProps) => {
   return (
-    <section className="py-20 bg-white [content-visibility:auto]">
+    <section className="py-20 bg-white">
       <div className="container mx-auto px-4">
         <div className="flex items-center justify-between mb-12">
           <h2 className="text-3xl md:text-4xl font-black text-black uppercase tracking-tighter relative">
