@@ -44,7 +44,6 @@ export const Footer = () => {
             <h3 className="font-black text-text-main uppercase tracking-[0.2em] text-xs mb-8 border-b-2 border-luxury-red pb-2 w-fit">Navigation</h3>
             <ul className="space-y-4 text-sm text-text-muted font-bold">
               <li><Link href="/about" className="hover:text-luxury-red transition-colors uppercase tracking-widest text-[10px]">A propos</Link></li>
-              <li><Link href="/about#localisation" className="hover:text-luxury-red transition-colors uppercase tracking-widest text-[10px]">Localisation</Link></li>
               <li><Link href="/catalog" className="hover:text-luxury-red transition-colors uppercase tracking-widest text-[10px]">Notre Catalogue</Link></li>
               <li><Link href="/concierge" className="hover:text-luxury-red transition-colors uppercase tracking-widest text-[10px]">Concierge Service</Link></li>
             </ul>

@@ -4,14 +4,13 @@ import { motion } from 'framer-motion';
 import { Header } from '@/components/landing/Header';
 import { Footer } from '@/components/landing/Footer';
 import Image from 'next/image';
-import { Shield, Award, Users, MapPin } from 'lucide-react';
+import { Shield, Award } from 'lucide-react';
 
 export default function About() {
   const stats = [
     { label: "Clients Satisfaits", value: "10k+" },
     { label: "Produits Premium", value: "500+" },
     { label: "Années d'Excellence", value: "10+" },
-    { label: "Points de Vente", value: "5" }
   ];
 
   return (
@@ -53,7 +52,7 @@ export default function About() {
       {/* Stats Section */}
       <section className="py-20 bg-gray-50 border-y border-gray-100">
         <div className="container">
-          <div className="grid grid-cols-2 lg:grid-cols-4 gap-8 md:gap-12">
+          <div className="grid grid-cols-1 sm:grid-cols-3 gap-8 md:gap-12">
             {stats.map((stat, i) => (
               <motion.div 
                 key={i}
@@ -129,31 +128,6 @@ export default function About() {
                 </div>
               </div>
             </motion.div>
-          </div>
-        </div>
-      </section>
-
-      {/* Locations Section */}
-      <section id="localisation" className="py-32 bg-gray-50 rounded-t-[4rem]">
-        <div className="container">
-          <div className="text-center max-w-2xl mx-auto mb-20">
-            <h2 className="text-4xl md:text-5xl font-black uppercase tracking-tighter mb-6">Nos <span className="red-gradient-text italic">Points de Vente</span></h2>
-            <p className="text-gray-600 font-medium">Retrouvez l'excellence Monaliza à travers le Royaume.</p>
-          </div>
-          
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
-            {[
-              { city: "Casablanca", area: "Maarif", address: "123 Rue de l'Excellence" },
-              { city: "Marrakech", area: "Gueliz", address: "45 Avenue de la Performance" },
-              { city: "Rabat", area: "Agdal", address: "89 Boulevard de la Pureté" }
-            ].map((loc, i) => (
-              <div key={i} className="p-10 bg-white border border-gray-100 rounded-3xl shadow-sm hover:shadow-xl transition-all group">
-                <MapPin className="text-luxury-red mb-6 group-hover:scale-110 transition-transform" size={32} />
-                <h3 className="text-2xl font-black uppercase tracking-tighter mb-2">{loc.city}</h3>
-                <p className="text-luxury-red font-black uppercase tracking-widest text-[10px] mb-4">{loc.area}</p>
-                <p className="text-gray-500 text-sm">{loc.address}</p>
-              </div>
-            ))}
           </div>
         </div>
       </section>
