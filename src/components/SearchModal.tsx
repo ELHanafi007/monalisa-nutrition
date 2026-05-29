@@ -6,6 +6,7 @@ import { Search, X, ArrowRight } from 'lucide-react';
 import { useProducts, Product } from '@/data/products';
 import Link from 'next/link';
 import Image from 'next/image';
+import { isApiImageUrl } from '@/lib/images';
 
 export const SearchModal = ({ isOpen, onClose }: { isOpen: boolean; onClose: () => void }) => {
   const { products, loading } = useProducts();
@@ -91,7 +92,7 @@ export const SearchModal = ({ isOpen, onClose }: { isOpen: boolean; onClose: () 
                         >
                           <div className="flex items-center gap-6">
                             <div className="w-16 h-16 bg-gray-50 dark:bg-zinc-950 rounded-xl overflow-hidden p-2 relative group-hover:bg-white dark:group-hover:bg-zinc-900 transition-colors">
-                              <Image src={product.image} alt={product.name} fill sizes="64px" loading="lazy" className="object-contain p-2" />
+                              <Image src={product.image} alt={product.name} fill sizes="64px" loading="lazy" unoptimized={isApiImageUrl(product.image)} className="object-contain p-2" />
                             </div>
                             <div>
                               <p className="text-[10px] text-luxury-red uppercase font-black tracking-widest mb-1">{product.brand}</p>

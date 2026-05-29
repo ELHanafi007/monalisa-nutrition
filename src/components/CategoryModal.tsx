@@ -6,6 +6,7 @@ import { useCategories } from '@/data/categories';
 import Link from 'next/link';
 import Image from 'next/image';
 import { useEffect, useState } from 'react';
+import { isApiImageUrl } from '@/lib/images';
 
 export const CategoryModal = ({ isOpen, onClose }: { isOpen: boolean; onClose: () => void }) => {
   const { categories, loading } = useCategories();
@@ -81,6 +82,7 @@ export const CategoryModal = ({ isOpen, onClose }: { isOpen: boolean; onClose: (
                          fill 
                          sizes="64px"
                          loading="lazy"
+                         unoptimized={isApiImageUrl(category.image)}
                          className="object-contain p-2 group-hover:scale-110 transition-transform duration-500" 
                        />
                     </div>

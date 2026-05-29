@@ -4,6 +4,7 @@ import { motion, useScroll, useTransform } from 'framer-motion';
 import Link from 'next/link';
 import Image from 'next/image';
 import { useCategories } from '@/data/categories';
+import { isApiImageUrl } from '@/lib/images';
 import { ArrowRight, MoveRight } from 'lucide-react';
 import { useRef } from 'react';
 
@@ -108,6 +109,7 @@ const CategoryCard = ({ category, index }: { category: any, index: number }) => 
           fill
           sizes="(max-width: 768px) 50vw, 25vw"
           loading="lazy"
+          unoptimized={isApiImageUrl(category.image)}
           className="object-cover brightness-50 group-hover:scale-110 group-hover:brightness-40 transition-all duration-[2s] ease-out"
         />
         

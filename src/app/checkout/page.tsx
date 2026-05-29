@@ -7,6 +7,7 @@ import { Footer } from '@/components/landing/Footer';
 import { Trash2, Plus, Minus, ArrowRight, ShieldCheck, Truck, CreditCard } from 'lucide-react';
 import Image from 'next/image';
 import Link from 'next/link';
+import { isApiImageUrl } from '@/lib/images';
 import { useState } from 'react';
 import { sendOrderEmail } from '../actions/order';
 import { createOrder } from '../actions/order-db';
@@ -144,7 +145,7 @@ export default function Checkout() {
                   className="flex flex-col sm:flex-row items-center gap-6 p-6 bg-surface rounded-3xl border border-border group transition-all hover:shadow-xl"
                 >
                   <div className="relative w-24 h-24 bg-white rounded-2xl overflow-hidden p-2 shadow-sm shrink-0">
-                    <Image src={item.image} alt={item.name} fill className="object-contain p-2" />
+                    <Image src={item.image} alt={item.name} fill unoptimized={isApiImageUrl(item.image)} className="object-contain p-2" />
                   </div>
                   
                   <div className="flex-1 text-center sm:text-left">

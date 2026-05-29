@@ -10,6 +10,7 @@ import { motion, AnimatePresence } from 'framer-motion';
 import Link from 'next/link';
 import Image from 'next/image';
 import { useCart } from '@/contexts/CartContext';
+import { isApiImageUrl } from '@/lib/images';
 
 export default function ProductDetail() {
   const params = useParams();
@@ -112,6 +113,7 @@ export default function ProductDetail() {
                     fill
                     sizes="(max-width: 768px) 100vw, 50vw"
                     priority
+                    unoptimized={isApiImageUrl(activeImage || product.image)}
                     className={`object-contain p-12 drop-shadow-2xl ${product.isRupture ? 'grayscale' : ''}`}
                   />
                 </motion.div>
@@ -132,7 +134,7 @@ export default function ProductDetail() {
                     onClick={() => setActiveImage(img)}
                     className={`aspect-square relative rounded-xl overflow-hidden border-2 transition-all ${activeImage === img ? 'border-luxury-red' : 'border-gray-100 hover:border-gray-200'}`}
                   >
-                    <Image src={img} alt={`${product.name} ${i}`} fill sizes="80px" loading="lazy" className="object-contain p-2" />
+                    <Image src={img} alt={`${product.name} ${i}`} fill sizes="80px" loading="lazy" unoptimized={isApiImageUrl(img)} className="object-contain p-2" />
                   </button>
                 ))}
               </div>
@@ -331,6 +333,7 @@ export default function ProductDetail() {
                     fill
                     sizes="(max-width: 768px) 50vw, 20vw"
                     loading="lazy"
+                    unoptimized={isApiImageUrl(p.image)}
                     className={`object-contain transition-all duration-700 p-8 group-hover:scale-110 ${p.isRupture ? 'grayscale' : ''}`}
                   />
                 </div>

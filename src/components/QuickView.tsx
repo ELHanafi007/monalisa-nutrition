@@ -6,6 +6,7 @@ import { Product } from '@/data/products';
 import { useCart } from '@/contexts/CartContext';
 import Image from 'next/image';
 import { useState, useEffect } from 'react';
+import { isApiImageUrl } from '@/lib/images';
 
 interface QuickViewProps {
   product: Product | null;
@@ -87,6 +88,7 @@ export const QuickView = ({ product, onClose }: QuickViewProps) => {
                         alt={product.name} 
                         fill
                         sizes="(max-width: 768px) 100vw, 50vw"
+                        unoptimized={isApiImageUrl(activeImage || product.image)}
                         className={`object-contain p-8 ${product.isRupture ? 'grayscale' : ''}`}
                       />
                     </motion.div>
@@ -103,7 +105,7 @@ export const QuickView = ({ product, onClose }: QuickViewProps) => {
                         className={`aspect-square relative rounded-xl overflow-hidden border-2 transition-all ${activeImage === img ? 'border-luxury-red' : 'border-white dark:border-zinc-900 hover:border-gray-200'}`}
                         aria-label={`Afficher l'image ${i + 1}`}
                       >
-                        <Image src={img} alt={`${product.name} - image ${i + 1}`} fill sizes="80px" loading="lazy" className="object-contain p-1" />
+                        <Image src={img} alt={`${product.name} - image ${i + 1}`} fill sizes="80px" loading="lazy" unoptimized={isApiImageUrl(img)} className="object-contain p-1" />
                       </button>
                     ))}
                   </div>

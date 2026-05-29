@@ -5,6 +5,7 @@ import { motion } from 'framer-motion';
 import { Eye, ShoppingCart } from 'lucide-react';
 import { Product } from '@/data/products';
 import { useCart } from '@/contexts/CartContext';
+import { isApiImageUrl } from '@/lib/images';
 
 interface ProductCardProps {
   product: Product;
@@ -40,7 +41,7 @@ export const ProductCard = ({ product, onQuickView }: ProductCardProps) => {
           src={product.image} 
           alt={product.name} 
           fill
-          unoptimized={product.image.startsWith('/api/')}
+          unoptimized={isApiImageUrl(product.image)}
           sizes="(max-width: 768px) 50vw, 25vw"
           loading="lazy"
           className={`object-contain p-4 transition-transform duration-700 group-hover:scale-110 ${product.isRupture ? 'grayscale' : ''}`}

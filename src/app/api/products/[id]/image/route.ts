@@ -1,7 +1,6 @@
 import { NextResponse } from 'next/server';
 import pool from '@/lib/db';
-import { inlineImageResponse } from '@/lib/inline-image-response';
-import { isInlineImage } from '@/lib/images';
+import { resolveImageResponse } from '@/lib/inline-image-response';
 
 export const dynamic = 'force-dynamic';
 
@@ -46,11 +45,7 @@ export async function GET(
       return new NextResponse('Not found', { status: 404 });
     }
 
-    if (isInlineImage(src)) {
-      return inlineImageResponse(src);
-    }
-
-    return NextResponse.redirect(src, 302);
+    return resolveImageResponse(src);
   } catch (error) {
     console.error('API /api/products/[id]/image GET error:', error);
     return new NextResponse('Database error', { status: 500 });

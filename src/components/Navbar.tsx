@@ -7,6 +7,7 @@ import { useState, useEffect } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { useCart } from '@/contexts/CartContext';
 import { SearchModal } from './SearchModal';
+import { isApiImageUrl } from '@/lib/images';
 
 export const Navbar = () => {
   const [isScrolled, setIsScrolled] = useState(false);
@@ -138,6 +139,7 @@ export const Navbar = () => {
                           src={item.image} 
                           alt={item.name} 
                           fill
+                          unoptimized={isApiImageUrl(item.image)}
                           className={`object-contain p-2 opacity-50 ${item.isRupture ? 'grayscale' : ''}`}
                         />
                         <div className="relative z-10 flex flex-col items-center justify-center h-full">

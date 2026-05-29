@@ -3,6 +3,7 @@
 import Link from 'next/link';
 import Image from 'next/image';
 import type { Category } from '@/data/categories';
+import { isApiImageUrl } from '@/lib/images';
 
 interface CategoryCirclesProps {
   categories: Category[];
@@ -27,7 +28,7 @@ export const CategoryCircles = ({ categories }: CategoryCirclesProps) => {
                     src={cat.image}
                     alt={cat.name}
                     fill
-                    unoptimized
+                    unoptimized={isApiImageUrl(cat.image)}
                     sizes="(max-width: 768px) 96px, 160px"
                     loading="lazy"
                     className="object-contain p-4 group-hover:scale-110 transition-transform duration-700"

@@ -6,6 +6,7 @@ import { useCategories } from '@/data/categories';
 import Link from 'next/link';
 import { motion } from 'framer-motion';
 import Image from 'next/image';
+import { isApiImageUrl } from '@/lib/images';
 
 export default function Collections() {
   const { categories, loading } = useCategories();
@@ -70,6 +71,7 @@ export default function Collections() {
                      fill
                      sizes="(max-width: 768px) 100vw, 50vw"
                      loading="lazy"
+                     unoptimized={isApiImageUrl(category.image)}
                      className="object-contain p-12 group-hover:scale-110 transition-all duration-1000"
                    />
                    <div className="absolute inset-0 flex items-end justify-start p-12 z-20 pointer-events-none">

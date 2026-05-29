@@ -1,5 +1,9 @@
 /** Inline DB images (base64 or very long strings) are served via API instead of embedded in HTML/JSON. */
 
+export function isApiImageUrl(src: string | null | undefined): boolean {
+  return !!src && src.startsWith('/api/');
+}
+
 export function isInlineImage(src: string | null | undefined): boolean {
   if (!src) return false;
   return src.startsWith('data:') || src.length > 500;
