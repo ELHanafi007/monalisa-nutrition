@@ -1,7 +1,6 @@
 "use client";
 
 import Image from 'next/image';
-import { motion } from 'framer-motion';
 import { Eye, ShoppingCart } from 'lucide-react';
 import { Product } from '@/data/products';
 import { useCart } from '@/contexts/CartContext';
@@ -16,10 +15,7 @@ export const ProductCard = ({ product, onQuickView }: ProductCardProps) => {
   const { addToCart } = useCart();
 
   return (
-    <motion.div 
-      initial={{ opacity: 0, y: 20 }}
-      whileInView={{ opacity: 1, y: 0 }}
-      viewport={{ once: true }}
+    <div 
       className="group bg-white border border-gray-100 p-3 md:p-6 transition-all hover:border-luxury-red/30 hover:shadow-xl rounded-2xl"
     >
       <div className="aspect-square relative mb-4 bg-gray-50 rounded-xl overflow-hidden cursor-pointer" onClick={() => onQuickView(product)}>
@@ -77,6 +73,6 @@ export const ProductCard = ({ product, onQuickView }: ProductCardProps) => {
           )}
         </div>
       </div>
-    </motion.div>
+    </div>
   );
 };

@@ -1,16 +1,21 @@
 import type { Metadata } from "next";
+import dynamic from "next/dynamic";
 import { Inter, Playfair_Display } from "next/font/google";
 import "./globals.css";
 import { CartProvider } from "@/contexts/CartContext";
 import { MobileNav } from "@/components/MobileNav";
 import { Toast } from "@/components/Toast";
-import { NewsletterModal } from "@/components/NewsletterModal";
 import { ThemeProvider } from "@/providers/ThemeProvider";
+
+const NewsletterModal = dynamic(
+  () => import("@/components/NewsletterModal").then((m) => ({ default: m.NewsletterModal })),
+  { ssr: false }
+);
 
 const inter = Inter({
   subsets: ["latin"],
   variable: "--font-sans",
-  weight: ["200", "300", "400", "500", "600"],
+  weight: ["400", "600"],
   display: "swap",
 });
 
@@ -35,7 +40,7 @@ export default function RootLayout({
   return (
     <html lang="fr" className={`${inter.variable} ${playfair.variable}`} suppressHydrationWarning>
       <head>
-        <link rel="preload" as="image" href="/tt/hero-performance.jpg" fetchPriority="high" />
+        <link rel="preload" as="image" href="/tt/hero-performance.webp" type="image/webp" fetchPriority="high" />
         <script
           dangerouslySetInnerHTML={{
             __html: `

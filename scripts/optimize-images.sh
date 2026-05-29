@@ -43,6 +43,10 @@ fi
 if [ -d "public/tt" ]; then
   for file in public/tt/hero-*.jpg public/tt/hero-*.jpeg; do
     optimize_image "$file"
+    if command -v cwebp >/dev/null 2>&1; then
+      echo "  Creating WebP..."
+      cwebp -q 78 "$file" -o "${file%.*}.webp" 2>/dev/null || true
+    fi
   done
 fi
 

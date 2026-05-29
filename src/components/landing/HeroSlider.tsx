@@ -7,17 +7,17 @@ import { ChevronLeft, ChevronRight } from 'lucide-react';
 
 const slides = [
   {
-    image: "/tt/hero-performance.jpg",
+    image: "/tt/hero-performance.webp",
     title: "Performance Elite",
     subtitle: "Exprimez votre potentiel maximum avec notre sélection exclusive de suppléments."
   },
   {
-    image: "/tt/hero-products.jpg",
+    image: "/tt/hero-products.webp",
     title: "Nutrition Pure",
     subtitle: "Une alimentation saine et des suppléments de qualité pour un équilibre parfait."
   },
   {
-    image: "/tt/hero-nutrition.jpg",
+    image: "/tt/hero-nutrition.webp",
     title: "Gamme Complète",
     subtitle: "Protéines, gainers, créatine, collagène et bien plus encore pour vos objectifs."
   }
@@ -57,7 +57,6 @@ export const HeroSlider = () => {
             fill
             priority={current === 0}
             fetchPriority={current === 0 ? 'high' : 'auto'}
-            unoptimized
             sizes="100vw"
             className="object-cover brightness-[0.85]"
           />
@@ -117,10 +116,16 @@ export const HeroSlider = () => {
           <button
             key={i}
             onClick={() => setCurrent(i)}
-            className={`h-1 transition-all duration-500 rounded-full ${current === i ? 'w-12 bg-luxury-red' : 'w-6 bg-white/30 hover:bg-white/50'}`}
+            className="h-1 w-12 rounded-full bg-white/30 overflow-hidden"
             aria-label={`Aller à la diapositive ${i + 1}`}
             aria-current={current === i ? 'true' : 'false'}
-          />
+          >
+            <span
+              className={`block h-full rounded-full bg-luxury-red transition-transform duration-500 origin-left ${
+                current === i ? 'scale-x-100' : 'scale-x-[0.5] opacity-50'
+              }`}
+            />
+          </button>
         ))}
       </div>
     </section>

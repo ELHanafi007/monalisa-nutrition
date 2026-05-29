@@ -12,7 +12,16 @@ type SanitizeOptions = {
   listing?: boolean;
   /** Keep raw base64 in image fields (admin only) */
   rawImages?: boolean;
+  /** Max rows returned (listing/homepage) */
+  limit?: number;
 };
+
+/** SQL fragment: short local paths only, skip heavy inline base64 blobs */
+const SHORT_IMAGE_SQL = `CASE
+  WHEN image IS NULL OR image = '' THEN NULL
+  WHEN CHAR_LENGTH(image) > 500 OR image LIKE 'data:%' THEN NULL
+  ELSE image
+END AS image`;
 
 export function sanitizeProduct(p: Product, options: SanitizeOptions = {}): Product {
   const { listing = false, rawImages = false } = options;
@@ -74,7 +83,9 @@ function mapProductRow(p: any, includeHeavyFields: boolean): Product {
     brand: p.brand || 'Monaliza',
     price: Number(p.price) || 0,
     oldPrice: p.old_price ? Number(p.old_price) : undefined,
-    image: includeHeavyFields ? (p.image || '/images/placeholder.jpg') : productImageUrl(p.id.toString(), null),
+    image: includeHeavyFields
+      ? (p.image || '/images/placeholder.jpg')
+      : (p.image || productImageUrl(p.id.toString(), null)),
     category: p.category || 'vitamines',
     description: includeHeavyFields ? (p.description || '') : '',
     isRupture: Boolean(p.is_rupture),
@@ -86,13 +97,15 @@ function mapProductRow(p: any, includeHeavyFields: boolean): Product {
 
 export async function getProducts(options: SanitizeOptions = {}): Promise<Product[]> {
   try {
-    const { listing = false, rawImages = false } = options;
+    const { listing = false, rawImages = false, limit } = options;
     const includeHeavyFields = !listing || rawImages;
 
+    const limitClause = limit ? ` LIMIT ${Math.max(1, Math.min(limit, 200))}` : '';
+
     const query = includeHeavyFields
-      ? 'SELECT * FROM products ORDER BY id DESC'
-      : `SELECT id, name, slug, brand, price, old_price, category, is_rupture
-         FROM products ORDER BY id DESC`;
+      ? `SELECT * FROM products ORDER BY id DESC${limitClause}`
+      : `SELECT id, name, slug, brand, price, old_price, category, is_rupture, ${SHORT_IMAGE_SQL}
+         FROM products ORDER BY id DESC${limitClause}`;
 
     const [rows]: any = await pool.query(query);
 
@@ -139,7 +152,8 @@ export async function getCategories(rawImages = false): Promise<Category[]> {
   try {
     const query = rawImages
       ? 'SELECT * FROM categories ORDER BY name ASC'
-      : 'SELECT id, name, slug, description FROM categories ORDER BY name ASC';
+      : `SELECT id, name, slug, description, ${SHORT_IMAGE_SQL}
+         FROM categories ORDER BY name ASC`;
 
     const [rows]: any = await pool.query(query);
 
@@ -148,7 +162,7 @@ export async function getCategories(rawImages = false): Promise<Category[]> {
         id: c.id.toString(),
         name: c.name || 'Sans catégorie',
         slug: c.slug || 'sans-slug',
-        image: rawImages ? (c.image || '/images/placeholder-cat.jpg') : '',
+        image: rawImages ? (c.image || '/images/placeholder-cat.jpg') : (c.image || ''),
         description: c.description || '',
       }, rawImages)
     );

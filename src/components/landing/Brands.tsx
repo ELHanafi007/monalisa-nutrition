@@ -41,7 +41,9 @@ export const Brands = () => {
                 <Image 
                   src={brand.logo} 
                   alt={brand.name} 
-                  fill 
+                  fill
+                  sizes="(max-width: 768px) 50vw, 20vw"
+                  loading="lazy"
                   className="object-contain"
                 />
               </div>

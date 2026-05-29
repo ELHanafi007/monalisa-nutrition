@@ -1,3 +1,4 @@
+import { unstable_cache } from 'next/cache';
 import { Header } from '@/components/landing/Header';
 import { InfoBar } from '@/components/landing/InfoBar';
 import { HeroSlider } from '@/components/landing/HeroSlider';
@@ -6,15 +7,25 @@ import { HomeClient } from '@/components/landing/HomeClient';
 import { Brands } from '@/components/landing/Brands';
 import { LocationSection } from '@/components/LocationSection';
 import { Footer } from '@/components/landing/Footer';
+import { DeferredSection } from '@/components/DeferredSection';
 import { getProducts, getCategories } from '@/lib/server-data';
 
-export const revalidate = 60;
+export const revalidate = 300;
+
+const getHomeData = unstable_cache(
+  async () => {
+    const [products, categories] = await Promise.all([
+      getProducts({ listing: true, limit: 80 }),
+      getCategories(),
+    ]);
+    return { products, categories };
+  },
+  ['home-page-data'],
+  { revalidate: 300 }
+);
 
 export default async function Home() {
-  const [products, categories] = await Promise.all([
-    getProducts({ listing: true }),
-    getCategories(),
-  ]);
+  const { products, categories } = await getHomeData();
 
   return (
     <main className="min-h-screen bg-white text-black dark:bg-bg-main dark:text-text-main">
@@ -23,8 +34,12 @@ export default async function Home() {
       <HeroSlider />
       <CategoryCircles categories={categories} />
       <HomeClient products={products} />
-      <Brands />
-      <LocationSection />
+      <DeferredSection
+        fallback={<div className="min-h-[320px]" aria-hidden />}
+      >
+        <Brands />
+        <LocationSection />
+      </DeferredSection>
       <Footer />
     </main>
   );

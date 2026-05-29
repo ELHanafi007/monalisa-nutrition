@@ -2,12 +2,20 @@
 
 import Link from 'next/link';
 import Image from 'next/image';
+import dynamic from 'next/dynamic';
 import { ShoppingCart, Search, User, Menu, Moon, Sun } from 'lucide-react';
 import { useCart } from '@/contexts/CartContext';
 import { useState } from 'react';
-import { SearchModal } from '../SearchModal';
-import { CategoryModal } from '../CategoryModal';
 import { useTheme } from '@/providers/ThemeProvider';
+
+const SearchModal = dynamic(
+  () => import('../SearchModal').then((m) => ({ default: m.SearchModal })),
+  { ssr: false }
+);
+const CategoryModal = dynamic(
+  () => import('../CategoryModal').then((m) => ({ default: m.CategoryModal })),
+  { ssr: false }
+);
 
 export const Header = () => {
   const { totalItems } = useCart();
@@ -79,8 +87,12 @@ export const Header = () => {
         </div>
       </div>
       
-      <SearchModal isOpen={isSearchOpen} onClose={() => setIsSearchOpen(false)} />
-      <CategoryModal isOpen={isCategoryModalOpen} onClose={() => setIsCategoryModalOpen(false)} />
+      {isSearchOpen && (
+        <SearchModal isOpen={isSearchOpen} onClose={() => setIsSearchOpen(false)} />
+      )}
+      {isCategoryModalOpen && (
+        <CategoryModal isOpen={isCategoryModalOpen} onClose={() => setIsCategoryModalOpen(false)} />
+      )}
     </header>
   );
 };
