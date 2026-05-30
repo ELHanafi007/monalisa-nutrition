@@ -52,8 +52,9 @@ export const HeroSlider = () => {
             alt={s.title}
             fill
             priority={i === 0}
-            fetchPriority={i === 0 ? 'high' : 'low'}
+            fetchPriority={i === 0 ? 'high' : 'auto'}
             loading={i === 0 ? 'eager' : 'lazy'}
+            unoptimized
             sizes="100vw"
             className="object-cover brightness-[0.85]"
           />

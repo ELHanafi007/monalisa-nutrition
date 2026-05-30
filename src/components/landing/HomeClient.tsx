@@ -2,7 +2,6 @@
 
 import { useState, useMemo } from 'react';
 import { ProductSection } from '@/components/landing/ProductSection';
-import { DeferredSection } from '@/components/DeferredSection';
 import dynamic from 'next/dynamic';
 import type { Product } from '@/data/products';
 
@@ -21,12 +20,12 @@ export const HomeClient = ({ products }: HomeClientProps) => {
   const promoPacks = useMemo(() => {
     return products
       .filter((p) => p.category === 'packs' || (p.oldPrice && p.oldPrice > p.price))
-      .slice(0, 3);
+      .slice(0, 4);
   }, [products]);
 
   const bestSellers = useMemo(() => {
     const nonPacks = products.filter((p) => p.category !== 'packs');
-    return [...nonPacks].reverse().slice(0, 3);
+    return [...nonPacks].reverse().slice(0, 4);
   }, [products]);
 
   if (products.length === 0) {
@@ -41,25 +40,16 @@ export const HomeClient = ({ products }: HomeClientProps) => {
 
   return (
     <>
-      <DeferredSection
-        rootMargin="300px"
-        fallback={<div className="min-h-[520px] bg-white" aria-hidden />}
-      >
-        <ProductSection
-          title="Packs en promo"
-          products={promoPacks}
-          onQuickView={setSelectedProduct}
-        />
-      </DeferredSection>
-      <DeferredSection
-        fallback={<div className="min-h-[480px] bg-white" aria-hidden />}
-      >
-        <ProductSection
-          title="Best Vente"
-          products={bestSellers}
-          onQuickView={setSelectedProduct}
-        />
-      </DeferredSection>
+      <ProductSection
+        title="Packs en promo"
+        products={promoPacks}
+        onQuickView={setSelectedProduct}
+      />
+      <ProductSection
+        title="Best Vente"
+        products={bestSellers}
+        onQuickView={setSelectedProduct}
+      />
       <QuickView product={selectedProduct} onClose={() => setSelectedProduct(null)} />
     </>
   );
