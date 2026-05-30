@@ -31,6 +31,7 @@ export const CategoryCircles = ({ categories }: CategoryCirclesProps) => {
                     unoptimized={isApiImageUrl(cat.image)}
                     sizes="(max-width: 768px) 96px, 160px"
                     loading="lazy"
+                    fetchPriority="low"
                     className="object-contain p-4 group-hover:scale-110 transition-transform duration-700"
                   />
                 </div>

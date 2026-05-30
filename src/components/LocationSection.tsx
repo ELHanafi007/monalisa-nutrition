@@ -1,30 +1,13 @@
 "use client";
 
-import { motion, useScroll, useTransform } from 'framer-motion';
 import { MapPin, Phone, Mail, Clock, Compass } from 'lucide-react';
-import { useRef } from 'react';
+import { LazyMapEmbed } from '@/components/LazyMapEmbed';
 
 export const LocationSection = () => {
-  const containerRef = useRef(null);
-  const { scrollYProgress } = useScroll({
-    target: containerRef,
-    offset: ["start end", "end start"]
-  });
-
-  const bgY = useTransform(scrollYProgress, [0, 1], ["-10%", "10%"]);
-  const mapY = useTransform(scrollYProgress, [0, 1], ["5%", "-5%"]);
-
   return (
-    <section ref={containerRef} className="py-20 bg-black relative overflow-hidden">
-      {/* Decorative Background Elements with Parallax */}
-      <motion.div 
-        style={{ y: bgY }}
-        className="absolute top-0 right-0 w-[500px] h-[500px] bg-gold/5 rounded-full blur-[120px] -translate-y-1/2 translate-x-1/2 pointer-events-none" 
-      />
-      <motion.div 
-        style={{ y: bgY }}
-        className="absolute bottom-0 left-0 w-[500px] h-[500px] bg-gold/5 rounded-full blur-[120px] translate-y-1/2 -translate-x-1/2 pointer-events-none" 
-      />
+    <section className="py-20 bg-black relative overflow-hidden">
+      <div className="absolute top-0 right-0 w-[500px] h-[500px] bg-gold/5 rounded-full blur-[120px] -translate-y-1/2 translate-x-1/2 pointer-events-none" />
+      <div className="absolute bottom-0 left-0 w-[500px] h-[500px] bg-gold/5 rounded-full blur-[120px] translate-y-1/2 -translate-x-1/2 pointer-events-none" />
 
       <div className="container relative z-10 px-4 md:px-8">
         <div className="mb-16">
@@ -32,23 +15,17 @@ export const LocationSection = () => {
             <div className="w-8 h-[1px] bg-gold/50" />
             <span className="text-gold uppercase tracking-[0.5em] text-[10px] font-bold">Visit our Sanctuary</span>
           </span>
-          <h2 className="text-5xl md:text-7xl font-serif text-white leading-tight">Monaliza<span className="italic gold-gradient-text text-gold">House</span>.</h2>
+          <h2 className="text-5xl md:text-7xl font-serif text-white leading-tight">
+            Monaliza<span className="italic gold-gradient-text text-gold">House</span>.
+          </h2>
         </div>
 
         <div className="grid grid-cols-1 lg:grid-cols-12 gap-8 lg:gap-16 items-stretch">
-          {/* Info Card - The "Gold Luxury Plate" side */}
-          <motion.div 
-            initial={{ opacity: 0, x: -30 }}
-            whileInView={{ opacity: 1, x: 0 }}
-            transition={{ duration: 1, delay: 0.2, ease: [0.7, 0, 0.3, 1] }}
-            viewport={{ once: true }}
-            className="lg:col-span-5 flex flex-col justify-between"
-          >
+          <div className="lg:col-span-5 flex flex-col justify-between">
             <div className="glass-card p-8 md:p-12 h-full border-gold/20 flex flex-col justify-between relative group overflow-hidden bg-white/[0.02] backdrop-blur-sm">
-              {/* Decorative Corner */}
               <div className="absolute top-0 left-0 w-12 h-12 border-t border-l border-gold/30" />
               <div className="absolute bottom-0 right-0 w-12 h-12 border-b border-r border-gold/30" />
-              
+
               <div className="space-y-10 relative z-10">
                 <div className="space-y-4">
                   <div className="flex items-center gap-4 text-gold">
@@ -65,7 +42,7 @@ export const LocationSection = () => {
                 <div className="space-y-4">
                   <div className="flex items-center gap-4 text-gold">
                     <Clock size={18} />
-                    <span className="text-[10px] uppercase tracking-[0.4em] font-bold">Horaires d'Ouverture</span>
+                    <span className="text-[10px] uppercase tracking-[0.4em] font-bold">Horaires d&apos;Ouverture</span>
                   </div>
                   <div className="space-y-3">
                     <div className="flex justify-between items-center border-b border-white/5 pb-2">
@@ -102,9 +79,9 @@ export const LocationSection = () => {
               </div>
 
               <div className="mt-12 pt-8 border-t border-gold/10 relative z-10">
-                <a 
-                href="https://www.google.com/maps?q=34.019470,-4.979992" 
-                  target="_blank" 
+                <a
+                  href="https://www.google.com/maps?q=34.019470,-4.979992"
+                  target="_blank"
                   rel="noopener noreferrer"
                   className="w-full border border-gold/30 text-gold hover:bg-gold hover:text-black font-black uppercase text-[10px] py-4 flex items-center justify-center tracking-[0.2em] rounded-full transition-all duration-300"
                 >
@@ -112,40 +89,21 @@ export const LocationSection = () => {
                 </a>
               </div>
             </div>
-          </motion.div>
+          </div>
 
-          {/* Map Section - The "Gold Plate" container */}
-          <motion.div 
-            initial={{ opacity: 0, x: 30 }}
-            whileInView={{ opacity: 1, x: 0 }}
-            transition={{ duration: 1, delay: 0.4, ease: [0.7, 0, 0.3, 1] }}
-            viewport={{ once: true }}
-            className="lg:col-span-7 relative group"
-          >
+          <div className="lg:col-span-7 relative group">
             <div className="relative h-[400px] lg:h-full min-h-[400px] w-full overflow-hidden border border-white/10 grayscale-[0.8] contrast-[1.2] brightness-[0.8] hover:grayscale-0 hover:brightness-100 transition-all duration-1000 shadow-2xl">
-               <iframe 
-                src="https://www.google.com/maps?q=34.019470,-4.979992&output=embed" 
-                width="100%" 
-                height="100%" 
-                style={{ border: 0, filter: 'invert(90%) hue-rotate(180deg) brightness(0.9) contrast(1.1)' }} 
-                allowFullScreen={true} 
-                loading="lazy" 
-                referrerPolicy="no-referrer-when-downgrade"
-                className="absolute inset-0"
-                title="Boutique Monaliza House Fès Google Maps"
-              />
-              
-              {/* Floating Badge */}
-              <div className="absolute top-6 right-6 z-20">
+              <LazyMapEmbed />
+              <div className="absolute top-6 right-6 z-20 pointer-events-none">
                 <div className="bg-black/80 backdrop-blur-md border border-gold/30 p-4 flex flex-col items-center gap-2">
                   <div className="w-8 h-8 rounded-full border border-gold/50 flex items-center justify-center text-gold">
-                    <Compass className="animate-pulse" size={16} />
+                    <Compass size={16} />
                   </div>
                   <span className="text-[8px] uppercase tracking-[0.4em] font-black text-gold">Fès Boutique</span>
                 </div>
               </div>
             </div>
-          </motion.div>
+          </div>
         </div>
       </div>
     </section>
